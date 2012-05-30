@@ -63,6 +63,7 @@
     <module>dropwizard-extra-common</module>
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
+    <module>dropwizard-extra-db</module>
   </modules>
 
   <dependencies>
