@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.datasift.dropwizard</groupId>
+    <artifactId>dropwizard-extra</artifactId>
+    <version>${dropwizard.version}-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>dropwizard-extra-kafka</artifactId>
+
+  <properties>
+    <kafka.version>0.7.0</kafka.version>
+  </properties>
+
+  <name>Dropwizard Extra Kafka</name>
+  <description>
+    Dropwizard integration for working with Kafka in Scala.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.datasift.dropwizard</groupId>
+      <artifactId>dropwizard-extra-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>kafka</groupId>
+      <artifactId>core-kafka_${scala.version}</artifactId>
+      <version>${kafka.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
