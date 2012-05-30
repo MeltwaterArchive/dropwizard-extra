@@ -61,6 +61,7 @@
 
   <modules>
     <module>dropwizard-extra-common</module>
+    <module>dropwizard-extra-hbase</module>
   </modules>
 
   <dependencies>
