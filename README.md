@@ -12,13 +12,18 @@ modules:
 
   * [dropwizard-extra-common](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
   is a few useful abstractions with no real external dependencies.
-  * [dropwizard-extra-db](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-db)
+  * [dropwizard-db](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-db)
   has some additional utilities for working with databases.
-  * [dropwizard-extra-hbase](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-hbase)
+  * [dropwizard-hbase](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-hbase)
   uses [StumbleUpon's asynchbase](http://github.com/stumbleupon/asynchbase) for
   working with [HBase](http://hbase.apache.org)
-  * [dropwizard-extra-kafka](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-kafka)
+  * [dropwizard-kafka](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-kafka)
   for consuming Kafka streams in your Dropwizard application.
 
 This is still a work-in-progress, so please use what you see with caution.
+
+License
+-------
+
+This software is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
