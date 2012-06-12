@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.datasift.dropwizard</groupId>
     <artifactId>dropwizard-extra</artifactId>
-    <version>${dropwizard.version}</version>
+    <version>0.4.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
