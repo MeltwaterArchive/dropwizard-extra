@@ -27,7 +27,7 @@ class KafkaConfiguration extends Configuration {
   @BeanProperty
   @NotNull
   @Min(1)
-  val partitions = 0
+  val partitions = 1
 
   /** number of threads for this consumer to consume with */
   @BeanProperty
