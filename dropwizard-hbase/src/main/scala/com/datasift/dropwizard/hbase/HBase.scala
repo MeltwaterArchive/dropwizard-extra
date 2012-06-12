@@ -87,6 +87,9 @@ trait HBase {
   /** atomically creates a cell if, and only if, it doesn't already exist */
   def create(edit: PutRequest): Deferred[Boolean]
 
+  /** buffer a durable increment for coalescing */
+  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long]
+
   /** atomically and durably increments a value */
   def increment(request: AtomicIncrementRequest): Deferred[Long]
 

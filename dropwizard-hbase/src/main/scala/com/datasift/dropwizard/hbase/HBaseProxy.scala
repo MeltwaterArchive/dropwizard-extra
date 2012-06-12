@@ -33,14 +33,14 @@ class HBaseProxy private[hbase] (client: HBaseClient) extends HBase {
     client.stats()
   }
 
-  /** buffer a durable increment for coalescing */
-  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long] = {
-    client.bufferAtomicIncrement(request).asInstanceOf[Deferred[Long]]
-  }
-
   /** @see com.datasift.dropwizard.hbase.HBase.create() */
   def create(edit: PutRequest): Deferred[Boolean] = {
     client.atomicCreate(edit).asInstanceOf[Deferred[Boolean]]
+  }
+
+  /** @see com.datasift.dropwizard.hbase.HBase.bufferedIncrement() */
+  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long] = {
+    client.bufferAtomicIncrement(request).asInstanceOf[Deferred[Long]]
   }
 
   /** @see com.datasift.dropwizard.hbase.HBase.increment() */

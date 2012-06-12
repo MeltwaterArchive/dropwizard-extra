@@ -46,6 +46,11 @@ class BoundedHBase private[hbase] (underlying: HBase, maxRequests: Int) extends 
     underlying.create(edit)
   }
 
+  /** @see com.datasift.dropwizard.hbase.HBase.bufferedIncrement() */
+  def bufferedIncrement(request: AtomicIncrementRequest) = withPermit {
+    underlying.bufferedIncrement(request)
+  }
+
   /** @see com.datasift.dropwizard.hbase.HBase.increment() */
   def increment(request: AtomicIncrementRequest): Deferred[Long] = withPermit {
     underlying.increment(request)
