@@ -98,17 +98,17 @@ class KafkaConfiguration extends Configuration {
   def toProperties: Properties = {
     val props = new Properties
     props.put("zk.connect", zookeeper.quorumSpec)
-    props.put("zk.connectiontimeout.ms", Long.box(zookeeper.timeout))
+    props.put("zk.connectiontimeout.ms", Long.box(zookeeper.timeout).toString)
     props.put("groupid", group)
-    props.put("socket.timeout.ms", Long.box(socketTimeout))
-    props.put("socket.buffersize", Long.box(bufferSize))
-    props.put("fetch.size", Long.box(fetchSize))
-    props.put("backoff.increment.ms", Long.box(backoffIncrement))
-    props.put("queuedchunks.max", Long.box(queuedChunks))
-    props.put("autocommit.enable", Boolean.box(autocommit))
-    props.put("autocommit.interval.ms", Long.box(autocommitInterval))
-    props.put("consumer.timeout.ms", Long.box(timeout))
-    props.put("rebalance.retries.max", Long.box(rebalanceRetries))
+    props.put("socket.timeout.ms", Long.box(socketTimeout).toString)
+    props.put("socket.buffersize", Long.box(bufferSize).toString)
+    props.put("fetch.size", Long.box(fetchSize).toString)
+    props.put("backoff.increment.ms", Long.box(backoffIncrement).toString)
+    props.put("queuedchunks.max", Long.box(queuedChunks).toString)
+    props.put("autocommit.enable", Boolean.box(autocommit).toString)
+    props.put("autocommit.interval.ms", Long.box(autocommitInterval).toString)
+    props.put("consumer.timeout.ms", Long.box(timeout).toString)
+    props.put("rebalance.retries.max", Long.box(rebalanceRetries).toString)
     props
   }
 
