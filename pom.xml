@@ -24,7 +24,7 @@
     <metrics.version>2.1.2</metrics.version>
     <jersey.version>1.12</jersey.version>
     <scala.version>2.9.1</scala.version>
-    <dropwizard.version>${project.version}</dropwizard.version>
+    <dropwizard.version>0.4.0</dropwizard.version>
   </properties>
 
   <organization>
