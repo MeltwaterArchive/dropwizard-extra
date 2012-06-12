@@ -1,33 +1,25 @@
 package com.datasift.dropwizard.metrics
 
-import com.yammer.metrics.reporting.GraphiteReporter
-import java.util.concurrent.TimeUnit
-import com.datasift.dropwizard.conf.ConfigurableGraphiteReporting
-import com.datasift.dropwizard.ComposableService
-import com.datasift.dropwizard.health.GraphiteHealthCheck
-import com.yammer.dropwizard.config.Environment
-import com.yammer.dropwizard.Logging
+import com.datasift.dropwizard.config.GraphiteReportingConfiguration
+import com.yammer.dropwizard.config.Configuration
+import com.yammer.dropwizard.{ConfiguredBundle, Bundle, ScalaService}
 
-/** enable reporting to Graphite for a [[com.datasift.dropwizard.ComposableService]] */
+/** enable reporting to Graphite for a [[com.yammer.dropwizard.AbstractService]] */
 trait GraphiteReporting {
-  self: ComposableService[_ <: ConfigurableGraphiteReporting] with Logging =>
+  self: TemporaryScalaService[_ <: GraphiteReportingConfiguration] =>
 
-  self afterInit { (conf: ConfigurableGraphiteReporting, env: Environment) =>
-    if (conf.graphite.enabled) {
-      log.info("Graphite metrics reporting enabled to {}:{}, every {} seconds",
-        conf.graphite.host,
-        conf.graphite.port.toString,
-        conf.graphite.frequency.toString)
+  self.withBundle(new GraphiteReportingBundle)
+}
 
-      GraphiteReporter.enable(
-        conf.graphite.frequency,
-        TimeUnit.SECONDS,
-        conf.graphite.host,
-        conf.graphite.port,
-        conf.graphite.prefix
-      )
+// todo: remove once upgraded to dropwizard 0.4.1
+abstract class TemporaryScalaService[T <: Configuration](name: String)
+  extends ScalaService[T](name) {
 
-      env.addHealthCheck(new GraphiteHealthCheck(conf.graphite.host, conf.graphite.port))
-    }
+  def withBundle(bundle: Bundle) {
+    this.addBundle(bundle)
+  }
+
+  def withBundle(bundle: ConfiguredBundle[_ >: T]) {
+    this.addBundle(bundle)
   }
 }

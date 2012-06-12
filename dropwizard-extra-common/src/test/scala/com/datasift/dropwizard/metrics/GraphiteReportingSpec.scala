@@ -4,24 +4,24 @@ import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
-import com.datasift.dropwizard.ComposableService
-import com.yammer.dropwizard.Logging
 import com.yammer.dropwizard.config.{Environment, Configuration}
 import com.datasift.dropwizard.health.GraphiteHealthCheck
-import com.datasift.dropwizard.conf.{GraphiteConfiguration, ConfigurableGraphiteReporting}
+import com.datasift.dropwizard.config.{GraphiteReportingConfiguration, GraphiteConfiguration}
+import com.yammer.dropwizard.{ScalaService, Logging}
 
 /** Specification for GraphiteReporting utility */
 @RunWith(classOf[JUnitRunner])
 class GraphiteReportingSpec extends Specification with Mockito {
 
-  "GraphiteReporting Service helper" should {
-    class TestServiceConfiguration extends Configuration with ConfigurableGraphiteReporting
+  "GraphiteReportingBundle" should {
+    class TestServiceConfiguration extends Configuration with GraphiteReportingConfiguration
     object TestService
-      extends ComposableService[TestServiceConfiguration]("test")
+      extends TemporaryScalaService[TestServiceConfiguration]("test")
       with Logging
       with GraphiteReporting
     {
-      def init(conf: TestServiceConfiguration, env: Environment) {
+      def initialize(conf: TestServiceConfiguration, env: Environment) {
+        println("hello?")
       }
     }
 
@@ -41,7 +41,7 @@ class GraphiteReportingSpec extends Specification with Mockito {
           override val prefix = "prefix"
         }
       }
-      TestService.initialize(conf, env)
+      TestService.initializeWithBundles(conf, env)
       there was one(env).addHealthCheck(any[GraphiteHealthCheck])
     }
   }
