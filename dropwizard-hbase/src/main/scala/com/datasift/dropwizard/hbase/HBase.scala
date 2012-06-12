@@ -8,6 +8,7 @@ import org.hbase.async._
 import com.stumbleupon.async.Deferred
 import scanner.RowScanner
 import com.datasift.dropwizard.config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguration}
+import com.datasift.dropwizard.health.HBaseHealthCheck
 
 /** Factory companion object for [[com.datasift.dropwizard.hbase.HBase]] instances */
 object HBase {
@@ -31,6 +32,10 @@ object HBase {
         conf.maxConcurrentRequests
       )
     }
+
+    // add healthchecks for META and ROOT tables
+    env.addHealthCheck(new HBaseHealthCheck(hbase, ".META."))
+    env.addHealthCheck(new HBaseHealthCheck(hbase, "-ROOT-"))
 
     env.manage(new ManagedHBase(hbase))
     hbase
@@ -56,7 +61,7 @@ object HBase {
     def start() {
       // dummy request to force the client to connect to the cluster synchronously
       try {
-        hbase.ensureTableExists(HBaseClient.EMPTY_ARRAY).join()
+        hbase.ensureTableExists(".META.").join()
       } catch {
         case _: TableNotFoundException => // we're expecting this
       }
