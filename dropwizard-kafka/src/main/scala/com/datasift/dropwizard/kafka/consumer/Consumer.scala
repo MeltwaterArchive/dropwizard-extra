@@ -2,7 +2,7 @@ package com.datasift.dropwizard.kafka.consumer
 
 import java.util.Properties
 import kafka.consumer.{ConsumerConfig, ConsumerConnector}
-import com.datasift.dropwizard.config.KafkaConfiguration
+import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration
 
 /**Factory object for initializing a Kafka Consumer */
 object Consumer {
@@ -18,7 +18,7 @@ object Consumer {
   }
 
   /**Creates a Consumer defined by a KafkaConsumerConfiguration */
-  def apply(conf: KafkaConfiguration): ConsumerConnector = {
+  def apply(conf: KafkaConsumerConfiguration): ConsumerConnector = {
     apply(conf.toProperties)
   }
 }

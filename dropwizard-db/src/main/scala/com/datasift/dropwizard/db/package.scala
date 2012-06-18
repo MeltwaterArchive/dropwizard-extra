@@ -2,7 +2,7 @@ package com.datasift.dropwizard
 
 import com.yammer.dropwizard.config.Environment
 import com.yammer.dropwizard.db.{DatabaseConfiguration, DatabaseFactory, Database}
-import config.SimpleDatabaseConfiguration
+import db.config.SimpleDatabaseConfiguration
 
 package object db {
 

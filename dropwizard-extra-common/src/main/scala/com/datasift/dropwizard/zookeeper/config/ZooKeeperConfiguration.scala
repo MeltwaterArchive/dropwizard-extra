@@ -1,9 +1,10 @@
-package com.datasift.dropwizard.config
+package com.datasift.dropwizard.zookeeper.config
 
 import com.yammer.dropwizard.config.Configuration
 import org.hibernate.validator.constraints.{NotEmpty, Range}
 import reflect.BeanProperty
 import javax.validation.constraints.{Min, NotNull}
+import com.yammer.dropwizard.util.Duration
 
 /** Configuration for a ZooKeeper cluster */
 class ZooKeeperConfiguration extends Configuration {
@@ -19,11 +20,10 @@ class ZooKeeperConfiguration extends Configuration {
   @Range(min = 0, max = 49151)
   val port = 2181
 
-  /** timeout, in milliseoncds, for idle connections to a ZooKeeper node */
+  /** timeout for idle connections to a ZooKeeper node */
   @BeanProperty
   @NotNull
-  @Min(0)
-  val timeout = 60000
+  val timeout = Duration.seconds(60)
 
   /** Quorum specificiation as a comma-delimited String of host:port pairs. */
   def quorumSpec: String = hosts map (_ + ":" + port) mkString (",")

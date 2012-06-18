@@ -2,12 +2,12 @@ package com.datasift.dropwizard.hbase
 
 import com.yammer.dropwizard.lifecycle.Managed
 import com.yammer.dropwizard.config.Environment
+import config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguration}
 import org.jboss.netty.util.Timer
 import java.util.ArrayList
 import org.hbase.async._
 import com.stumbleupon.async.Deferred
 import scanner.RowScanner
-import com.datasift.dropwizard.config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguration}
 import com.datasift.dropwizard.health.HBaseHealthCheck
 
 /** Factory companion object for [[com.datasift.dropwizard.hbase.HBase]] instances */

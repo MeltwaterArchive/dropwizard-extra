@@ -1,22 +1,41 @@
 package com.datasift.dropwizard.kafka.consumer
 
-import com.datasift.dropwizard.config.KafkaConfiguration
+import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration
 import com.yammer.dropwizard.lifecycle.Managed
 import com.yammer.dropwizard.Logging
 import kafka.consumer.{KafkaMessageStream, ConsumerConnector}
 import java.util.concurrent.{TimeUnit, Executors}
+import kafka.serializer.Decoder
+import com.yammer.dropwizard.config.Environment
+
+object ThreadPooledConsumer {
+
+  /** create and manage a Kafka Consumer using a Thread Pool
+   *
+   * @param conf consumer configuration
+   * @param f function to process each [[kafka.consumer.KafkaMessageStream]]
+   * @tparam A type of the messages being processed, must have an implicit
+   *           [[kafka.serializer.Decoder]] in scope
+   * @return a consumer configured to process messages using a Thread Pool
+   */
+  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment)
+                        (f: KafkaMessageStream[A] => Unit): ThreadPooledConsumer[A] = {
+    val consumer = new ThreadPooledConsumer[A](conf, f)
+    env.manage(consumer)
+    consumer
+  }
+}
 
 /** Kafka Consumer run using a fixed ThreadPool
  *
  * When a consuming stream fails due to an uncaught Exception, the stream
  * consumer is restarted after `restartDelay` milliseconds.
  *
- * @param conf KafkaConfiguration that configures this consumer
- * @param restartDelay delay in milliseconds before restarting a stream consumer
+ * @param conf KafkaConsumerConfiguration that configures this consumer
  * @param f the function each Thread should run to process a KafkaMessageStream
  */
-class ThreadPooledConsumer[A : kafka.serializer.Decoder]
-(conf: KafkaConfiguration, restartDelay: Long, f: KafkaMessageStream[A] => Unit)
+class ThreadPooledConsumer[A : Decoder](conf: KafkaConsumerConfiguration,
+                                        f: KafkaMessageStream[A] => Unit)
   extends Managed with Logging {
 
   var consumer: Option[ConsumerConnector] = None
@@ -40,12 +59,11 @@ class ThreadPooledConsumer[A : kafka.serializer.Decoder]
                 }
                 case t: Throwable => {
                   log.error(t,
-                    "Uncaught {} while processing stream, restarting in {} {}",
+                    "Uncaught {} while processing stream, restarting in {}ms",
                     t.getClass.getSimpleName,
-                    restartDelay.toString,
-                    TimeUnit.MILLISECONDS.toString.toLowerCase
+                    conf.restartDelay.toString
                   )
-                  executor.schedule(this, restartDelay, TimeUnit.MILLISECONDS)
+                  executor.schedule(this, conf.restartDelay.toNanoseconds, TimeUnit.NANOSECONDS)
                 }
               }
             }
@@ -63,14 +81,10 @@ class ThreadPooledConsumer[A : kafka.serializer.Decoder]
     log.info("Stopping Consumer")
     // first shutdown consumer threads
     executor.shutdownNow()
-    executor.awaitTermination(10, TimeUnit.SECONDS)
+    executor.awaitTermination(conf.shutdownTimeout.toNanoseconds, TimeUnit.NANOSECONDS)
 
     // commit the offsets and shutdown the consumer
-    consumer foreach {
-      consumer =>
-        consumer.commitOffsets
-        consumer.shutdown()
-    }
+    consumer.foreach(_.shutdown())
     log.info("Stopped Consumer")
   }
 }

@@ -1,11 +1,11 @@
 package com.datasift.dropwizard.hbase
 
+import config.ScannerConfiguration
 import java.util.concurrent.Semaphore
 import com.stumbleupon.async.Deferred
 import java.util.ArrayList
 import org.hbase.async._
 import scanner.{RowScanner, BoundedRowScanner}
-import com.datasift.dropwizard.config.ScannerConfiguration
 import org.jboss.netty.util.Timer
 
 /** Client for interacting with an HBase cluster with an upper-bounds on concurrent requests

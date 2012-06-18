@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.metrics
 
 import com.yammer.metrics.reporting.GraphiteReporter
+import config.GraphiteReportingConfiguration
+import health.GraphiteHealthCheck
 import java.util.concurrent.TimeUnit
-import com.datasift.dropwizard.health.GraphiteHealthCheck
-import com.datasift.dropwizard.config.GraphiteReportingConfiguration
 import com.yammer.dropwizard.config.Environment
 import com.yammer.dropwizard.{ConfiguredBundle, Logging}
 
@@ -19,8 +19,8 @@ class GraphiteReportingBundle
         conf.graphite.frequency.toString)
 
       GraphiteReporter.enable(
-        conf.graphite.frequency,
-        TimeUnit.SECONDS,
+        conf.graphite.frequency.toNanoseconds,
+        TimeUnit.NANOSECONDS,
         conf.graphite.host,
         conf.graphite.port,
         conf.graphite.prefix

@@ -1,11 +1,11 @@
 package com.datasift.dropwizard.hbase
 
 import com.stumbleupon.async.Deferred
+import config.ScannerConfiguration
 import java.util.ArrayList
 import org.hbase.async._
 import org.jboss.netty.util.Timer
 import scanner.{RowScanner, RowScannerProxy}
-import com.datasift.dropwizard.config.ScannerConfiguration
 
 /** Client for interacting with an HBase cluster
  *

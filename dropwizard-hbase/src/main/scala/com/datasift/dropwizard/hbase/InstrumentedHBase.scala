@@ -1,8 +1,8 @@
 package com.datasift.dropwizard.hbase
 
+import config.ScannerConfiguration
 import org.hbase.async._
 import scanner.InstrumentedRowScanner
-import com.datasift.dropwizard.config.ScannerConfiguration
 import com.yammer.metrics.scala.{Timer, Instrumented}
 import com.stumbleupon.async.Deferred
 

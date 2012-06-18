@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.metrics
 
-import com.datasift.dropwizard.config.GraphiteReportingConfiguration
+import config.GraphiteReportingConfiguration
 import com.yammer.dropwizard.config.Configuration
 import com.yammer.dropwizard.{ConfiguredBundle, Bundle, ScalaService}
 
