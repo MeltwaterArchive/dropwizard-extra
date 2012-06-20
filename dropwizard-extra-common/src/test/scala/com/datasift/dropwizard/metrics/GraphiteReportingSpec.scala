@@ -16,7 +16,7 @@ class GraphiteReportingSpec extends Specification with Mockito {
   "GraphiteReportingBundle" should {
     class TestServiceConfiguration extends Configuration with GraphiteReportingConfiguration
     object TestService
-      extends TemporaryScalaService[TestServiceConfiguration]("test")
+      extends ScalaService[TestServiceConfiguration]("test")
       with Logging
       with GraphiteReporting
     {
