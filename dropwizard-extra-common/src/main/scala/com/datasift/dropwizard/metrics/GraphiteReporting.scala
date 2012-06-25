@@ -1,8 +1,7 @@
 package com.datasift.dropwizard.metrics
 
 import config.GraphiteReportingConfiguration
-import com.yammer.dropwizard.config.Configuration
-import com.yammer.dropwizard.{ConfiguredBundle, Bundle, ScalaService}
+import com.yammer.dropwizard.ScalaService
 
 /** enable reporting to Graphite for a [[com.yammer.dropwizard.AbstractService]] */
 trait GraphiteReporting {
