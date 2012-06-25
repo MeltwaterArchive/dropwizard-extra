@@ -1,11 +1,16 @@
 package com.datasift.dropwizard.kafka
 
-import kafka.consumer.ConsumerConnector
+import kafka.consumer.{KafkaMessageStream, ConsumerConnector}
 import kafka.serializer.{Decoder, StringDecoder, DefaultDecoder}
 import java.nio.ByteBuffer
+import com.yammer.dropwizard.json.Json
+import org.codehaus.jackson.JsonNode
 
 /** Implicits for the Kafka Consumer */
 package object consumer {
+
+  /** rename KafkaMessageStream to be less verbose */
+  type MessageStream[A] = KafkaMessageStream[A]
 
   /** Pass-thru Decoder for Messages */
   implicit object DefaultDecoder extends DefaultDecoder
@@ -24,6 +29,8 @@ package object consumer {
   /** Decoder for the message's [[java.nio.ByteBuffer]] */
   implicit val ByteBufferDecoder: Decoder[ByteBuffer] = MessageDecoder(_.payload)
 
+  // TODO: implement a JSON MessageDecoder to decode to a Jackson AST (JsonNode)
+
   implicit def enrichConsumerConnector(connector: ConsumerConnector) = {
     new RichConsumerConnector(connector)
   }
@@ -33,15 +40,7 @@ package object consumer {
 
     /** Create message streams for a selection of topics */
     def streams[A : Decoder](topics: Map[String, Int]) = {
-      connector.createMessageStreams[A](topics, implicitly[Decoder[A]])
-    }
-
-    /** Create message streams for a topic */
-    def streams[A : Decoder](topic: String, partitions: Int) = {
-      connector.createMessageStreams[A](
-        Map(topic -> partitions),
-        implicitly[Decoder[A]]
-      ).apply(topic)
+      connector.createMessageStreams(topics, implicitly[Decoder[A]])
     }
   }
 }
