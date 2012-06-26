@@ -5,7 +5,7 @@ import com.yammer.dropwizard.config.Configuration
 import reflect.BeanProperty
 import javax.validation.Valid
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration
-import com.yammer.dropwizard.util.Duration
+import com.yammer.dropwizard.util.{Size, Duration}
 
 /**[[com.yammer.dropwizard.config.Configuration]] for an HBase client */
 class HBaseClientConfiguration extends Configuration {
@@ -19,14 +19,12 @@ class HBaseClientConfiguration extends Configuration {
   /** max time an edit may remain buffered client-side before being flushed */
   @BeanProperty
   @NotNull
-  @Min(0)
   val flushInterval = Duration.seconds(1)
 
   /**max number of counter increments to buffer before coalescing and flushing */
   @BeanProperty
   @NotNull
-  @Min(0)
-  val incrementBufferSize = 65535
+  val incrementBufferSize = Size.kilobytes(64)
 
   /**max number of concurrent requests awaiting completion before new requests block */
   @BeanProperty

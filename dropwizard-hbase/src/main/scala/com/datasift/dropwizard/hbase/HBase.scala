@@ -21,7 +21,7 @@ object HBase {
   def apply(conf: HBaseClientConfiguration, env: Environment): HBase = {
     val client = new HBaseClient(conf.zookeeper.quorumSpec)
     client.setFlushInterval(conf.flushInterval.toMilliseconds.toShort)
-    client.setIncrementBufferSize(conf.incrementBufferSize)
+    client.setIncrementBufferSize(conf.incrementBufferSize.toBytes.toInt)
 
     // determine the appropriate HBase type to use
     val hbase = if (conf.maxConcurrentRequests == 0) {

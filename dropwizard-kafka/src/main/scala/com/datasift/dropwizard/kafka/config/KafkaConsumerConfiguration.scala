@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotEmpty
 import reflect.BeanProperty
 import javax.validation.constraints.{Min, NotNull}
 import com.yammer.dropwizard.util.{Size, Duration}
-import com.datasift.dropwizard.kafka.consumer.{ErrorAction, Shutdown}
+import com.datasift.dropwizard.kafka.consumer.{ErrorPolicy, Shutdown}
 
 /**[[com.yammer.dropwizard.config.Configuration]] for a Kafka cluster */
 class KafkaConsumerConfiguration extends Configuration {
@@ -17,7 +17,7 @@ class KafkaConsumerConfiguration extends Configuration {
 
   /** mapping of the number of partitions to consume for each topic */
   @BeanProperty
-  @NotEmpty
+  @NotNull
   val partitions = Map.empty[String, Int]
 
   /**number of threads for this consumer to consume with */
@@ -34,12 +34,12 @@ class KafkaConsumerConfiguration extends Configuration {
   /**consumer socket buffer size, in bytes */
   @BeanProperty
   @NotNull
-  val receiveBufferSize = Size.bytes(65536)
+  val receiveBufferSize = Size.kilobytes(64)
 
   /**maximum size of each response to a fetch request from a broker */
   @BeanProperty
   @NotNull
-  val fetchSize = Size.bytes(307200)
+  val fetchSize = Size.kilobytes(300)
 
   /**milliseconds to back-off polling broker when receiving no data */
   @BeanProperty
@@ -71,7 +71,7 @@ class KafkaConsumerConfiguration extends Configuration {
   /** action to take in the event of an error */
   @BeanProperty
   @NotNull
-  val errorAction: ErrorAction = Shutdown
+  val errorPolicy: ErrorPolicy = ErrorPolicy(Shutdown)
 
   /**delay before restarting a consumer thread after an error */
   @BeanProperty

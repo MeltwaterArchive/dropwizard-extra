@@ -105,18 +105,18 @@ class Consumer[A : Decoder](conf: KafkaClientConfiguration,
 
   /** error handler for a consumer task */
   private def onError(t: Throwable, r: Runnable) {
-    conf.consumer.errorAction match {
-      case Shutdown =>
+    conf.consumer.errorPolicy match {
+      case ErrorPolicy(Shutdown, delay) if delay == Duration.seconds(0) =>
         log.error(t, "Error processing stream, shutting down consumer")
         stop()
-      case ShutdownAfter(delay: Duration) =>
+      case ErrorPolicy(Shutdown, delay) =>
         log.error(t, "Error processing stream, shutting down consumer in {}", delay)
         Thread.sleep(delay.toMilliseconds)
         stop()
-      case Restart =>
+      case ErrorPolicy(Restart, delay) if (delay == Duration.seconds(0) )=>
         log.error(t, "Error processing stream, restarting thread")
         executor.submit(r)
-      case RestartAfter(delay: Duration) =>
+      case ErrorPolicy(Restart, delay) =>
         log.error(t, "Error processing stream, restarting in {}", delay)
         executor.schedule(r, delay.toNanoseconds, TimeUnit.NANOSECONDS)
     }

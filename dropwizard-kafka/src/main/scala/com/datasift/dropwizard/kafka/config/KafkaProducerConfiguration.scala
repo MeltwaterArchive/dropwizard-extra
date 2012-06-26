@@ -12,7 +12,7 @@ class KafkaProducerConfiguration extends Configuration {
   /** socket send buffer size */
   @BeanProperty
   @NotNull
-  val sendBufferSize = Size.bytes(102400)
+  val sendBufferSize = Size.kilobytes(10)
 
   /** maximum time to wait on connection to a broker before failing with an error */
   @BeanProperty

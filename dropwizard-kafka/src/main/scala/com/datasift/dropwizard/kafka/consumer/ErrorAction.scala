@@ -1,80 +1,46 @@
 package com.datasift.dropwizard.kafka.consumer
 
 import com.yammer.dropwizard.util.Duration
-import org.codehaus.jackson.annotate.JsonCreator
+import util.matching.Regex.Groups
+import org.codehaus.jackson.map.annotate.JsonDeserialize
+import org.codehaus.jackson.map.{DeserializationContext, JsonDeserializer}
+import org.codehaus.jackson.{JsonToken, JsonParser}
 
 /** factory for ErrorActions */
-object ErrorAction {
+object ErrorPolicy {
 
-  /** parse the specified String in to an ErrorAction or die trying */
-  @JsonCreator
-  def apply(action: String): ErrorAction = {
-    Restart(action) orElse
-    RestartAfter(action) orElse
-    Shutdown(action) orElse
-    ShutdownAfter(action) getOrElse {
-      throw new IllegalArgumentException(
-        "invalid error action '%s'".format(action))
+  /** parse the specified String in to an ErrorPolicy or die trying */
+  def apply(policy: String): ErrorPolicy = {
+    val res = for (
+      action <- Shutdown(policy) orElse Restart(policy);
+      Groups(delay) <- "%s\\s+after\\s+(\\w+)".format(action.name).r.findFirstMatchIn(policy)
+    ) yield ErrorPolicy(action, Duration.parse(delay))
+
+    res getOrElse {
+      throw new IllegalArgumentException("invalid error policy '%s'".format(policy))
     }
   }
 }
 
-/** base type for ErrorActions */
-sealed trait ErrorAction
+@JsonDeserialize(using = classOf[ErrorPolicyDeserializer])
+case class ErrorPolicy(action: ErrorAction, delay: Duration = Duration.seconds(0))
 
-/** base type for ErrorActions parameterized by a delay */
-sealed trait DelayedErrorAction extends ErrorAction {
-  def delay: Duration
-}
-
-/** abstraction for factory objects that create an ErrorAction instance */
-sealed abstract class ErrorActionFactory(val labels: String*)
-
-/** mix-in for singleton instances of an ErrorAction */
-sealed trait SimpleErrorActionFactory {
-  self: ErrorActionFactory with ErrorAction =>
-
-  def apply(input: String): Option[ErrorAction] = {
-    labels collectFirst {
-      case label if input.trim.toLowerCase == label => this
+/** Nasty work-around for Jerkson's sub-par handling of case classes */
+class ErrorPolicyDeserializer extends JsonDeserializer[ErrorPolicy] {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): ErrorPolicy = {
+    if (jp.getCurrentToken != JsonToken.VALUE_STRING) {
+      throw ctxt.mappingException(classOf[ErrorPolicy])
     }
+
+    ErrorPolicy(jp.getText)
   }
 }
 
-/** mix-in for factory objects that create an ErrorAction parameterized by a delay */
-sealed trait DelayedErrorActionFactory[A <: DelayedErrorAction] {
-  self: ErrorActionFactory =>
 
-  def apply(duration: Duration): A
-
-  def apply(input: String): Option[ErrorAction] = {
-    labels collectFirst {
-      case label if input.startsWith(label) =>
-        apply(Duration.parse(input.substring(label.length).trim))
-    }
+sealed abstract class ErrorAction(val name: String) {
+  def apply(action: String): Option[ErrorAction] = {
+    if (action.startsWith(name)) Option(this) else None
   }
 }
-
-/** ErrorAction for restarting a failed consumer thread after a delay */
-case class RestartAfter(delay: Duration) extends DelayedErrorAction
-object RestartAfter
-  extends ErrorActionFactory("restart after")
-  with DelayedErrorActionFactory[RestartAfter]
-
-/** ErrorAction for shutting down the entire consumer after a delay */
-case class ShutdownAfter(delay: Duration) extends DelayedErrorAction
-object ShutdownAfter
-  extends ErrorActionFactory("shutdown after", "stop after")
-  with DelayedErrorActionFactory[ShutdownAfter]
-
-/** ErrorAction for restarting a failed consumer thread immediately */
-case object Restart
-  extends ErrorActionFactory("restart")
-  with SimpleErrorActionFactory
-  with ErrorAction
-
-/** ErrorAction for shutting down the entire consumer immediately */
-case object Shutdown
-  extends ErrorActionFactory("shutdown", "stop")
-  with SimpleErrorActionFactory
-  with ErrorAction
+case object Shutdown extends ErrorAction("shutdown")
+case object Restart extends ErrorAction("restart")
