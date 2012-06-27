@@ -29,7 +29,7 @@ class KafkaConsumerConfiguration extends Configuration {
   /**consumer timeout, in milliseconds */
   @BeanProperty
   @NotNull
-  val timeout = Duration.seconds(0)
+  val timeout = Option.empty[Duration]
 
   /**consumer socket buffer size, in bytes */
   @BeanProperty

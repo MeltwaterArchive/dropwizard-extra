@@ -12,37 +12,25 @@ import java.util.Properties
 
 object Consumer {
 
-  /**Creates a Consumer for the specified [[com.yammer.dropwizard.config.Configuration]] */
-  def apply(conf: KafkaClientConfiguration): ConsumerConnector = {
-    kafka.consumer.Consumer.create(new ConsumerConfig(toProperties(conf)))
+  /** create and manage a Kafka Consumer
+   *
+   * @param conf Service configuration for the consumer.
+   * @param env Environment to manage the consumer with.
+   * @param f function to process each [[kafka.consumer.KafkaMessageStream]]
+   * @tparam A type of the messages being processed, must have an implicit
+   *           [[kafka.serializer.Decoder]] in scope
+   * @tparam B type of the Service configuration
+   * @return a consumer configured to process messages using a ThreadPool
+   */
+  def apply[A : Decoder, B <: KafkaConfiguration](conf: B, env: Environment)
+                                                 (f: MessageStream[A] => Unit): Consumer[A] = {
+    apply[A](conf.kafka, env)(f)
   }
 
-  /** Creates a Consumer for the specified [[com.yammer.dropwizard.config.Configuration]] */
-  def apply(conf: KafkaConfiguration): ConsumerConnector = {
-    kafka.consumer.Consumer.create(new ConsumerConfig(toProperties(conf.kafka)))
-  }
-
-  /**Kafka Configuration as a Java Properties object for use by a Consumer */
-  private def toProperties(conf: KafkaClientConfiguration): Properties = {
-    val props = new Properties
-    props.put("zk.connect", conf.zookeeper.quorumSpec)
-    props.put("zk.connectiontimeout.ms", Long.box(conf.zookeeper.timeout.toMilliseconds).toString)
-    props.put("groupid", conf.consumer.group)
-    props.put("socket.timeout.ms", Long.box(conf.socketTimeout.toMilliseconds).toString)
-    props.put("socket.buffersize", Long.box(conf.consumer.receiveBufferSize.toBytes).toString)
-    props.put("fetch.size", Long.box(conf.consumer.fetchSize.toBytes).toString)
-    props.put("backoff.increment.ms", Long.box(conf.consumer.backOffIncrement.toMilliseconds).toString)
-    props.put("queuedchunks.max", Long.box(conf.consumer.queuedChunks).toString)
-    props.put("autocommit.enable", Boolean.box(conf.consumer.autoCommit).toString)
-    props.put("autocommit.interval.ms", Long.box(conf.consumer.autoCommitInterval.toMilliseconds).toString)
-    props.put("consumer.timeout.ms", Long.box(conf.consumer.timeout.toMilliseconds).toString)
-    props.put("rebalance.retries.max", Long.box(conf.consumer.rebalanceRetries).toString)
-    props
-  }
-
-  /** create and manage a Kafka Consumer using a Thread Pool
+  /** create and manage a Kafka Consumer
    *
    * @param conf consumer configuration
+   * @param env environment to manage the consumer with
    * @param f function to process each [[kafka.consumer.KafkaMessageStream]]
    * @tparam A type of the messages being processed, must have an implicit
    *           [[kafka.serializer.Decoder]] in scope
@@ -71,7 +59,8 @@ class Consumer[A : Decoder](conf: KafkaClientConfiguration,
   extends Managed with Logging {
 
   /** underlying consumer */
-  lazy val consumer: ConsumerConnector = Consumer(conf)
+  lazy val consumer: ConsumerConnector = kafka.consumer.Consumer.create(
+    new ConsumerConfig(toProperties(conf)))
 
   /** start the Consumer */
   def start() {
@@ -95,11 +84,12 @@ class Consumer[A : Decoder](conf: KafkaClientConfiguration,
     }
 
     log.info("Consumer started for topics {} using {} threads",
-      Seq(conf.consumer.partitions.toString, conf.consumer.threads.toString): _*)
+      Seq(conf.consumer.partitions.mkString(", "), conf.consumer.threads.toString): _*)
   }
 
   /** shutdown consumer client connections, commits offsets only if autoCommit enabled */
   def stop() {
+    executor.shutdownNow()
     consumer.shutdown()
   }
 
@@ -120,5 +110,23 @@ class Consumer[A : Decoder](conf: KafkaClientConfiguration,
         log.error(t, "Error processing stream, restarting in {}", delay)
         executor.schedule(r, delay.toNanoseconds, TimeUnit.NANOSECONDS)
     }
+  }
+
+  /**Kafka Configuration as a Java Properties object for use by a Consumer */
+  private def toProperties(conf: KafkaClientConfiguration): Properties = {
+    val props = new Properties
+    props.put("zk.connect", conf.zookeeper.quorumSpec)
+    props.put("zk.connectiontimeout.ms", Long.box(conf.zookeeper.timeout.toMilliseconds).toString)
+    props.put("groupid", conf.consumer.group)
+    props.put("socket.timeout.ms", Long.box(conf.socketTimeout.toMilliseconds).toString)
+    props.put("socket.buffersize", Long.box(conf.consumer.receiveBufferSize.toBytes).toString)
+    props.put("fetch.size", Long.box(conf.consumer.fetchSize.toBytes).toString)
+    props.put("backoff.increment.ms", Long.box(conf.consumer.backOffIncrement.toMilliseconds).toString)
+    props.put("queuedchunks.max", Long.box(conf.consumer.queuedChunks).toString)
+    props.put("autocommit.enable", Boolean.box(conf.consumer.autoCommit).toString)
+    props.put("autocommit.interval.ms", Long.box(conf.consumer.autoCommitInterval.toMilliseconds).toString)
+    props.put("consumer.timeout.ms", Long.box(conf.consumer.timeout.map(_.toMilliseconds).getOrElse(-1L)).toString)
+    props.put("rebalance.retries.max", Long.box(conf.consumer.rebalanceRetries).toString)
+    props
   }
 }
