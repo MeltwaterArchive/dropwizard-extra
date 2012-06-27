@@ -1,10 +1,16 @@
 package com.datasift.dropwizard.kafka
 
-import kafka.consumer.ConsumerConnector
-import kafka.serializer.{Decoder => KDecoder, StringDecoder, DefaultDecoder}
+import kafka.consumer.{KafkaMessageStream, ConsumerConnector}
+import kafka.serializer.{Decoder, StringDecoder, DefaultDecoder}
+import java.nio.ByteBuffer
+import com.yammer.dropwizard.json.Json
+import org.codehaus.jackson.JsonNode
 
 /** Implicits for the Kafka Consumer */
 package object consumer {
+
+  /** rename KafkaMessageStream to be less verbose */
+  type MessageStream[A] = KafkaMessageStream[A]
 
   /** Pass-thru Decoder for Messages */
   implicit object DefaultDecoder extends DefaultDecoder
@@ -13,12 +19,17 @@ package object consumer {
   implicit object StringDecoder extends StringDecoder
 
   /** Decoder for raw byte streams */
-  implicit val BytesDecoder: KDecoder[Array[Byte]] =
-    Decoder(message => {
+  implicit val BytesDecoder: Decoder[Array[Byte]] =
+    MessageDecoder(message => {
       val bytes = new Array[Byte](message.payload.remaining)
       message.payload.get(bytes)
       bytes
     })
+
+  /** Decoder for the message's [[java.nio.ByteBuffer]] */
+  implicit val ByteBufferDecoder: Decoder[ByteBuffer] = MessageDecoder(_.payload)
+
+  // TODO: implement a JSON MessageDecoder to decode to a Jackson AST (JsonNode)
 
   implicit def enrichConsumerConnector(connector: ConsumerConnector) = {
     new RichConsumerConnector(connector)
@@ -28,16 +39,8 @@ package object consumer {
   class RichConsumerConnector(connector: ConsumerConnector) {
 
     /** Create message streams for a selection of topics */
-    def streams[A : KDecoder](topics: Map[String, Int]) = {
-      connector.createMessageStreams[A](topics, implicitly[KDecoder[A]])
-    }
-
-    /** Create message streams for a topic */
-    def streams[A : KDecoder](topic: String, partitions: Int) = {
-      connector.createMessageStreams[A](
-        Map(topic -> partitions),
-        implicitly[KDecoder[A]]
-      ).apply(topic)
+    def streams[A : Decoder](topics: Map[String, Int]) = {
+      connector.createMessageStreams(topics, implicitly[Decoder[A]])
     }
   }
 }

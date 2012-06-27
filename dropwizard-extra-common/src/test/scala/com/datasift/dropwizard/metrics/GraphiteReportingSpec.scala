@@ -1,12 +1,12 @@
 package com.datasift.dropwizard.metrics
 
+import config.{GraphiteReportingConfiguration, GraphiteConfiguration}
+import health.GraphiteHealthCheck
 import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
 import com.yammer.dropwizard.config.{Environment, Configuration}
-import com.datasift.dropwizard.health.GraphiteHealthCheck
-import com.datasift.dropwizard.config.{GraphiteReportingConfiguration, GraphiteConfiguration}
 import com.yammer.dropwizard.{ScalaService, Logging}
 
 /** Specification for GraphiteReporting utility */
@@ -16,7 +16,7 @@ class GraphiteReportingSpec extends Specification with Mockito {
   "GraphiteReportingBundle" should {
     class TestServiceConfiguration extends Configuration with GraphiteReportingConfiguration
     object TestService
-      extends TemporaryScalaService[TestServiceConfiguration]("test")
+      extends ScalaService[TestServiceConfiguration]("test")
       with Logging
       with GraphiteReporting
     {

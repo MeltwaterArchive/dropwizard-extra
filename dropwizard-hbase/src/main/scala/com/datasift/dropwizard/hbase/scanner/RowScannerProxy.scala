@@ -3,7 +3,7 @@ package com.datasift.dropwizard.hbase.scanner
 import com.stumbleupon.async.Deferred
 import java.util.ArrayList
 import org.hbase.async.{KeyValue, Scanner}
-import com.datasift.dropwizard.config.ScannerConfiguration
+import com.datasift.dropwizard.hbase.config.ScannerConfiguration
 
 /** Iterates over a selection of rows on the server-side
  *

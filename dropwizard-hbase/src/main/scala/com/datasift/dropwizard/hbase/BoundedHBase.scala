@@ -1,11 +1,11 @@
 package com.datasift.dropwizard.hbase
 
+import config.ScannerConfiguration
 import java.util.concurrent.Semaphore
 import com.stumbleupon.async.Deferred
 import java.util.ArrayList
 import org.hbase.async._
 import scanner.{RowScanner, BoundedRowScanner}
-import com.datasift.dropwizard.config.ScannerConfiguration
 import org.jboss.netty.util.Timer
 
 /** Client for interacting with an HBase cluster with an upper-bounds on concurrent requests
@@ -44,6 +44,11 @@ class BoundedHBase private[hbase] (underlying: HBase, maxRequests: Int) extends 
   /** @see com.datasift.dropwizard.hbase.HBase.create() */
   def create(edit: PutRequest): Deferred[Boolean] = withPermit {
     underlying.create(edit)
+  }
+
+  /** @see com.datasift.dropwizard.hbase.HBase.bufferedIncrement() */
+  def bufferedIncrement(request: AtomicIncrementRequest) = withPermit {
+    underlying.bufferedIncrement(request)
   }
 
   /** @see com.datasift.dropwizard.hbase.HBase.increment() */

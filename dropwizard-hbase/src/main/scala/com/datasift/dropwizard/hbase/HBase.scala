@@ -2,12 +2,13 @@ package com.datasift.dropwizard.hbase
 
 import com.yammer.dropwizard.lifecycle.Managed
 import com.yammer.dropwizard.config.Environment
+import config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguration}
 import org.jboss.netty.util.Timer
 import java.util.ArrayList
 import org.hbase.async._
 import com.stumbleupon.async.Deferred
 import scanner.RowScanner
-import com.datasift.dropwizard.config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguration}
+import com.datasift.dropwizard.health.HBaseHealthCheck
 
 /** Factory companion object for [[com.datasift.dropwizard.hbase.HBase]] instances */
 object HBase {
@@ -19,8 +20,8 @@ object HBase {
    */
   def apply(conf: HBaseClientConfiguration, env: Environment): HBase = {
     val client = new HBaseClient(conf.zookeeper.quorumSpec)
-    client.setFlushInterval(conf.flushInterval)
-    client.setIncrementBufferSize(conf.incrementBufferSize)
+    client.setFlushInterval(conf.flushInterval.toMilliseconds.toShort)
+    client.setIncrementBufferSize(conf.incrementBufferSize.toBytes.toInt)
 
     // determine the appropriate HBase type to use
     val hbase = if (conf.maxConcurrentRequests == 0) {
@@ -31,6 +32,10 @@ object HBase {
         conf.maxConcurrentRequests
       )
     }
+
+    // add healthchecks for META and ROOT tables
+    env.addHealthCheck(new HBaseHealthCheck(hbase, ".META."))
+    env.addHealthCheck(new HBaseHealthCheck(hbase, "-ROOT-"))
 
     env.manage(new ManagedHBase(hbase))
     hbase
@@ -56,7 +61,7 @@ object HBase {
     def start() {
       // dummy request to force the client to connect to the cluster synchronously
       try {
-        hbase.ensureTableExists(HBaseClient.EMPTY_ARRAY).join()
+        hbase.ensureTableExists(".META.").join()
       } catch {
         case _: TableNotFoundException => // we're expecting this
       }
@@ -86,6 +91,9 @@ trait HBase {
 
   /** atomically creates a cell if, and only if, it doesn't already exist */
   def create(edit: PutRequest): Deferred[Boolean]
+
+  /** buffer a durable increment for coalescing */
+  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long]
 
   /** atomically and durably increments a value */
   def increment(request: AtomicIncrementRequest): Deferred[Long]

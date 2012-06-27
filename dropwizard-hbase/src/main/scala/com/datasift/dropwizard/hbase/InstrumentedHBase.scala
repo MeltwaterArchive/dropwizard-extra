@@ -1,10 +1,10 @@
 package com.datasift.dropwizard.hbase
 
+import config.ScannerConfiguration
 import org.hbase.async._
-import com.yammer.metrics.scala.Instrumented
 import scanner.InstrumentedRowScanner
-import com.datasift.dropwizard.config.ScannerConfiguration
-import org.jboss.netty.util.Timer
+import com.yammer.metrics.scala.{Timer, Instrumented}
+import com.stumbleupon.async.Deferred
 
 /** Instruments an [[com.datasift.dropwizard.hbase.HBase]] with [[com.yammer.metrics]] */
 class InstrumentedHBase(underlying: HBase) extends HBase with Instrumented {
@@ -71,67 +71,72 @@ class InstrumentedHBase(underlying: HBase) extends HBase with Instrumented {
   val incrementBufferSize: Int = underlying.incrementBufferSize
 
   /** atomically creates a cell if, and only if, it doesn't already exist */
-  def create(edit: PutRequest) = creates.time {
+  def create(edit: PutRequest) = withTimer(creates) {
     underlying.create(edit)
   }
 
+  /** buffer a durable increment for coalescing */
+  def bufferedIncrement(request: AtomicIncrementRequest) = withTimer(increments) {
+    underlying.bufferedIncrement(request)
+  }
+
   /** atomically and durably increments a value */
-  def increment(request: AtomicIncrementRequest) = increments.time {
+  def increment(request: AtomicIncrementRequest) = withTimer(increments) {
     underlying.increment(request)
   }
 
   /** atomically increments a value, with optional durability */
-  def increment(request: AtomicIncrementRequest, durable: Boolean) = increments.time {
+  def increment(request: AtomicIncrementRequest, durable: Boolean) = withTimer(increments) {
     underlying.increment(request, durable)
   }
 
   /** atomically compares and sets (CAS) a single cell */
-  def compareAndSet(edit: PutRequest, expected: Array[Byte]) = compareAndSets.time {
+  def compareAndSet(edit: PutRequest, expected: Array[Byte]) = withTimer(compareAndSets) {
     underlying.compareAndSet(edit, expected)
   }
 
   /** atomically compares and sets (CAS) a single cell */
-  def compareAndSet(edit: PutRequest, expected: String) = compareAndSets.time {
+  def compareAndSet(edit: PutRequest, expected: String) = withTimer(compareAndSets) {
     underlying.compareAndSet(edit, expected)
   }
 
   /** deletes the specified cells */
-  def delete(request: DeleteRequest) = deletes.time {
+  def delete(request: DeleteRequest) = withTimer(deletes) {
     underlying.delete(request)
   }
 
   /** ensures that a specific table exists */
-  def ensureTableExists(table: Array[Byte]) = assertions.time {
+  def ensureTableExists(table: Array[Byte]) = withTimer(assertions) {
     underlying.ensureTableExists(table)
   }
 
   /** ensures that a specific table exists */
-  def ensureTableExists(table: String) = assertions.time {
+  def ensureTableExists(table: String) = withTimer(assertions) {
     underlying.ensureTableExists(table)
   }
 
   /** ensures that a specific family within a table exists */
-  def ensureTableFamilyExists(table: Array[Byte], family: Array[Byte]) = assertions.time {
+  def ensureTableFamilyExists(table: Array[Byte], family: Array[Byte]) = withTimer(assertions) {
     underlying.ensureTableFamilyExists(table, family)
   }
 
   /** ensures that a specific family within a table exists */
-  def ensureTableFamilyExists(table: String, family: String) = assertions.time {
+  def ensureTableFamilyExists(table: String, family: String) = withTimer(assertions) {
     underlying.ensureTableFamilyExists(table, family)
   }
 
   /** flushes all requests buffered on the client-side */
-  def flush() = flushes.time {
+  def flush() = withTimer(flushes) {
     underlying.flush()
   }
 
   /** retrieves the specified cells */
-  def get(request: GetRequest) = gets.time {
+  def get(request: GetRequest) = withTimer(gets) {
     underlying.get(request)
   }
 
   /** acquires an explicit row lock */
-  def lockRow(request: RowLockRequest) = locks.time {
+  def lockRow(request: RowLockRequest) = withTimer(locks) {
     underlying.lockRow(request)
   }
 
@@ -156,7 +161,7 @@ class InstrumentedHBase(underlying: HBase) extends HBase with Instrumented {
   }
 
   /** stores the specified cells */
-  def put(request: PutRequest) = puts.time {
+  def put(request: PutRequest) = withTimer(puts) {
     underlying.put(request)
   }
 
@@ -167,10 +172,24 @@ class InstrumentedHBase(underlying: HBase) extends HBase with Instrumented {
   def stats() = underlying.stats()
 
   /** underlying [[org.jboss.netty.util.Timer]] used by the async client */
-  def timer: Timer = underlying.timer
+  def timer: org.jboss.netty.util.Timer = underlying.timer
 
   /** releases an explicit row lock */
-  def unlockRow(lock: RowLock) = unlocks.time {
+  def unlockRow(lock: RowLock) = withTimer(unlocks) {
     underlying.unlockRow(lock)
+  }
+
+  /** time the execution of an asynchrnous function
+   *
+   * The timer will stop when the callback is called for the function
+   *
+   * @param timer timer to time the function
+   * @param f function to time
+   * @tparam A return type of function's Deferred
+   * @return the result of the function
+   */
+  private def withTimer[A](timer: => Timer)(f: Deferred[A]): Deferred[A] = {
+    val ctx = timer.timerContext()
+    f.addBoth(new TimerStoppingCallback[A](ctx))
   }
 }

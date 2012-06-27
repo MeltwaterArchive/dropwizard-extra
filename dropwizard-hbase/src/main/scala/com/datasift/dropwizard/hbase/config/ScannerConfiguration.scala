@@ -1,10 +1,10 @@
-package com.datasift.dropwizard.config
+package com.datasift.dropwizard.hbase.config
 
 import com.yammer.dropwizard.config.Configuration
 import org.hbase.async.Scanner
 import reflect.BeanProperty
 
-/** Configuration for a [[com.datasift.dropwizard.hbase.scanner.RowScanner]]
+/**Configuration for a [[com.datasift.dropwizard.hbase.scanner.RowScanner]]
  *
  * This isn't generally designed to be defined in a configuration file as many
  * of the properties will need to be set dynamically. Its purpose is to

@@ -1,10 +1,10 @@
-package com.datasift.dropwizard.health
+package com.datasift.dropwizard.zookeeper.health
 
 import com.yammer.metrics.core.HealthCheck
 import com.yammer.metrics.core.HealthCheck.Result
 import java.net.Socket
 
-/** [[com.yammer.metrics.core.HealthCheck]] for a ZooKeeper Quorum */
+/**[[com.yammer.metrics.core.HealthCheck]] for a ZooKeeper Quorum */
 class ZooKeeperHealthCheck(hosts: Set[String], port: Int)
   extends HealthCheck("ZooKeeper: " + hosts.map(_ + ":" + port).mkString(", ")) {
 

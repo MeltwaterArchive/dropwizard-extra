@@ -3,7 +3,7 @@ package com.datasift.dropwizard.hbase.scanner
 import java.util.concurrent.Semaphore
 import com.stumbleupon.async.Deferred
 import java.util.ArrayList
-import org.hbase.async.{KeyValue, Scanner}
+import org.hbase.async.KeyValue
 import com.datasift.dropwizard.hbase.PermitReleasingCallback
 
 /**Iterates over a selection of rows with an upper-bounds on the number of concurrent requests

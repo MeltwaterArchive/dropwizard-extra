@@ -1,11 +1,11 @@
 package com.datasift.dropwizard.hbase
 
 import com.stumbleupon.async.Deferred
+import config.ScannerConfiguration
 import java.util.ArrayList
 import org.hbase.async._
 import org.jboss.netty.util.Timer
 import scanner.{RowScanner, RowScannerProxy}
-import com.datasift.dropwizard.config.ScannerConfiguration
 
 /** Client for interacting with an HBase cluster
  *
@@ -33,14 +33,14 @@ class HBaseProxy private[hbase] (client: HBaseClient) extends HBase {
     client.stats()
   }
 
-  /** buffer a durable increment for coalescing */
-  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long] = {
-    client.bufferAtomicIncrement(request).asInstanceOf[Deferred[Long]]
-  }
-
   /** @see com.datasift.dropwizard.hbase.HBase.create() */
   def create(edit: PutRequest): Deferred[Boolean] = {
     client.atomicCreate(edit).asInstanceOf[Deferred[Boolean]]
+  }
+
+  /** @see com.datasift.dropwizard.hbase.HBase.bufferedIncrement() */
+  def bufferedIncrement(request: AtomicIncrementRequest): Deferred[Long] = {
+    client.bufferAtomicIncrement(request).asInstanceOf[Deferred[Long]]
   }
 
   /** @see com.datasift.dropwizard.hbase.HBase.increment() */
