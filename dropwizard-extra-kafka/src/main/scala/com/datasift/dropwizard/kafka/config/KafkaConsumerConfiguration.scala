@@ -72,9 +72,4 @@ class KafkaConsumerConfiguration extends Configuration {
   @BeanProperty
   @NotNull
   val errorPolicy: ErrorPolicy = ErrorPolicy(Shutdown)
-
-  /**delay before restarting a consumer thread after an error */
-  @BeanProperty
-  @NotNull
-  val restartDelay = Duration.seconds(1)
 }
