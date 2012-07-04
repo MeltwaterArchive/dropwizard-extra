@@ -31,4 +31,9 @@ class HBaseClientConfiguration extends Configuration {
   @NotNull
   @Min(0)
   val maxConcurrentRequests = 0
+
+  /** maximum amount of time to wait for the connection to HBase/ZooKeeper */
+  @BeanProperty
+  @NotNull
+  val connectionTimeout = Duration.seconds(5)
 }

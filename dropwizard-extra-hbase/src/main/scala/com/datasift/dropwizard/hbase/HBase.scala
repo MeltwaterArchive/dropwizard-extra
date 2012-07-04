@@ -6,7 +6,7 @@ import config.{ScannerConfiguration, HBaseConfiguration, HBaseClientConfiguratio
 import org.jboss.netty.util.Timer
 import java.util.ArrayList
 import org.hbase.async._
-import com.stumbleupon.async.Deferred
+import com.stumbleupon.async.{TimeoutException, Deferred}
 import scanner.RowScanner
 import com.datasift.dropwizard.health.HBaseHealthCheck
 
@@ -37,7 +37,7 @@ object HBase {
     env.addHealthCheck(new HBaseHealthCheck(hbase, ".META."))
     env.addHealthCheck(new HBaseHealthCheck(hbase, "-ROOT-"))
 
-    env.manage(new ManagedHBase(hbase))
+    env.manage(new ManagedHBase(hbase, conf))
     hbase
   }
 
@@ -51,7 +51,8 @@ object HBase {
   }
 
   /** manages an [[com.datasift.dropwizard.hbase.HBase]] instance */
-  private class ManagedHBase(hbase: HBase) extends Managed {
+  private class ManagedHBase(hbase: HBase, conf: HBaseClientConfiguration)
+    extends Managed {
 
     /** initializes and starts the [[com.datasift.dropwizard.hbase.HBase]] instance
      *
@@ -61,9 +62,11 @@ object HBase {
     def start() {
       // dummy request to force the client to connect to the cluster synchronously
       try {
-        hbase.ensureTableExists(".META.").join()
+        hbase.ensureTableExists(".META.").join(conf.connectionTimeout.toMilliseconds)
       } catch {
         case _: TableNotFoundException => // we're expecting this
+        case e: TimeoutException =>
+          throw new RuntimeException("Failed to connect to connect to HBase cluster after %s".format(conf.connectionTimeout), e)
       }
     }
 
