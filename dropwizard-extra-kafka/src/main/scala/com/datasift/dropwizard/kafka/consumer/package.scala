@@ -3,8 +3,6 @@ package com.datasift.dropwizard.kafka
 import kafka.consumer.{KafkaMessageStream, ConsumerConnector}
 import kafka.serializer.{Decoder, StringDecoder, DefaultDecoder}
 import java.nio.ByteBuffer
-import com.yammer.dropwizard.json.Json
-import org.codehaus.jackson.JsonNode
 
 /** Implicits for the Kafka Consumer */
 package object consumer {
@@ -33,14 +31,5 @@ package object consumer {
 
   implicit def enrichConsumerConnector(connector: ConsumerConnector) = {
     new RichConsumerConnector(connector)
-  }
-
-  /** Provides more idiomatic access to a Consumer's MessageStreams */
-  class RichConsumerConnector(connector: ConsumerConnector) {
-
-    /** Create message streams for a selection of topics */
-    def streams[A : Decoder](topics: Map[String, Int]) = {
-      connector.createMessageStreams(topics, implicitly[Decoder[A]])
-    }
   }
 }
