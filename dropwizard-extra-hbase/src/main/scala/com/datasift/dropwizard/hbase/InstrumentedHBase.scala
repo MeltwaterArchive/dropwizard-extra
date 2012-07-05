@@ -29,8 +29,8 @@ class InstrumentedHBase(underlying: HBase) extends HBase with Instrumented {
   metrics.gauge("flushes")                { stats().flushes }
   metrics.gauge("gets")                   { stats().gets }
   metrics.gauge("noSuchRegionExceptions") { stats().noSuchRegionExceptions}
-  metrics.gauge("numBatchedRpcSent")      { stats().numBatchedRpcSent }
-  metrics.gauge("numRpcDelayedDueToNSRE") { stats().numRpcDelayedDueToNSRE }
+  metrics.gauge("batchesSent")            { stats().numBatchedRpcSent }
+  metrics.gauge("delaysDueToNSRE")        { stats().numRpcDelayedDueToNSRE }
   metrics.gauge("puts")                   { stats().puts }
   metrics.gauge("rootLookups")            { stats().rootLookups }
   metrics.gauge("rowLocks")               { stats().rowLocks }
