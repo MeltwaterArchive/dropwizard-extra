@@ -63,6 +63,7 @@
     <module>dropwizard-extra-archetypes</module>
     <module>dropwizard-extra-core</module>
     <module>dropwizard-extra-hbase</module>
+    <module>dropwizard-extra-kafka</module>
     <module>dropwizard-extra-scala</module>
   </modules>
 

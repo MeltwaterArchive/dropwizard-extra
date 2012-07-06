@@ -11,22 +11,27 @@
     <version>0.4.3</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <artifactId>dropwizard-extra-kafka</artifactId>
 
   <properties>
     <kafka.version>0.7.0</kafka.version>
   </properties>
 
-  <name>Dropwizard Kafka</name>
+  <name>Dropwizard Extra Kafka</name>
   <description>
-    Dropwizard integration for working with Kafka in Scala.
+    Dropwizard integration for working with Kafka.
   </description>
 
   <dependencies>
     <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-common</artifactId>
+      <artifactId>dropwizard-extra-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
