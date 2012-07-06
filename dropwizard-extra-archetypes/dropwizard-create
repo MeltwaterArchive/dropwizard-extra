@@ -200,5 +200,5 @@ echo "Creating $PACKAGING_TYPE$LANGUAGE project $NAME with root package $PACKAGE
 echo
 
 # create from archetype
-$MAVEN "archetype:generate" "-DinteractiveMode=false" "-DarchetypeGroupId=com.yammer.dropwizard.archetypes" "-DarchetypeArtifactId=$LANGUAGE-simple" "-DarchetypeVersion=$DW_VERSION" "-DgroupId=$GROUP" "-DartifactId=$ARTIFACT" "-Dpackage=$PACKAGE" "-Dname=$NAME" "-Dversion=$VERSION" "-Dshaded=$SHADED" "-Ddescription=$DESCRIPTION"
+$MAVEN "archetype:generate" "-DinteractiveMode=false" "-DarchetypeGroupId=com.datasift.dropwizard.archetypes" "-DarchetypeArtifactId=$LANGUAGE-simple" "-DarchetypeVersion=$DW_VERSION" "-DgroupId=$GROUP" "-DartifactId=$ARTIFACT" "-Dpackage=$PACKAGE" "-Dname=$NAME" "-Dversion=$VERSION" "-Dshaded=$SHADED" "-Ddescription=$DESCRIPTION"
 
