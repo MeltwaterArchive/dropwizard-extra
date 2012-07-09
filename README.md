@@ -3,7 +3,7 @@ Dropwizard Extra
 
 *For those not content with the already excellent [Dropwizard](http://github.com/codahale/dropwizard)*
 
-This is a bunch of additional abstractions and utilities that extemd Dropwizard.
+This is a bunch of additional abstractions and utilities that extend Dropwizard.
 
 To keep the nightmare of transitive dependencies at bay, there are several 
 modules:
