@@ -5,73 +5,32 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-
   <prerequisites>
     <maven>3.0.0</maven>
   </prerequisites>
 
-  <groupId>com.datasift.dropwizard</groupId>
-  <artifactId>dropwizard-extra</artifactId>
-  <version>0.4.3-1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <groupId>\${groupId}</groupId>
+  <artifactId>\${artifactId}</artifactId>
+  <version>\${version}</version>
+  <packaging>jar</packaging>
 
-  <name>Dropwizard Extra</name>
-  <description>Additional integrations and Scala idioms for Dropwizard</description>
+  <name>\${name}</name>
+#if( $description != "null" )
+  <description>\${description}</description>
+#end
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <metrics.version>2.1.2</metrics.version>
-    <jersey.version>1.12</jersey.version>
-    <dropwizard.version>0.4.3</dropwizard.version>
-    <scala.version>2.9.1</scala.version>
+    <dropwizard.version>${dropwizard.version}</dropwizard.version>
+    <mainClass>\${project.groupId}.\${project.artifactId}.\${project.name}Service</mainClass>
   </properties>
-
-  <organization>
-    <name>DataSift Inc.</name>
-    <url>http://datasift.com/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <name>Nick Telford</name>
-      <email>nick.telford@gmail.com</email>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
-
-  <licenses>
-    <license>
-      <name>Apache License 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <issueManagement>
-    <system>github</system>
-    <url>http://github.com/datasift/dropwizard-extra/issues/#issue/</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:git:https://github.com/datasift/dropwizard-extra</connection>
-    <developerConnection>scm:git:git@github.com:datasift/dropwizard-extra</developerConnection>
-    <url>https://github.com/datasift/dropwizard-extra</url>
-  </scm>
-
-  <modules>
-    <module>dropwizard-extra-archetypes</module>
-    <module>dropwizard-extra-core</module>
-    <module>dropwizard-extra-hbase</module>
-    <module>dropwizard-extra-kafka</module>
-    <module>dropwizard-extra-scala</module>
-  </modules>
 
   <dependencies>
     <dependency>
       <groupId>com.yammer.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
-      <version>${dropwizard.version}</version>
+      <version>\${dropwizard.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -83,6 +42,51 @@
 
   <build>
     <plugins>
+#if( $shaded == "true" )
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.7</version>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <mainClass>\${mainClass}</mainClass>
+            </transformer>
+          </transformers>
+          <!-- exclude signed Manifests -->
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>                                       
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+#end
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>\${mainClass}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>

@@ -8,13 +8,13 @@
   <parent>
     <groupId>com.datasift.dropwizard</groupId>
     <artifactId>dropwizard-extra</artifactId>
-    <version>0.4.3</version>
+    <version>0.4.3-1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
   <artifactId>dropwizard-extra-hbase</artifactId>
 
-  <name>Dropwizard HBase</name>
+  <name>Dropwizard Extra HBase</name>
   <description>
     Dropwizard integration for working with HBase in Scala.
   </description>
@@ -22,7 +22,7 @@
   <dependencies>
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-common</artifactId>
+      <artifactId>dropwizard-extra-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
