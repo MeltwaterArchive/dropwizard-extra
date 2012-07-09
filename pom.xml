@@ -12,7 +12,7 @@
 
   <groupId>com.datasift.dropwizard</groupId>
   <artifactId>dropwizard-extra</artifactId>
-  <version>0.4.3</version>
+  <version>0.4.3-1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Dropwizard Extra</name>

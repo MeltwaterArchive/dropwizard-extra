@@ -8,13 +8,9 @@
   <parent>
     <groupId>com.datasift.dropwizard.archetypes</groupId>
     <artifactId>dropwizard-extra-archetypes</artifactId>
-    <version>0.4.3</version>
+    <version>0.4.3-1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
-  <properties>
-    <dropwizard.version>${project.version}</dropwizard.version>
-  </properties>
 
   <groupId>com.datasift.dropwizard.archetypes</groupId>
   <artifactId>scala-simple</artifactId>
