@@ -3,22 +3,20 @@ Dropwizard Extra
 
 *For those not content with the already excellent [Dropwizard](http://github.com/codahale/dropwizard)*
 
-This is a bunch of additional abstractions and utilities that sit alongside 
-Yammer's Dropwizard to allow Scala developers to unleash a little more of the 
-power their language affords on Dropwizard projects.
+This is a bunch of additional abstractions and utilities that extend Dropwizard.
 
 To keep the nightmare of transitive dependencies at bay, there are several 
 modules:
 
-  * [dropwizard-extra-common](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
-  is a few useful abstractions with no real external dependencies.
-  * [dropwizard-db](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-db)
-  has some additional utilities for working with databases.
-  * [dropwizard-hbase](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-hbase)
-  uses [StumbleUpon's asynchbase](http://github.com/stumbleupon/asynchbase) for
+  * [dropwizard-extra-archetypes](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-archetypes) provide a set of Maven Archetypes for bootstrapping new Dropwizard projects quickly and easily.
+  * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
+  contains several simple but useful abstractions with no real external dependencies.
+  * [dropwizard-extra-hbase](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-hbase)
+  integrates [StumbleUpon's asynchbase](http://github.com/stumbleupon/asynchbase) with Dropwizard for
   working with [HBase](http://hbase.apache.org)
-  * [dropwizard-kafka](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-kafka)
-  for consuming Kafka streams in your Dropwizard application.
+  * [dropwizard-extra-kafka](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-kafka) for working with [Apache Kafka](http://incubator.apache.org/kafka).
+  * [dropwizard-extra-scala](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-scala) 
+  provides a more idiomatic Scala API to the other Dropwizard Extra modules.
 
 This is still a work-in-progress, so please use what you see with caution.
 
