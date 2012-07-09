@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.kafka.config;
 
-import com.datasift.dropwizard.kafka.compression.Compression;
+import com.datasift.dropwizard.kafka.util.Compression;
 import com.yammer.dropwizard.util.Duration;
 import com.yammer.dropwizard.util.Size;
 import org.codehaus.jackson.annotate.JsonProperty;

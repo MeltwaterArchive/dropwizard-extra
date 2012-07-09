@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
- * TODO: Document
+ * Configuration for a {@link com.datasift.dropwizard.kafka.consumer.KafkaConsumer}.
  */
 public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
 

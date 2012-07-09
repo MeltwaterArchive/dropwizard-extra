@@ -1,12 +1,14 @@
 package com.datasift.dropwizard.db
 
-/** Provides enhancements to the Dropwizard DB API.
+/**
+ * Provides enhancements to the Dropwizard DB API.
  *
  * @param db [[com.yammer.dropwizard.db.Database]] to wrap
  */
 class DatabaseWrapper(db: com.yammer.dropwizard.db.Database) {
 
-  /** creates a DAO instance
+  /**
+   * Creates a DAO instance.
    *
    * @tparam T type of the DAO to create
    * @return a DAO instance for the specified type

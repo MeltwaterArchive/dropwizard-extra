@@ -20,10 +20,13 @@ import java.util.concurrent.TimeUnit;
  * A {@link KafkaConsumer} that uses a fixed-sized {@link java.util.concurrent.ThreadPoolExecutor} to process messages.
  *
  * The number of threads used for the {@link java.util.concurrent.ThreadPoolExecutor}
- * is determined automatically as the total number of partitions this {@link KafkaConsumer}
+ * is determined automatically by the total number of partitions this {@link KafkaConsumer}
  * is configured to consume.
  *
  * TODO: bit of a god object, break up in to smaller units?
+ *
+ * TODO: change control flow so that start() actually begins consuming process,
+ * TODO: could also result in improved abstraction/separation of concerns
  */
 public class ThreadPooledConsumer implements KafkaConsumer {
 
@@ -73,7 +76,7 @@ public class ThreadPooledConsumer implements KafkaConsumer {
 
     @Override
     public void start() throws Exception {
-
+        //
     }
 
     @Override
@@ -93,7 +96,7 @@ public class ThreadPooledConsumer implements KafkaConsumer {
             LOG.info("Consuming from topic '{}' with {} threads",
                     messageStreams.size(), topic);
 
-            for (final KafkaMessageStream<T> stream : set.getValue()) {
+            for (final KafkaMessageStream<T> stream : messageStreams) {
                 executor.submit(new Runnable() {
                     @Override
                     public void run() {
@@ -122,11 +125,18 @@ public class ThreadPooledConsumer implements KafkaConsumer {
      */
     private void onError(Exception e, Runnable r) {
         try {
-            if (errorPolicy.getAction() == ErrorPolicy.ErrorAction.SHUTDOWN) {
-                Thread.sleep(errorPolicy.getDelay().toMilliseconds());
-                stop();
-            } else {
-                executor.schedule(r, errorPolicy.getDelay().toNanoseconds(), TimeUnit.NANOSECONDS);
+            switch (errorPolicy.getAction()) {
+                case SHUTDOWN:
+                    LOG.error(e, "Error processing stream, shutting down consumer in {}", errorPolicy.getDelay());
+                    Thread.sleep(errorPolicy.getDelay().toMilliseconds());
+                    stop();
+                    break;
+                case RESTART:
+                    LOG.warn(e, "Error processing stream, restarting consumer thread in {}", errorPolicy.getDelay());
+                    executor.schedule(r, errorPolicy.getDelay().toNanoseconds(), TimeUnit.NANOSECONDS);
+                    break;
+                default:
+                    throw new RuntimeException("Unknown ErrorPolicy configured for KafkaConsumer", e);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);

@@ -3,10 +3,13 @@ package com.datasift.dropwizard.hbase
 import config.HBaseClientConfiguration
 import com.yammer.dropwizard.config.Environment
 
-/** Factory companion object for [[com.datasift.dropwizard.hbase.HBaseClient]] instances */
+/**
+ * Factory object for [[com.datasift.dropwizard.hbase.HBaseClient]] instances
+ * */
 object HBase {
 
-  /** Create an [[com.datasift.dropwizard.hbase.HBaseClient]] from the given [[com.datasift.dropwizard.hbase.config.HBaseClientConfiguration]].
+  /**
+   * Create an [[com.datasift.dropwizard.hbase.HBaseClient]] from the given [[com.datasift.dropwizard.hbase.config.HBaseClientConfiguration]].
    *
    * @param conf configuration for the [[com.datasift.dropwizard.hbase.HBaseClient]]
    * @param env [[com.yammer.dropwizard.config.Environment]] to manage the [[com.datasift.dropwizard.hbase.HBaseClient]]

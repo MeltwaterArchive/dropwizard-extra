@@ -1,9 +1,10 @@
-package com.datasift.dropwizard.kafka.compression;
+package com.datasift.dropwizard.kafka.util;
 
 import kafka.message.*;
+import org.codehaus.jackson.annotate.JsonCreator;
 
 /**
- * TODO: Document
+ * A utility for parsing {@link CompressionCodec}s from a {@link com.yammer.dropwizard.config.Configuration}.
  */
 public class Compression {
 
@@ -17,6 +18,7 @@ public class Compression {
         return codec;
     }
 
+    @JsonCreator
     public static Compression parse(String codec) {
         if ("gzip".equals(codec) || "gz".equals(codec)) {
             return new Compression(GZIPCompressionCodec.codec());

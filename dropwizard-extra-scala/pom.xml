@@ -43,6 +43,12 @@
       <version>${dropwizard.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.datasift.dropwizard</groupId>
+      <artifactId>dropwizard-extra-kafka</artifactId>
+      <version>${dropwizard.version}</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <build>
