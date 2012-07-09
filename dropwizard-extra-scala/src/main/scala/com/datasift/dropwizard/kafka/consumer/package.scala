@@ -34,6 +34,16 @@ package object consumer {
   implicit val ByteBufferDecoder: Decoder[ByteBuffer] = MessageDecoder(_.payload)
 
   /**
+   * Enriches a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] with Scala idioms.
+   *
+   * @param consumer the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] to enrich
+   * @return an enriched [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
+   */
+  implicit def enrichConsumer(consumer: KafkaConsumer): RichKafkaConsumer = {
+    new RichKafkaConsumer(consumer)
+  }
+
+  /**
    * Implicit for defining a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] with a `function`.
    *
    * @param f the function to process the stream with
