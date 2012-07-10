@@ -24,7 +24,7 @@ public class Compression {
             return new Compression(GZIPCompressionCodec.codec());
         } else if ("none".equals(codec) || "no".equals(codec) || "false".equals(codec)) {
             return new Compression(NoCompressionCodec.codec());
-        } else if ("default".equals(codec) || "null".equals(codec) || codec == null) {
+        } else if ("default".equals(codec) || "yes".equals(codec) || "null".equals(codec) || codec == null) {
             return new Compression(DefaultCompressionCodec.codec());
         } else {
             throw new IllegalArgumentException("Invalid Compression: " + codec);
