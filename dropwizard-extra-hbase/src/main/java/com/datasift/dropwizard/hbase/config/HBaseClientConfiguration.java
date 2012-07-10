@@ -28,7 +28,6 @@ public class HBaseClientConfiguration {
     protected Size incrementBufferSize = Size.kilobytes(64);
 
     @JsonProperty
-    @NotNull
     @Min(0)
     protected int maxConcurrentRequests = 0;
 
