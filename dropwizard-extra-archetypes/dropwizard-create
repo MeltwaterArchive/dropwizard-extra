@@ -125,10 +125,10 @@ do
       shift;;
     "--artifact="*)
       error "Invalid artifact tag format, must be: [GROUPID]:[ARTIFACTID]:[VERSION]";;
-    "--version="[0-9]"."[0-9]"."[0-9])
+    "--version="[0-9]"."[0-9]"."[0-9]"-"[0-9])
       DW_VERSION="${1:10}"
       shift;;
-    "--version="[0-9]"."[0-9]"."[0-9]"-SNAPSHOT")
+    "--version="[0-9]"."[0-9]"."[0-9]"-"[0-9]"-SNAPSHOT")
       DW_VERSION="${1:10}"
       warn "Selected Dropwizard version is a SNAPSHOT. It is recommended that you use a stable release." true
       shift;;
