@@ -145,6 +145,8 @@ do
       shift;;
     "--"*)
       error "Unknown option $1";;
+    "-"*)
+      error "Unknown option $1";;
     *)
       if [ $# -lt 2 ]; then
         error "You must specify both the package and name for the project."
