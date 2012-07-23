@@ -84,6 +84,7 @@
         <configuration>
           <includes>
             <include>**/*Spec.class</include>
+            <include>**/*Test.class</include>
           </includes>
         </configuration>
       </plugin>
@@ -101,6 +102,7 @@
         <configuration>
           <includes>
             <include>**/*SpecIT.class</include>
+            <include>**/*TestIT.class</include>
           </includes>
         </configuration>
       </plugin>
