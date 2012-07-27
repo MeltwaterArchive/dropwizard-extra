@@ -4,20 +4,56 @@ import kafka.message.*;
 import org.codehaus.jackson.annotate.JsonCreator;
 
 /**
- * A utility for parsing {@link CompressionCodec}s from a {@link com.yammer.dropwizard.config.Configuration}.
+ * A utility for parsing {@link CompressionCodec}s from a
+ * {@link com.yammer.dropwizard.config.Configuration}.
+ * <p>
+ * To create {@link Compression} instances, use the
+ * {@link Compression#parse(String)} factory method to parse an instance
+ * from a {@link String}.
+ * <p>
+ * This is provided to parse textual specifications of a
+ * {@link CompressionCodec}, for example in a
+ * {@link com.yammer.dropwizard.config.Configuration}.
  */
 public class Compression {
 
     private CompressionCodec codec;
 
-    public Compression(int codec) {
+    /**
+     * Creates a {@link Compression} instance for the given codec type.
+     * <p>
+     * The valid codec values are defined by {@link CompressionCodec}.
+     * <p>
+     * To create {@link Compression} instances, use the
+     * {@link Compression#parse(String)} factory method to parse an instance
+     * from a {@link String}.
+     *
+     * @param codec the codec to use, as an integer index
+     *
+     * @see Compression#parse(String)
+     */
+    private Compression(int codec) {
         this.codec = CompressionCodec$.MODULE$.getCompressionCodec(codec);
     }
 
+    /**
+     * Gets the {@link CompressionCodec} instance for this {@link Compression}.
+     *
+     * @return the {@link CompressionCodec} instance for this {@link Compression}
+     */
     public CompressionCodec getCodec() {
         return codec;
     }
 
+    /**
+     * Parses a String representation of a {@link CompressionCodec}.
+     *
+     * @param codec the name of the {@link CompressionCodec} to parse
+     * @return      a {@link Compression} instance for the codec
+     *
+     * @throws IllegalArgumentException if codec is not a valid
+     *                                  {@link CompressionCodec}
+     */
     @JsonCreator
     public static Compression parse(String codec) {
         if ("gzip".equals(codec) || "gz".equals(codec)) {

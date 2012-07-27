@@ -5,6 +5,9 @@ import kafka.consumer.KafkaMessageStream;
 /**
  * Processes a {@link KafkaMessageStream} of messages of type {@code T}.
  *
+ * Note: since consumers may use multiple threads, it is important that
+ * implementations are thread-safe.
+ *
  * If you wish to process each message individually and iteratively, it's advised
  * that you instead use a {@link MessageProcessor}, as it provides a higher-level
  * of abstraction.

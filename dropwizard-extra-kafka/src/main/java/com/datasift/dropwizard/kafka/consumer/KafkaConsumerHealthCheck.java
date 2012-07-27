@@ -12,10 +12,10 @@ public class KafkaConsumerHealthCheck extends HealthCheck {
     private KafkaConsumer consumer;
 
     /**
-     * Create a new {@link com.yammer.metrics.core.HealthCheck} instance with the given name.
+     * Create a new {@link HealthCheck} instance with the given name.
      *
      * @param consumer the {@link KafkaConsumer} to monitor the health of
-     * @param name the name of the {@link KafkaConsumer}
+     * @param name     the name of the {@link KafkaConsumer}
      */
     public KafkaConsumerHealthCheck(KafkaConsumer consumer, String name) {
         super(name);
