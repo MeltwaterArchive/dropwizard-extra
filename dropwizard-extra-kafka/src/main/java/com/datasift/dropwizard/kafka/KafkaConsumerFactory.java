@@ -73,7 +73,7 @@ public class KafkaConsumerFactory {
      *
      * @param <T> the type of the messages the {@link KafkaConsumer} will process
      */
-    class KafkaConsumerBuilder<T> {
+    public class KafkaConsumerBuilder<T> {
 
         private Decoder<T> decoder;
         private StreamProcessor<T> processor;
@@ -134,7 +134,9 @@ public class KafkaConsumerFactory {
         props.put("zk.connect",
                 configuration.getZookeeper().getQuorumSpec());
         props.put("zk.connectiontimeout.ms",
-                configuration.getZookeeper().getTimeout().toMilliseconds());
+                configuration.getZookeeper().getConnectionTimeout().toMilliseconds());
+        props.put("zk.sessiontimeout.ms",
+                configuration.getZookeeper().getSessionTimeout().toMilliseconds());
         props.put("groupid",
                 configuration.getGroup());
         props.put("socket.timeout.ms",

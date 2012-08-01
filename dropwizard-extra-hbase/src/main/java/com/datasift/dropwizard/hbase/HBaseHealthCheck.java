@@ -13,7 +13,7 @@ public class HBaseHealthCheck extends HealthCheck {
     private String table;
 
     public HBaseHealthCheck(HBaseClient client, String name, String table) {
-        super(name + "-hbase: " + table);
+        super(name + " (HBase): " + table);
 
         this.client = client;
         this.table = table;
@@ -25,9 +25,11 @@ public class HBaseHealthCheck extends HealthCheck {
             client.ensureTableExists(table.getBytes()).joinUninterruptibly(5000);
             return Result.healthy();
         } catch (TimeoutException e) {
-            return Result.unhealthy("Timed out checking for '" + table + "' after 5 seconds");
+            return Result.unhealthy(String.format(
+                    "Timed out checking for '%s' after 5 seconds", table));
         } catch (TableNotFoundException e) {
-            return Result.unhealthy("Table '" + table + "' does not exist");
+            return Result.unhealthy(String.format(
+                    "Table '%s' does not exist", table));
         }
     }
 }

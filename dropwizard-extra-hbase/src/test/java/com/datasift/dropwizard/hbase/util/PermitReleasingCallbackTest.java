@@ -1,21 +1,22 @@
 package com.datasift.dropwizard.hbase.util;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.Semaphore;
 
 /**
- * Tests {@link PermitReleasingCallback}
+ * Tests {@link PermitReleasingCallback}.
  */
 public class PermitReleasingCallbackTest {
 
     @Test
     public void returnsArg() throws Exception {
         String arg = "test";
-        assertEquals("callback must return its argument untouched",
-                arg, new PermitReleasingCallback<String>(new Semaphore(1)).call(arg));
+        assertThat("callback returns its argument",
+                new PermitReleasingCallback<String>(new Semaphore(1)).call(arg),
+                is(arg));
     }
 
     @Test

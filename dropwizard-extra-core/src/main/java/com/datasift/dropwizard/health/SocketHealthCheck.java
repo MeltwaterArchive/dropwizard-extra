@@ -2,69 +2,60 @@ package com.datasift.dropwizard.health;
 
 import com.yammer.metrics.core.HealthCheck;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
- * A {@link HealthCheck} for a remote system
+ * A {@link HealthCheck} for remote sockets.
  *
- * Use this as a basis for healthchecks for remote services, such as databases
- * or web-services.
+ * Use this as a basis for {@link HealthCheck}s for remote services, such as
+ * databases or web-services.
  */
-abstract public class SocketHealthCheck extends HealthCheck {
+abstract class SocketHealthCheck extends HealthCheck {
 
     private String host;
     private int port;
 
-    /**
-     * Create a new {@link HealthCheck} instance for a remote socket.
-     *
-     * @param host the hostname of the remote socket to connect to
-     * @param port the port of the remote socket to connect to
-     * @param name the name of the health check (and, ideally, the name of the
-     *             underlying component the health check tests)
-     */
-    protected SocketHealthCheck(String host, int port, String name) {
-        super(new StringBuilder(name)
-                .append(": ")
-                .append(host)
-                .append(":")
-                .append(port).toString());
+    public String getHost() {
+        return host;
+    }
 
+    public int getPort() {
+        return port;
+    }
+
+    public SocketHealthCheck(String host, int port, String name) {
+        super(String.format("%s (%s:%d)", name, host, port));
         this.host = host;
         this.port = port;
     }
 
-    /**
-     * Perform a check of the application component.
-     *
-     * @return if the component is healthy, a healthy {@link Result};
-     *         otherwise, an unhealthy {@link Result} with a
-     *         descriptive error message or exception
-     *
-     * @throws Exception if there is an unhandled error during the health check;
-     *                   this will result in a failed health check
-     */
+    public String toString() {
+        return getHost() + ":" + getPort();
+    }
+
+    @Override
     protected Result check() throws Exception {
-        Socket socket = new Socket(host, port);
-        if (socket.isConnected()) {
-            return check(socket);
-        } else {
-            return Result.unhealthy("Not connected: unknown problem");
-        }
+        Socket socket = createSocket(host, port);
+        return socket.isConnected()
+                ? check(socket)
+                : Result.unhealthy(String.format(
+                        "Failed to connect to %s:%d", host, port));
+    }
+
+    protected Socket createSocket(String host, int port) throws IOException {
+        return new Socket(host, port);
     }
 
     /**
-     * Perform a check of a remote component
+     * Perform a check of a {@link Socket}.
+     * <p>
+     * The socket is provided to implementations already connected.
      *
-     * A socket that is already connected to the component is provided as a
-     * convenience to implementations. You may ignore it and handle the connection
-     * yourself safely.
-     *
-     * @param socket a {@link Socket} connected to the remote component
-     * @return if the component is healthy, a healthy {@link Result};
-     *         otherwise, an unhealthy {@link Result} with a
+     * @param socket the {@link Socket} to check the health of
+     * @return if the component is healthy, a healthy {@link HealthCheck.Result};
+     *         otherwise, an unhealthy {@link HealthCheck.Result} with a
      *         descriptive error message or exception
-     *
      * @throws Exception if there is an unhandled error during the health check;
      *                   this will result in a failed health check
      */

@@ -14,9 +14,10 @@ public class GraphiteHealthCheck extends SocketHealthCheck {
      *
      * @param host the hostname of the remote socket to connect to
      * @param port the port of the remote socket to connect to
+     * @param name the name of this {@link GraphiteHealthCheck}
      */
-    public GraphiteHealthCheck(String host, int port) {
-        super(host, port, "Graphite");
+    public GraphiteHealthCheck(String host, int port, String name) {
+        super(host, port, name);
     }
 
     @Override

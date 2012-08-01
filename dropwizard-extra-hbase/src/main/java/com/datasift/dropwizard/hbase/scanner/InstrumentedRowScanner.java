@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.hbase.scanner;
 
+import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
 import com.datasift.dropwizard.hbase.util.TimerStoppingCallback;
 import com.stumbleupon.async.Deferred;
 import com.yammer.metrics.core.MetricsRegistry;
@@ -15,15 +16,13 @@ import java.util.ArrayList;
  */
 public class InstrumentedRowScanner implements RowScanner {
 
-    private MetricsRegistry registry;
     private RowScanner scanner;
+    private HBaseInstrumentation metrics;
 
-    private Timer scans = registry.newTimer(getClass(), "scans", "scanner");
-    private Timer closes = registry.newTimer(getClass(), "closes", "scanner");
-
-    public InstrumentedRowScanner(RowScanner scanner, MetricsRegistry registry) {
+    public InstrumentedRowScanner(RowScanner scanner,
+                                  HBaseInstrumentation metrics) {
         this.scanner = scanner;
-        this.registry = registry;
+        this.metrics = metrics;
     }
 
     public byte[] getCurrentKey() {
@@ -103,17 +102,17 @@ public class InstrumentedRowScanner implements RowScanner {
     }
 
     public Deferred<Object> close() {
-        TimerContext ctx = closes.time();
+        TimerContext ctx = metrics.getCloses().time();
         return scanner.close().addBoth(new TimerStoppingCallback<Object>(ctx));
     }
 
     public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows() {
-        TimerContext ctx = scans.time();
+        TimerContext ctx = metrics.getScans().time();
         return scanner.nextRows().addBoth(new TimerStoppingCallback<ArrayList<ArrayList<KeyValue>>>(ctx));
     }
 
     public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows(int rows) {
-        TimerContext ctx = scans.time();
+        TimerContext ctx = metrics.getScans().time();
         return scanner.nextRows(rows).addBoth(new TimerStoppingCallback<ArrayList<ArrayList<KeyValue>>>(ctx));
     }
 }

@@ -6,6 +6,8 @@ import com.yammer.dropwizard.ConfiguredBundle;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.logging.Log;
 import com.yammer.metrics.reporting.GraphiteReporter;
+import com.yammer.dropwizard.config.Configuration;
+import com.yammer.dropwizard.Service;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,22 +16,25 @@ import java.util.concurrent.TimeUnit;
  *
  * Includes a HealthCheck to the Graphite instance.
  *
- * To use this {@link ConfiguredBundle}, your {@link com.yammer.dropwizard.config.Configuration}
- * must implement {@link GraphiteReportingConfiguration}.
+ * To use this {@link ConfiguredBundle}, your {@link Configuration} must
+ * implement {@link GraphiteReportingConfiguration}.
  */
-public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReportingConfiguration> {
+public class GraphiteReportingBundle
+        implements ConfiguredBundle<GraphiteReportingConfiguration> {
 
     private Log log = Log.forClass(this.getClass());
 
     /**
      * Initializes the Graphite reporter, if enabled.
      *
-     * @param conf a {@link com.yammer.dropwizard.config.Configuration} that implements {@link GraphiteReportingConfiguration}
-     * @param env the {@link com.yammer.dropwizard.Service} environment
+     * @param conf the {@link GraphiteReportingConfiguration} to configure the
+     *             {@link GraphiteReporter} with
+     * @param env  the {@link Service} environment
      */
-    public void initialize(GraphiteReportingConfiguration conf, Environment env) {
+    public void initialize(GraphiteReportingConfiguration conf,
+                           Environment env) {
         if (conf.getGraphite().getEnabled()) {
-            log.info("Graphite metrics reporting enabled to {}:{}, every {} seconds",
+            log.info("Reporting metrics to Graphite at {}:{}, every {} seconds",
                     conf.getGraphite().getHost(),
                     conf.getGraphite().getPort(),
                     conf.getGraphite().getFrequency());
@@ -42,7 +47,10 @@ public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReporti
                     conf.getGraphite().getPrefix()
             );
 
-            env.addHealthCheck(new GraphiteHealthCheck(conf.getGraphite().getHost(), conf.getGraphite().getPort()));
+            env.addHealthCheck(new GraphiteHealthCheck(
+                    conf.getGraphite().getHost(),
+                    conf.getGraphite().getPort(),
+                    "graphite"));
         }
     }
 }

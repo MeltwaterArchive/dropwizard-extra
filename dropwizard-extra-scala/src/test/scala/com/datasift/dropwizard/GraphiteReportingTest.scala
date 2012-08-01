@@ -2,7 +2,6 @@ package com.datasift.dropwizard
 
 import config.{GraphiteConfiguration, GraphiteReportingConfiguration}
 import org.junit.Assert._
-import org.hamcrest.Matchers._
 import org.mockito.Mockito._
 
 import org.junit.Test

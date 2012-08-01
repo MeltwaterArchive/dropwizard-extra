@@ -11,7 +11,7 @@ import org.jboss.netty.util.Timer;
 import java.util.ArrayList;
 
 /**
- * Proxies the {@link HBaseClient} API to a {@link org.hbase.async.HBaseClient}.
+ * Proxies the {@link HBaseClient} API to an {@link org.hbase.async.HBaseClient}.
  */
 public class HBaseClientProxy implements HBaseClient {
 
@@ -30,11 +30,13 @@ public class HBaseClientProxy implements HBaseClient {
     }
 
     public Duration setFlushInterval(Duration flushInterval) {
-        return Duration.milliseconds(client.setFlushInterval((short) flushInterval.toMilliseconds()));
+        final short interval = (short) flushInterval.toMilliseconds();
+        return Duration.milliseconds(client.setFlushInterval(interval));
     }
 
     public Size setIncrementBufferSize(Size incrementBufferSize) {
-        return Size.bytes(client.setIncrementBufferSize((int) incrementBufferSize.toBytes()));
+        final int size = (int) incrementBufferSize.toBytes();
+        return Size.bytes(client.setIncrementBufferSize(size));
     }
 
     public Deferred<Boolean> create(PutRequest edit) {
@@ -49,7 +51,8 @@ public class HBaseClientProxy implements HBaseClient {
         return client.atomicIncrement(request);
     }
 
-    public Deferred<Long> increment(AtomicIncrementRequest request, Boolean durable) {
+    public Deferred<Long> increment(AtomicIncrementRequest request,
+                                    Boolean durable) {
         return client.atomicIncrement(request, durable);
     }
 
@@ -73,11 +76,13 @@ public class HBaseClientProxy implements HBaseClient {
         return client.ensureTableExists(table);
     }
 
-    public Deferred<Object> ensureTableFamilyExists(byte[] table, byte[] family) {
+    public Deferred<Object> ensureTableFamilyExists(byte[] table,
+                                                    byte[] family) {
         return client.ensureTableFamilyExists(table, family);
     }
 
-    public Deferred<Object> ensureTableFamilyExists(String table, String family) {
+    public Deferred<Object> ensureTableFamilyExists(String table,
+                                                    String family) {
         return client.ensureTableFamilyExists(table, family);
     }
 
