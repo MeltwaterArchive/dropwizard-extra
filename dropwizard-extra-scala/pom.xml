@@ -12,7 +12,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   
-  <artifactId>dropwizard-extra-scala_${scala.version}</artifactId>
+  <artifactId>dropwizard-extra-scala_2.9.1</artifactId>
 
   <name>Dropwizard Extra Scala ${scala.version}</name>
   <description>
