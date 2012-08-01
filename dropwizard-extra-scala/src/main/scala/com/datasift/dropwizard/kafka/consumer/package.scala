@@ -2,8 +2,9 @@ package com.datasift.dropwizard.kafka
 
 import kafka.serializer.{Decoder, StringDecoder, DefaultDecoder}
 import java.nio.ByteBuffer
-import kafka.consumer.KafkaMessageStream
 import kafka.message.Message
+
+import scala.collection.JavaConverters.iterableAsScalaIterableConverter
 
 /**
  * Implicit declarations for Kafka Consumers.
@@ -41,10 +42,10 @@ package object consumer {
    * @tparam A the type of the messages in the stream to process
    * @return a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] for processing the stream
    */
-  implicit def fToStreamProcessorNoTopic[A](f: KafkaMessageStream[A] => Any): StreamProcessor[A] = {
+  implicit def fToStreamProcessorNoTopic[A](f: Iterable[A] => Any): StreamProcessor[A] = {
     new StreamProcessor[A] {
-      def process(stream: KafkaMessageStream[A], topic: String) {
-        f(stream)
+      def process(stream: java.lang.Iterable[A], topic: String) {
+        f(stream.asScala)
       }
     }
   }
@@ -56,10 +57,10 @@ package object consumer {
    * @tparam A the type of the messages in the stream to process
    * @return a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] for processing the stream
    */
-  implicit def fToStreamProcessor[A](f: (KafkaMessageStream[A], String) => Any): StreamProcessor[A] = {
+  implicit def fToStreamProcessor[A](f: (Iterable[A], String) => Any): StreamProcessor[A] = {
     new StreamProcessor[A] {
-      def process(stream: KafkaMessageStream[A], topic: String) {
-        f(stream, topic)
+      def process(stream: java.lang.Iterable[A], topic: String) {
+        f(stream.asScala, topic)
       }
     }
   }
