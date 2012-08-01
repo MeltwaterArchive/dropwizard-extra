@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.kafka;
 
+import com.datasift.dropwizard.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
@@ -129,34 +130,36 @@ public class KafkaConsumerFactory {
         }
     }
 
-    private static ConsumerConfig toConsumerConfig(KafkaConsumerConfiguration configuration) {
+    static ConsumerConfig toConsumerConfig(KafkaConsumerConfiguration configuration) {
+        ZooKeeperConfiguration zookeeper = configuration.getZookeeper();
         Properties props = new Properties();
-        props.put("zk.connect",
-                configuration.getZookeeper().getQuorumSpec());
-        props.put("zk.connectiontimeout.ms",
-                configuration.getZookeeper().getConnectionTimeout().toMilliseconds());
-        props.put("zk.sessiontimeout.ms",
-                configuration.getZookeeper().getSessionTimeout().toMilliseconds());
-        props.put("groupid",
+        props.setProperty("zk.connect",
+                zookeeper.getQuorumSpec());
+        props.setProperty("zk.connectiontimeout.ms",
+                String.valueOf(zookeeper.getConnectionTimeout().toMilliseconds()));
+        props.setProperty("zk.sessiontimeout.ms",
+                String.valueOf(zookeeper.getSessionTimeout().toMilliseconds()));
+        props.setProperty("groupid",
                 configuration.getGroup());
-        props.put("socket.timeout.ms",
-                configuration.getSocketTimeout().toMilliseconds());
-        props.put("socket.buffersize",
-                configuration.getReceiveBufferSize().toBytes());
-        props.put("fetch.size",
-                configuration.getFetchSize().toBytes());
-        props.put("backoff.increment.ms",
-                configuration.getBackOffIncrement().toMilliseconds());
-        props.put("queuedchunks.max",
-                configuration.getQueuedChunks());
-        props.put("autocommit.enable",
-                configuration.getAutoCommit());
-        props.put("autocommit.interval.ms",
-                configuration.getAutoCommitInterval().toMilliseconds());
-        props.put("consumer.timeout.ms",
-                configuration.getTimeout().toMilliseconds());
-        props.put("rebalance.retries.max",
-                configuration.getRebalanceRetries());
+        props.setProperty("socket.timeout.ms",
+                String.valueOf(configuration.getSocketTimeout().toMilliseconds()));
+        props.setProperty("socket.buffersize",
+                String.valueOf(configuration.getReceiveBufferSize().toBytes()));
+        props.setProperty("fetch.size",
+                String.valueOf(configuration.getFetchSize().toBytes()));
+        props.setProperty("backoff.increment.ms",
+                String.valueOf(configuration.getBackOffIncrement().toMilliseconds()));
+        props.setProperty("queuedchunks.max",
+                String.valueOf(configuration.getQueuedChunks()));
+        props.setProperty("autocommit.enable",
+                String.valueOf(configuration.getAutoCommit()));
+        props.setProperty("autocommit.interval.ms",
+                String.valueOf(configuration.getAutoCommitInterval().toMilliseconds()));
+        props.setProperty("consumer.timeout.ms",
+                String.valueOf(configuration.getTimeout().toMilliseconds()));
+        props.setProperty("rebalance.retries.max",
+                String.valueOf(configuration.getRebalanceRetries()));
+
         return new ConsumerConfig(props);
     }
 }
