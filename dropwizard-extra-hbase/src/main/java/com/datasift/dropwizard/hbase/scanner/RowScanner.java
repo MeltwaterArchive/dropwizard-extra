@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * call {@link com.datasift.dropwizard.hbase.HBaseClient#newScanner(byte[])}.
  *
  * All implementations are wrapper proxies around {@link org.hbase.async.Scanner}
- * providing additional functionality.1
+ * providing additional functionality.
  */
 public interface RowScanner {
 
@@ -126,7 +126,8 @@ public interface RowScanner {
      * Set the maximum number of {@link KeyValue}s to fetch in each batch.
      *
      * @see org.hbase.async.Scanner#setMaxNumKeyValues(int)
-     * @param max_num_kvs the maximum number of {@link KeyValue}s to fetch in each batch
+     * @param max_num_kvs the maximum number of {@link KeyValue}s to fetch in
+     *                    each batch
      */
     public void setMaxNumKeyValues(int max_num_kvs);
 
