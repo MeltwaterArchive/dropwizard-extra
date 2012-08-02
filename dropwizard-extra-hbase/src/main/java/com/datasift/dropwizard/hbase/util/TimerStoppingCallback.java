@@ -11,7 +11,7 @@ public class TimerStoppingCallback<T> implements Callback<T, T> {
     /**
      * The context of the active {@link com.yammer.metrics.core.Timer} to stop.
      */
-    private TimerContext timer;
+    private final TimerContext timer;
 
     /**
      * Creates a new {@link Callback} that stops the given active timer on
@@ -20,7 +20,7 @@ public class TimerStoppingCallback<T> implements Callback<T, T> {
      * @param timer the active {@link com.yammer.metrics.core.Timer} to stop on
      *              completion of the {@link Callback}
      */
-    public TimerStoppingCallback(TimerContext timer) {
+    public TimerStoppingCallback(final TimerContext timer) {
         this.timer = timer;
     }
 
@@ -33,7 +33,7 @@ public class TimerStoppingCallback<T> implements Callback<T, T> {
      * @throws Exception if an error occurs stopping the
      *         {@link com.yammer.metrics.core.Timer}
      */
-    public T call(T arg) throws Exception {
+    public T call(final T arg) throws Exception {
         timer.stop();
         return arg;
     }

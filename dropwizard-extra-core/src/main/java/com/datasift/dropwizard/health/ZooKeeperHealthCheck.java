@@ -9,7 +9,9 @@ import java.net.Socket;
  */
 public class ZooKeeperHealthCheck extends SocketHealthCheck {
 
-    public ZooKeeperHealthCheck(String host, int port, String name) {
+    public ZooKeeperHealthCheck(final String host,
+                                final int port,
+                                final String name) {
         super(host, port, name);
     }
 
@@ -22,7 +24,7 @@ public class ZooKeeperHealthCheck extends SocketHealthCheck {
      *         otherwise, unhealthy
      */
     @Override
-    protected Result check(Socket socket) {
+    protected Result check(final Socket socket) {
         return Result.healthy();
     }
 }

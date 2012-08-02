@@ -8,8 +8,8 @@ import com.yammer.dropwizard.util.Duration;
  */
 public class ManagedHBaseClient implements Managed {
 
-    final private HBaseClient client;
-    final private Duration connectionTimeout;
+    private final HBaseClient client;
+    private final Duration connectionTimeout;
 
     /**
      * Manage the specified {@link HBaseClient} with the given

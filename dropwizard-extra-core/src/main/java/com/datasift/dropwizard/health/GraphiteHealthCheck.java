@@ -16,12 +16,14 @@ public class GraphiteHealthCheck extends SocketHealthCheck {
      * @param port the port of the remote socket to connect to
      * @param name the name of this {@link GraphiteHealthCheck}
      */
-    public GraphiteHealthCheck(String host, int port, String name) {
+    public GraphiteHealthCheck(final String host,
+                               final int port,
+                               final String name) {
         super(host, port, name);
     }
 
     @Override
-    protected Result check(Socket socket) {
+    protected Result check(final Socket socket) {
         // TODO: find a way to verify the socket is connected to a Graphite server
         return Result.healthy();
     }

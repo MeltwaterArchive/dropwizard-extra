@@ -12,7 +12,7 @@ public class PermitReleasingCallback<T> implements Callback<T, T> {
     /**
      * The {@link Semaphore} to release the permit to.
      */
-    private Semaphore semaphore;
+    private final Semaphore semaphore;
 
     /**
      * Creates a new {@link Callback} that releases a permit on the given
@@ -21,7 +21,7 @@ public class PermitReleasingCallback<T> implements Callback<T, T> {
      * @param semaphore the {@link Semaphore} to release the permit to on
      *                  completion
      */
-    public PermitReleasingCallback(Semaphore semaphore) {
+    public PermitReleasingCallback(final Semaphore semaphore) {
         this.semaphore = semaphore;
     }
 
@@ -34,7 +34,7 @@ public class PermitReleasingCallback<T> implements Callback<T, T> {
      * @throws Exception if an error occurs releasing the permit to the
      *                   {@link Semaphore}
      */
-    public T call(T arg) throws Exception {
+    public T call(final T arg) throws Exception {
         semaphore.release();
         return arg;
     }

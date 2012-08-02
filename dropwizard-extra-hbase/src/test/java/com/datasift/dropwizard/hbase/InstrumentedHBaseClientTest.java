@@ -51,7 +51,7 @@ public class InstrumentedHBaseClientTest {
 
     private HBaseClient underlying;
     private HBaseInstrumentation metrics;
-    final private MetricsRegistry registry = new MetricsRegistry(new Clock() {
+    private final MetricsRegistry registry = new MetricsRegistry(new Clock() {
 
         private long val = 0;
 

@@ -13,7 +13,7 @@ public class PermitReleasingCallbackTest {
 
     @Test
     public void returnsArg() throws Exception {
-        String arg = "test";
+        final String arg = "test";
         assertThat("callback returns its argument",
                 new PermitReleasingCallback<String>(new Semaphore(1)).call(arg),
                 is(arg));
@@ -21,7 +21,7 @@ public class PermitReleasingCallbackTest {
 
     @Test
     public void releasesPermit() throws Exception {
-        Semaphore semaphore = new Semaphore(1);
+        final Semaphore semaphore = new Semaphore(1);
         assertThat("semaphore begins with single permit",
                 semaphore.availablePermits(), is(1));
         semaphore.acquire(1);

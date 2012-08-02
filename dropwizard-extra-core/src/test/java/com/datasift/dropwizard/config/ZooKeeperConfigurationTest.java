@@ -14,7 +14,7 @@ public class ZooKeeperConfigurationTest {
 
     @Test
     public void hasValidDefaults() {
-        ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
 
         assertThat("default hostname is localhost",
                 conf.getHosts(), hasItemInArray("localhost"));
@@ -28,14 +28,14 @@ public class ZooKeeperConfigurationTest {
 
     @Test
     public void quorumSpecForOneHost() {
-        ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
         assertThat("quorum spec is correct for single host",
                 conf.getQuorumSpec(), is("localhost:2181"));
     }
 
     @Test
     public void quorumSpecForMultipleHosts() {
-        ZooKeeperConfiguration conf = mock(ZooKeeperConfiguration.class);
+        final ZooKeeperConfiguration conf = mock(ZooKeeperConfiguration.class);
         when(conf.getHosts()).thenReturn(new String[] { "remote1", "remote2" });
         when(conf.getPort()).thenReturn(2181);
         when(conf.getQuorumSpec()).thenCallRealMethod();

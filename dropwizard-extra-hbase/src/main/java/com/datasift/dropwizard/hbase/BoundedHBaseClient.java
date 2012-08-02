@@ -36,13 +36,13 @@ public class BoundedHBaseClient implements HBaseClient {
     /**
      * The underlying {@link HBaseClient} to dispatch requests.
      */
-    private HBaseClient client;
+    private final HBaseClient client;
 
     /**
      * The {@link Semaphore} constraining the maximum number of concurrent
      * asynchronous requests.
      */
-    private Semaphore semaphore;
+    private final Semaphore semaphore;
 
     /**
      * Builds a new {@link HBaseClient} according to the given
@@ -61,8 +61,8 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return an {@link HBaseClient} that satisfies the configuration of
      *         the maximum concurrent requests
      */
-    public static HBaseClient wrap(HBaseClientConfiguration configuration,
-                                   HBaseClient client) {
+    public static HBaseClient wrap(final HBaseClientConfiguration configuration,
+                                   final HBaseClient client) {
         if (configuration.getMaxConcurrentRequests() > 0) {
             return new BoundedHBaseClient(
                     client,
@@ -79,7 +79,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @param client      the underlying {@link HBaseClient} implementation
      * @param maxRequests the maximum number of concurrent requests
      */
-    public BoundedHBaseClient(HBaseClient client, int maxRequests) {
+    public BoundedHBaseClient(final HBaseClient client, final int maxRequests) {
         this(client, new Semaphore(maxRequests));
     }
 
@@ -96,7 +96,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @param semaphore the {@link Semaphore} to track concurrent asynchronous
      *                  requests with
      */
-    public BoundedHBaseClient(HBaseClient client, Semaphore semaphore) {
+    public BoundedHBaseClient(final HBaseClient client, final Semaphore semaphore) {
         this.client = client;
         this.semaphore = semaphore;
     }
@@ -130,7 +130,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the previous flush interval
      * @see HBaseClient#setFlushInterval(Duration)
      */
-    public Duration setFlushInterval(Duration flushInterval) {
+    public Duration setFlushInterval(final Duration flushInterval) {
         return client.setFlushInterval(flushInterval);
     }
 
@@ -141,7 +141,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the previous increment buffer capacity
      * @see HBaseClient#setIncrementBufferSize(Size)
      */
-    public Size setIncrementBufferSize(Size incrementBufferSize) {
+    public Size setIncrementBufferSize(final Size incrementBufferSize) {
         return client.setIncrementBufferSize(incrementBufferSize);
     }
 
@@ -152,7 +152,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return true if the cell was created, false if the cell already exists
      * @see HBaseClient#create(PutRequest)
      */
-    public Deferred<Boolean> create(PutRequest edit) {
+    public Deferred<Boolean> create(final PutRequest edit) {
         semaphore.acquireUninterruptibly();
         return client.create(edit)
                 .addBoth(new PermitReleasingCallback<Boolean>(semaphore));
@@ -165,7 +165,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the new value of the cell, after the increment
      * @see HBaseClient#bufferIncrement(AtomicIncrementRequest)
      */
-    public Deferred<Long> bufferIncrement(AtomicIncrementRequest request) {
+    public Deferred<Long> bufferIncrement(final AtomicIncrementRequest request) {
         semaphore.acquireUninterruptibly();
         return client.bufferIncrement(request)
                 .addBoth(new PermitReleasingCallback<Long>(semaphore));
@@ -178,7 +178,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the new value of the cell, after the increment
      * @see HBaseClient#increment(AtomicIncrementRequest)
      */
-    public Deferred<Long> increment(AtomicIncrementRequest request) {
+    public Deferred<Long> increment(final AtomicIncrementRequest request) {
         semaphore.acquireUninterruptibly();
         return client.increment(request)
                 .addBoth(new PermitReleasingCallback<Long>(semaphore));
@@ -192,7 +192,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the new value of the cell, after the increment
      * @see HBaseClient#increment(AtomicIncrementRequest, Boolean)
      */
-    public Deferred<Long> increment(AtomicIncrementRequest request,
+    public Deferred<Long> increment(final AtomicIncrementRequest request,
                                     Boolean durable) {
         semaphore.acquireUninterruptibly();
         return client.increment(request, durable)
@@ -207,7 +207,8 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return true if the expectation was met and the cell was set; otherwise, false
      * @see HBaseClient#compareAndSet(PutRequest, byte[])
      */
-    public Deferred<Boolean> compareAndSet(PutRequest edit, byte[] expected) {
+    public Deferred<Boolean> compareAndSet(final PutRequest edit,
+                                           final byte[] expected) {
         semaphore.acquireUninterruptibly();
         return client.compareAndSet(edit, expected)
                 .addBoth(new PermitReleasingCallback<Boolean>(semaphore));
@@ -221,7 +222,8 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return true if the expectation was met and the cell was set; otherwise, false
      * @see HBaseClient#compareAndSet(PutRequest, String)
      */
-    public Deferred<Boolean> compareAndSet(PutRequest edit, String expected) {
+    public Deferred<Boolean> compareAndSet(final PutRequest edit,
+                                           final String expected) {
         semaphore.acquireUninterruptibly();
         return client.compareAndSet(edit, expected)
                 .addBoth(new PermitReleasingCallback<Boolean>(semaphore));
@@ -234,7 +236,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return a {@link Deferred} indicating when the deletion completes
      * @see HBaseClient#delete(DeleteRequest)
      */
-    public Deferred<Object> delete(DeleteRequest request) {
+    public Deferred<Object> delete(final DeleteRequest request) {
         semaphore.acquireUninterruptibly();
         return client.delete(request)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -248,7 +250,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @throws TableNotFoundException (Deferred) if the table does not exist
      * @see HBaseClient#ensureTableExists(byte[])
      */
-    public Deferred<Object> ensureTableExists(byte[] table) {
+    public Deferred<Object> ensureTableExists(final byte[] table) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableExists(table)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -262,7 +264,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @throws TableNotFoundException (Deferred) if the table does not exist
      * @see HBaseClient#ensureTableExists(String)
      */
-    public Deferred<Object> ensureTableExists(String table) {
+    public Deferred<Object> ensureTableExists(final String table) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableExists(table)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -277,8 +279,8 @@ public class BoundedHBaseClient implements HBaseClient {
      * @throws NoSuchColumnFamilyException (Deferred) if the family doesn't exist
      * @see HBaseClient#ensureTableFamilyExists(byte[], byte[])
      */
-    public Deferred<Object> ensureTableFamilyExists(byte[] table,
-                                                    byte[] family) {
+    public Deferred<Object> ensureTableFamilyExists(final byte[] table,
+                                                    final byte[] family) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableFamilyExists(table, family)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -293,8 +295,8 @@ public class BoundedHBaseClient implements HBaseClient {
      * @throws NoSuchColumnFamilyException (Deferred) if the family doesn't exist
      * @see HBaseClient#ensureTableFamilyExists(String, String)
      */
-    public Deferred<Object> ensureTableFamilyExists(String table,
-                                                    String family) {
+    public Deferred<Object> ensureTableFamilyExists(final String table,
+                                                    final String family) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableFamilyExists(table, family)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -319,7 +321,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the requested cells
      * @see HBaseClient#get(GetRequest)
      */
-    public Deferred<ArrayList<KeyValue>> get(GetRequest request) {
+    public Deferred<ArrayList<KeyValue>> get(final GetRequest request) {
         semaphore.acquireUninterruptibly();
         return client.get(request)
                 .addBoth(new PermitReleasingCallback<ArrayList<KeyValue>>(semaphore));
@@ -332,7 +334,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return the row lock
      * @see HBaseClient#lockRow(RowLockRequest)
      */
-    public Deferred<RowLock> lockRow(RowLockRequest request) {
+    public Deferred<RowLock> lockRow(final RowLockRequest request) {
         semaphore.acquireUninterruptibly();
         return client.lockRow(request)
                 .addBoth(new PermitReleasingCallback<RowLock>(semaphore));
@@ -345,7 +347,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return a new {@link RowScanner} for the specified table
      * @see HBaseClient#newScanner(byte[])
      */
-    public RowScanner newScanner(byte[] table) {
+    public RowScanner newScanner(final byte[] table) {
         return new BoundedRowScanner(client.newScanner(table), semaphore);
     }
 
@@ -356,7 +358,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return a new {@link RowScanner} for the specified table
      * @see HBaseClient#newScanner(String)
      */
-    public RowScanner newScanner(String table) {
+    public RowScanner newScanner(final String table) {
         return new BoundedRowScanner(client.newScanner(table), semaphore);
     }
 
@@ -367,7 +369,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @return a {@link Deferred} indicating the completion of the put operation
      * @see HBaseClient#put(PutRequest)
      */
-    public Deferred<Object> put(PutRequest request) {
+    public Deferred<Object> put(final PutRequest request) {
         semaphore.acquireUninterruptibly();
         return client.put(request)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));
@@ -414,7 +416,7 @@ public class BoundedHBaseClient implements HBaseClient {
      *         operation
      * @see HBaseClient#unlockRow(RowLock)
      */
-    public Deferred<Object> unlockRow(RowLock lock) {
+    public Deferred<Object> unlockRow(final RowLock lock) {
         semaphore.acquireUninterruptibly();
         return client.unlockRow(lock)
                 .addBoth(new PermitReleasingCallback<Object>(semaphore));

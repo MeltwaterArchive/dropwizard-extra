@@ -44,8 +44,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void createsWithPermit() {
-        PutRequest req = mock(PutRequest.class);
-        Deferred<Boolean> resp = new Deferred<Boolean>();
+        final PutRequest req = mock(PutRequest.class);
+        final Deferred<Boolean> resp = new Deferred<Boolean>();
 
         when(underlying.create(req)).thenReturn(resp);
 
@@ -62,8 +62,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void buffersIncrementWithPermit() {
-        AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        Deferred<Long> resp = new Deferred<Long>();
+        final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
+        final Deferred<Long> resp = new Deferred<Long>();
 
         when(underlying.bufferIncrement(req)).thenReturn(resp);
 
@@ -80,8 +80,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void incrementWithPermit() {
-        AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        Deferred<Long> resp = new Deferred<Long>();
+        final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
+        final Deferred<Long> resp = new Deferred<Long>();
 
         when(underlying.increment(req)).thenReturn(resp);
 
@@ -98,8 +98,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void durablyIncrementWithPermit() {
-        AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        Deferred<Long> resp = new Deferred<Long>();
+        final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
+        final Deferred<Long> resp = new Deferred<Long>();
 
         when(underlying.increment(req, true)).thenReturn(resp);
 
@@ -117,8 +117,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void comparesAndSetsWithPermit() {
-        PutRequest req = mock(PutRequest.class);
-        Deferred<Boolean> resp = new Deferred<Boolean>();
+        final PutRequest req = mock(PutRequest.class);
+        final Deferred<Boolean> resp = new Deferred<Boolean>();
 
         when(underlying.compareAndSet(req, new byte[0])).thenReturn(resp);
 
@@ -136,8 +136,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void comparesAndSetsStringsWithPermit() {
-        PutRequest req = mock(PutRequest.class);
-        Deferred<Boolean> resp = new Deferred<Boolean>();
+        final PutRequest req = mock(PutRequest.class);
+        final Deferred<Boolean> resp = new Deferred<Boolean>();
 
         when(underlying.compareAndSet(req, "")).thenReturn(resp);
 
@@ -155,8 +155,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void deletesWithPermit() {
-        DeleteRequest req = mock(DeleteRequest.class);
-        Deferred<Object> resp = new Deferred<Object>();
+        final DeleteRequest req = mock(DeleteRequest.class);
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.delete(req)).thenReturn(resp);
 
@@ -173,7 +173,7 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void ensuresTableExistsWithPermit() {
-        Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.ensureTableExists(new byte[0])).thenReturn(resp);
 
@@ -190,7 +190,7 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void ensuresStringTableExistsWithPermit() {
-        Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.ensureTableExists("")).thenReturn(resp);
 
@@ -208,7 +208,7 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void ensuresTableAndFamilyExistsWithPermit() {
-        Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.ensureTableFamilyExists(new byte[0], new byte[0]))
                 .thenReturn(resp);
@@ -228,7 +228,7 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void ensuresStringTableAndFamilyExistsWithPermit() {
-        Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.ensureTableFamilyExists("", "")).thenReturn(resp);
 
@@ -245,7 +245,7 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void flushesWithPermit() {
-        Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.flush()).thenReturn(resp);
 
@@ -261,8 +261,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void getsWithPermit() {
-        GetRequest req = mock(GetRequest.class);
-        Deferred<ArrayList<KeyValue>> resp =
+        final GetRequest req = mock(GetRequest.class);
+        final Deferred<ArrayList<KeyValue>> resp =
                 new Deferred<ArrayList<KeyValue>>();
 
         when(underlying.get(req)).thenReturn(resp);
@@ -279,8 +279,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void locksWithPermit() {
-        RowLockRequest req = mock(RowLockRequest.class);
-        Deferred<RowLock> resp = new Deferred<RowLock>();
+        final RowLockRequest req = mock(RowLockRequest.class);
+        final Deferred<RowLock> resp = new Deferred<RowLock>();
 
         when(underlying.lockRow(req)).thenReturn(resp);
 
@@ -296,8 +296,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void putWithPermit() {
-        PutRequest req = mock(PutRequest.class);
-        Deferred<Object> resp = new Deferred<Object>();
+        final PutRequest req = mock(PutRequest.class);
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.put(req)).thenReturn(resp);
 
@@ -313,8 +313,8 @@ public class BoundedHBaseClientTest {
 
     @Test
     public void unlocksWithPermit() {
-        RowLock req = mock(RowLock.class);
-        Deferred<Object> resp = new Deferred<Object>();
+        final RowLock req = mock(RowLock.class);
+        final Deferred<Object> resp = new Deferred<Object>();
 
         when(underlying.unlockRow(req)).thenReturn(resp);
 
@@ -330,12 +330,12 @@ public class BoundedHBaseClientTest {
     }
 
     private HBaseClient checkBlocksWithNoPermitOn() {
-        Semaphore semaphore = mock(Semaphore.class);
+        final Semaphore semaphore = mock(Semaphore.class);
         doThrow(new BlockedException()).when(semaphore).acquireUninterruptibly();
         return new BoundedHBaseClient(underlying, semaphore);
     }
 
-    private <T> void checkCallbackReleasesPermit(Deferred<T> callback) {
+    private <T> void checkCallbackReleasesPermit(final Deferred<T> callback) {
         checkNoPermits();
         callback.callback(null);
         checkForPermit();

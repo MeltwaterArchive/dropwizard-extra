@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class ZooKeeperQuorumHealthCheck extends HealthCheck {
 
-    private List<ZooKeeperHealthCheck> healthChecks;
+    private final List<ZooKeeperHealthCheck> healthChecks;
 
     /**
      * Builds a {@link ZooKeeperQuorumHealthCheck} for the given nodes.
@@ -28,13 +28,13 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      * @param name  the name of the {@link ZooKeeperQuorumHealthCheck}
      * @return a {@link ZooKeeperQuorumHealthCheck} for the given nodes.
      */
-    public static ZooKeeperQuorumHealthCheck forNodes(Map<String, Integer> nodes,
-                                                      String name) {
-        ImmutableList.Builder<ZooKeeperHealthCheck> builder =
+    public static ZooKeeperQuorumHealthCheck forNodes(final Map<String, Integer> nodes,
+                                                      final String name) {
+        final ImmutableList.Builder<ZooKeeperHealthCheck> builder =
                 ImmutableList.builder();
-        for (Map.Entry<String, Integer> endpoint : nodes.entrySet()) {
-            String host = endpoint.getKey();
-            int port = endpoint.getValue();
+        for (final Map.Entry<String, Integer> endpoint : nodes.entrySet()) {
+            final String host = endpoint.getKey();
+            final int port = endpoint.getValue();
             builder.add(new ZooKeeperHealthCheck(host, port, name));
         }
         return new ZooKeeperQuorumHealthCheck(builder.build(), name);
@@ -48,12 +48,12 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      * @param name  the name of the {@link ZooKeeperQuorumHealthCheck}
      * @return a {@link ZooKeeperQuorumHealthCheck} for the given nodes.
      */
-    public static ZooKeeperQuorumHealthCheck forNodes(String[] hosts,
-                                                      int port,
-                                                      String name) {
-        ImmutableList.Builder<ZooKeeperHealthCheck> builder =
+    public static ZooKeeperQuorumHealthCheck forNodes(final String[] hosts,
+                                                      final int port,
+                                                      final String name) {
+        final ImmutableList.Builder<ZooKeeperHealthCheck> builder =
                 ImmutableList.builder();
-        for (String host : hosts) {
+        for (final String host : hosts) {
             builder.add(new ZooKeeperHealthCheck(host, port, name));
         }
         return new ZooKeeperQuorumHealthCheck(builder.build(), name);
@@ -67,8 +67,8 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      *               the quorum
      * @param name   the name of this {@link HealthCheck}
      */
-    public ZooKeeperQuorumHealthCheck(ZooKeeperHealthCheck[] checks,
-                                      String name) {
+    public ZooKeeperQuorumHealthCheck(final ZooKeeperHealthCheck[] checks,
+                                      final String name) {
         this(ImmutableList.copyOf(checks), name);
     }
 
@@ -80,8 +80,8 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      *               node in the quorum
      * @param name   the name of this {@link HealthCheck}
      */
-    public ZooKeeperQuorumHealthCheck(List<ZooKeeperHealthCheck> checks,
-                                      String name) {
+    public ZooKeeperQuorumHealthCheck(final List<ZooKeeperHealthCheck> checks,
+                                      final String name) {
         super(name);
         this.healthChecks = checks;
     }
@@ -112,8 +112,8 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      */
     @Override
     protected Result check() throws Exception {
-        List<ZooKeeperHealthCheck> unhealthy = getUnhealthy();
-        Joiner joiner = Joiner.on(", ");
+        final List<ZooKeeperHealthCheck> unhealthy = getUnhealthy();
+        final Joiner joiner = Joiner.on(", ");
 
         if (unhealthy.isEmpty()) {
             return Result.healthy();
@@ -132,14 +132,14 @@ public class ZooKeeperQuorumHealthCheck extends HealthCheck {
      * @return a {@link List} of unhealthy nodes in the quorum
      */
     protected List<ZooKeeperHealthCheck> getUnhealthy() {
-        ImmutableList.Builder<ZooKeeperHealthCheck> unhealthy =
+        final ImmutableList.Builder<ZooKeeperHealthCheck> unhealthy =
                 ImmutableList.builder();
-        for (ZooKeeperHealthCheck healthCheck : healthChecks) {
+        for (final ZooKeeperHealthCheck healthCheck : healthChecks) {
             try {
                 if (!healthCheck.check().isHealthy()) {
                     unhealthy.add(healthCheck);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 unhealthy.add(healthCheck);
             }
         }

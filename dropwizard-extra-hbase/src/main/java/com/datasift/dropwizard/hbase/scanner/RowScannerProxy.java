@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public class RowScannerProxy implements RowScanner {
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
-    public RowScannerProxy(Scanner scanner) {
+    public RowScannerProxy(final Scanner scanner) {
         this.scanner = scanner;
     }
 
@@ -22,59 +22,59 @@ public class RowScannerProxy implements RowScanner {
         return scanner.getCurrentKey();
     }
 
-    public void setStartKey(byte[] start_key) {
+    public void setStartKey(final byte[] start_key) {
         scanner.setStartKey(start_key);
     }
 
-    public void setStartKey(String start_key) {
+    public void setStartKey(final String start_key) {
         scanner.setStartKey(start_key);
     }
 
-    public void setStopKey(byte[] stop_key) {
+    public void setStopKey(final byte[] stop_key) {
         scanner.setStopKey(stop_key);
     }
 
-    public void setStopKey(String stop_key) {
+    public void setStopKey(final String stop_key) {
         scanner.setStopKey(stop_key);
     }
 
-    public void setFamily(byte[] family) {
+    public void setFamily(final byte[] family) {
         scanner.setFamily(family);
     }
 
-    public void setFamily(String family) {
+    public void setFamily(final String family) {
         scanner.setFamily(family);
     }
 
-    public void setQualifier(byte[] qualifier) {
+    public void setQualifier(final byte[] qualifier) {
         scanner.setQualifier(qualifier);
     }
 
-    public void setQualifier(String qualifier) {
+    public void setQualifier(final String qualifier) {
         scanner.setQualifier(qualifier);
     }
 
-    public void setKeyRegexp(String regexp) {
+    public void setKeyRegexp(final String regexp) {
         scanner.setKeyRegexp(regexp);
     }
 
-    public void setKeyRegexp(String regexp, Charset charset) {
+    public void setKeyRegexp(final String regexp, final Charset charset) {
         scanner.setKeyRegexp(regexp, charset);
     }
 
-    public void setServerBlockCache(boolean populate_blockcache) {
+    public void setServerBlockCache(final boolean populate_blockcache) {
         scanner.setServerBlockCache(populate_blockcache);
     }
 
-    public void setMaxNumRows(int max_num_rows) {
+    public void setMaxNumRows(final int max_num_rows) {
         scanner.setMaxNumRows(max_num_rows);
     }
 
-    public void setMaxNumKeyValues(int max_num_kvs) {
+    public void setMaxNumKeyValues(final int max_num_kvs) {
         scanner.setMaxNumKeyValues(max_num_kvs);
     }
 
-    public void setMinTimestamp(long timestamp) {
+    public void setMinTimestamp(final long timestamp) {
         scanner.setMinTimestamp(timestamp);
     }
 
@@ -82,7 +82,7 @@ public class RowScannerProxy implements RowScanner {
         return scanner.getMinTimestamp();
     }
 
-    public void setMaxTimestamp(long timestamp) {
+    public void setMaxTimestamp(final long timestamp) {
         scanner.setMaxTimestamp(timestamp);
     }
 
@@ -90,7 +90,8 @@ public class RowScannerProxy implements RowScanner {
         return scanner.getMaxTimestamp();
     }
 
-    public void setTimeRange(long min_timestamp, long max_timestamp) {
+    public void setTimeRange(final long min_timestamp,
+                             final long max_timestamp) {
         scanner.setTimeRange(min_timestamp, max_timestamp);
     }
 
@@ -102,7 +103,7 @@ public class RowScannerProxy implements RowScanner {
         return scanner.nextRows();
     }
 
-    public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows(int rows) {
+    public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows(final int rows) {
         return scanner.nextRows(rows);
     }
 }

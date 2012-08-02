@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class GraphiteReportingBundle
         implements ConfiguredBundle<GraphiteReportingConfiguration> {
 
-    private Log log = Log.forClass(this.getClass());
+    private final Log log = Log.forClass(this.getClass());
 
     /**
      * Initializes the Graphite reporter, if enabled.
@@ -31,8 +31,8 @@ public class GraphiteReportingBundle
      *             {@link GraphiteReporter} with
      * @param env  the {@link Service} environment
      */
-    public void initialize(GraphiteReportingConfiguration conf,
-                           Environment env) {
+    public void initialize(final GraphiteReportingConfiguration conf,
+                           final Environment env) {
         if (conf.getGraphite().getEnabled()) {
             log.info("Reporting metrics to Graphite at {}:{}, every {} seconds",
                     conf.getGraphite().getHost(),

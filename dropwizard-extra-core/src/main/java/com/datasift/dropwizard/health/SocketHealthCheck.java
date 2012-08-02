@@ -13,8 +13,8 @@ import java.net.Socket;
  */
 abstract class SocketHealthCheck extends HealthCheck {
 
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
     public String getHost() {
         return host;
@@ -24,7 +24,9 @@ abstract class SocketHealthCheck extends HealthCheck {
         return port;
     }
 
-    public SocketHealthCheck(String host, int port, String name) {
+    public SocketHealthCheck(final String host,
+                             final int port,
+                             final String name) {
         super(String.format("%s (%s:%d)", name, host, port));
         this.host = host;
         this.port = port;
@@ -36,14 +38,15 @@ abstract class SocketHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        Socket socket = createSocket(host, port);
+        final Socket socket = createSocket(host, port);
         return socket.isConnected()
                 ? check(socket)
                 : Result.unhealthy(String.format(
                         "Failed to connect to %s:%d", host, port));
     }
 
-    protected Socket createSocket(String host, int port) throws IOException {
+    protected Socket createSocket(final String host,
+                                  final int port) throws IOException {
         return new Socket(host, port);
     }
 

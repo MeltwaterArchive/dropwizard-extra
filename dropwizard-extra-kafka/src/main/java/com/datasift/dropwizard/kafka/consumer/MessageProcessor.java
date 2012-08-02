@@ -23,8 +23,8 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
      *
      * @see StreamProcessor#process(Iterable, String)
      */
-    public void process(Iterable<T> stream, String topic) {
-        for (T message : stream) {
+    public void process(final Iterable<T> stream, final String topic) {
+        for (final T message : stream) {
             process(message, topic);
         }
     }

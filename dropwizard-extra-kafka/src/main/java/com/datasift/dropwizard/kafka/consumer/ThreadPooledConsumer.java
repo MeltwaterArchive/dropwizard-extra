@@ -22,14 +22,14 @@ import java.util.concurrent.*;
  */
 public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
 
-    private Log LOG = Log.forClass(getClass());
+    private final Log LOG = Log.forClass(getClass());
 
-    final private ConsumerConnector connector;
-    final private Map<String, Integer> partitions;
-    final private ExecutorService executor;
-    final private Duration shutdownPeriod;
-    final private Decoder<T> decoder;
-    final private StreamProcessor<T> processor;
+    private final ConsumerConnector connector;
+    private final Map<String, Integer> partitions;
+    private final ExecutorService executor;
+    private final Duration shutdownPeriod;
+    private final Decoder<T> decoder;
+    private final StreamProcessor<T> processor;
 
     /**
      * Creates a {@link ThreadPooledConsumer} to process a stream.
@@ -75,7 +75,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
      */
     public int getThreads() {
         int threads = 0;
-        for (Integer p : partitions.values()) {
+        for (final Integer p : partitions.values()) {
             threads = threads + p;
         }
         return threads;
@@ -140,8 +140,8 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
      */
     private class StreamProcessorRunnable implements Runnable {
 
-        private KafkaMessageStream<T> stream;
-        private String topic;
+        private final KafkaMessageStream<T> stream;
+        private final String topic;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and
@@ -150,8 +150,8 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
          * @param topic  the topic the {@link KafkaMessageStream} belongs to
          * @param stream a stream of {@link kafka.message.Message}s in the topic
          */
-        public StreamProcessorRunnable(String topic,
-                                       KafkaMessageStream<T> stream) {
+        public StreamProcessorRunnable(final String topic,
+                                       final KafkaMessageStream<T> stream) {
             this.topic = topic;
             this.stream = stream;
         }
@@ -160,7 +160,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
         public void run() {
             try {
                 processor.process(stream, topic);
-            } catch (Exception t) {
+            } catch (final Exception t) {
                 // only handle the error if the Thread hasn't been interrupted
                 if (!Thread.currentThread().isInterrupted()) {
                     handleError(t);
@@ -170,20 +170,21 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
 
         /**
          * Handles an {@link Exception} that has occurred.
-         * @param t
+         *
+         * @param e the {@link Exception} to handle
          */
-        private void handleError(Exception t) {
-            if (isRecoverable(t)) {
-                LOG.warn(t,
+        private void handleError(final Exception e) {
+            if (isRecoverable(e)) {
+                LOG.warn(e,
                         "Error processing stream, restarting stream consumer");
                 executor.submit(this);
             } else {
-                LOG.error(t,
+                LOG.error(e,
                         "Unrecoverable error processing stream, shutting down");
                 try {
                     stop();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                } catch (final Exception ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -195,7 +196,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
          * @return true if the {@link Exception} is recoverable; false if it is
          *         not recoverable
          */
-        private boolean isRecoverable(Exception t) {
+        private boolean isRecoverable(final Exception t) {
             return !(t instanceof IllegalStateException);
         }
     }

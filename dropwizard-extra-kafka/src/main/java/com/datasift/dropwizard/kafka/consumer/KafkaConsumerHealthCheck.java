@@ -9,7 +9,7 @@ import com.yammer.metrics.core.HealthCheck;
  */
 public class KafkaConsumerHealthCheck extends HealthCheck {
 
-    private KafkaConsumer consumer;
+    private final KafkaConsumer consumer;
 
     /**
      * Create a new {@link HealthCheck} instance with the given name.
@@ -17,7 +17,8 @@ public class KafkaConsumerHealthCheck extends HealthCheck {
      * @param consumer the {@link KafkaConsumer} to monitor the health of
      * @param name     the name of the {@link KafkaConsumer}
      */
-    public KafkaConsumerHealthCheck(KafkaConsumer consumer, String name) {
+    public KafkaConsumerHealthCheck(final KafkaConsumer consumer,
+                                    final String name) {
         super(name);
         this.consumer = consumer;
     }

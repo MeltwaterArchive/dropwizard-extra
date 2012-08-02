@@ -17,7 +17,7 @@ import com.yammer.dropwizard.config.Environment;
  */
 public class HBaseClientFactory {
 
-    final private Environment environment;
+    private final Environment environment;
 
     /**
      * Creates a new {@link HBaseClientFactory} instance for the specified
@@ -26,7 +26,7 @@ public class HBaseClientFactory {
      * @param environment the {@link Environment} to build {@link HBaseClient}
      *                    instances for
      */
-    public HBaseClientFactory(Environment environment) {
+    public HBaseClientFactory(final Environment environment) {
         this.environment = environment;
     }
 
@@ -39,7 +39,7 @@ public class HBaseClientFactory {
      * @return an {@link HBaseClient}, managed and configured according to the
      *            {@code configuration}
      */
-    public HBaseClient build(HBaseClientConfiguration configuration) {
+    public HBaseClient build(final HBaseClientConfiguration configuration) {
         return build(configuration, "default");
     }
 
@@ -53,7 +53,8 @@ public class HBaseClientFactory {
      * @return an {@link HBaseClient}, managed and configured according to the
      *         {@code configuration}
      */
-    public HBaseClient build(HBaseClientConfiguration configuration, String name) {
+    public HBaseClient build(final HBaseClientConfiguration configuration,
+                             final String name) {
         final HBaseClient proxy = new HBaseClientProxy(
                 new org.hbase.async.HBaseClient(configuration.getZookeeper().getQuorumSpec()));
 

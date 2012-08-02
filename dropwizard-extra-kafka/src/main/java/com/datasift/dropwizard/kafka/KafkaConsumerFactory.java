@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public class KafkaConsumerFactory {
 
-    private Environment environment;
+    private final Environment environment;
 
     /**
      * Creates a new {@link KafkaConsumerFactory} instance for the specified
@@ -36,7 +36,7 @@ public class KafkaConsumerFactory {
      * @param environment the {@link Environment} to build {@link KafkaConsumer}
      *                    instances for
      */
-    public KafkaConsumerFactory(Environment environment) {
+    public KafkaConsumerFactory(final Environment environment) {
         this.environment = environment;
     }
 
@@ -48,7 +48,7 @@ public class KafkaConsumerFactory {
      * @return          a {@link KafkaConsumerBuilder} to build a
      *                  {@link KafkaConsumer} for the given processor
      */
-    public KafkaConsumerBuilder<Message> processWith(StreamProcessor<Message> processor) {
+    public KafkaConsumerBuilder<Message> processWith(final StreamProcessor<Message> processor) {
         return processWith(new DefaultDecoder(), processor);
     }
 
@@ -64,8 +64,8 @@ public class KafkaConsumerFactory {
      * @return          a {@link KafkaConsumerBuilder} to build a
      *                  {@link KafkaConsumer} for the given processor and decoder
      */
-    public <T> KafkaConsumerBuilder<T> processWith(Decoder<T> decoder,
-                                                   StreamProcessor<T> processor) {
+    public <T> KafkaConsumerBuilder<T> processWith(final Decoder<T> decoder,
+                                                   final StreamProcessor<T> processor) {
         return new KafkaConsumerBuilder<T>(decoder, processor);
     }
 
@@ -76,11 +76,11 @@ public class KafkaConsumerFactory {
      */
     public class KafkaConsumerBuilder<T> {
 
-        private Decoder<T> decoder;
-        private StreamProcessor<T> processor;
+        private final Decoder<T> decoder;
+        private final StreamProcessor<T> processor;
 
-        private KafkaConsumerBuilder(Decoder<T> decoder,
-                                     StreamProcessor<T> processor) {
+        private KafkaConsumerBuilder(final Decoder<T> decoder,
+                                     final StreamProcessor<T> processor) {
             this.decoder = decoder;
             this.processor = processor;
         }
@@ -93,7 +93,7 @@ public class KafkaConsumerFactory {
          *                      to configure the {@link KafkaConsumer} with
          * @return              a managed and configured {@link KafkaConsumer}
          */
-        public KafkaConsumer<T> build(KafkaConsumerConfiguration configuration) {
+        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration) {
             return build(configuration, "default");
         }
 
@@ -110,9 +110,9 @@ public class KafkaConsumerFactory {
          * @param name          the name of the {@link KafkaConsumer}
          * @return              a managed and configured {@link KafkaConsumer}
          */
-        public KafkaConsumer<T> build(KafkaConsumerConfiguration configuration,
-                                      String name) {
-            KafkaConsumer<T> consumer = new ThreadPooledConsumer<T>(
+        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration,
+                                      final String name) {
+            final KafkaConsumer<T> consumer = new ThreadPooledConsumer<T>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(configuration)),
                     configuration.getPartitions(),
                     configuration.getShutdownPeriod(),
@@ -130,9 +130,10 @@ public class KafkaConsumerFactory {
         }
     }
 
-    static ConsumerConfig toConsumerConfig(KafkaConsumerConfiguration configuration) {
-        ZooKeeperConfiguration zookeeper = configuration.getZookeeper();
-        Properties props = new Properties();
+    static ConsumerConfig toConsumerConfig(final KafkaConsumerConfiguration configuration) {
+        final ZooKeeperConfiguration zookeeper = configuration.getZookeeper();
+        final Properties props = new Properties();
+
         props.setProperty("zk.connect",
                 zookeeper.getQuorumSpec());
         props.setProperty("zk.connectiontimeout.ms",

@@ -17,7 +17,7 @@ import org.codehaus.jackson.annotate.JsonCreator;
  */
 public class Compression {
 
-    private CompressionCodec codec;
+    private final CompressionCodec codec;
 
     /**
      * Creates a {@link Compression} instance for the given codec type.
@@ -32,7 +32,7 @@ public class Compression {
      *
      * @see Compression#parse(String)
      */
-    private Compression(int codec) {
+    private Compression(final int codec) {
         this.codec = CompressionCodec$.MODULE$.getCompressionCodec(codec);
     }
 
@@ -55,7 +55,7 @@ public class Compression {
      *                                  {@link CompressionCodec}
      */
     @JsonCreator
-    public static Compression parse(String codec) {
+    public static Compression parse(final String codec) {
         if ("gzip".equals(codec) || "gz".equals(codec)) {
             return new Compression(GZIPCompressionCodec.codec());
         } else if ("none".equals(codec) || "no".equals(codec) || "false".equals(codec)) {

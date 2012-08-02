@@ -13,7 +13,7 @@ public class GraphiteConfigurationTest {
 
     @Test
     public void hasValidDefaults() {
-        GraphiteConfiguration conf = new GraphiteConfiguration();
+        final GraphiteConfiguration conf = new GraphiteConfiguration();
 
         assertThat("default hostname is localhost",
                 conf.getHost(), is("localhost"));

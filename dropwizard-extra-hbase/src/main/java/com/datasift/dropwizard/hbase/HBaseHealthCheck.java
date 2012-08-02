@@ -9,10 +9,12 @@ import org.hbase.async.TableNotFoundException;
  */
 public class HBaseHealthCheck extends HealthCheck {
 
-    private HBaseClient client;
-    private String table;
+    private final HBaseClient client;
+    private final String table;
 
-    public HBaseHealthCheck(HBaseClient client, String name, String table) {
+    public HBaseHealthCheck(final HBaseClient client,
+                            final String name,
+                            final String table) {
         super(name + " (HBase): " + table);
 
         this.client = client;
@@ -24,10 +26,10 @@ public class HBaseHealthCheck extends HealthCheck {
         try {
             client.ensureTableExists(table.getBytes()).joinUninterruptibly(5000);
             return Result.healthy();
-        } catch (TimeoutException e) {
+        } catch (final TimeoutException e) {
             return Result.unhealthy(String.format(
                     "Timed out checking for '%s' after 5 seconds", table));
-        } catch (TableNotFoundException e) {
+        } catch (final TableNotFoundException e) {
             return Result.unhealthy(String.format(
                     "Table '%s' does not exist", table));
         }

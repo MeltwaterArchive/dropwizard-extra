@@ -15,9 +15,9 @@ import java.util.ArrayList;
  */
 public class HBaseClientProxy implements HBaseClient {
 
-    private org.hbase.async.HBaseClient client;
+    private final org.hbase.async.HBaseClient client;
 
-    public HBaseClientProxy(org.hbase.async.HBaseClient client) {
+    public HBaseClientProxy(final org.hbase.async.HBaseClient client) {
         this.client = client;
     }
 
@@ -29,60 +29,62 @@ public class HBaseClientProxy implements HBaseClient {
         return Size.bytes(client.getIncrementBufferSize());
     }
 
-    public Duration setFlushInterval(Duration flushInterval) {
+    public Duration setFlushInterval(final Duration flushInterval) {
         final short interval = (short) flushInterval.toMilliseconds();
         return Duration.milliseconds(client.setFlushInterval(interval));
     }
 
-    public Size setIncrementBufferSize(Size incrementBufferSize) {
+    public Size setIncrementBufferSize(final Size incrementBufferSize) {
         final int size = (int) incrementBufferSize.toBytes();
         return Size.bytes(client.setIncrementBufferSize(size));
     }
 
-    public Deferred<Boolean> create(PutRequest edit) {
+    public Deferred<Boolean> create(final PutRequest edit) {
         return client.atomicCreate(edit);
     }
 
-    public Deferred<Long> bufferIncrement(AtomicIncrementRequest request) {
+    public Deferred<Long> bufferIncrement(final AtomicIncrementRequest request) {
         return client.bufferAtomicIncrement(request);
     }
 
-    public Deferred<Long> increment(AtomicIncrementRequest request) {
+    public Deferred<Long> increment(final AtomicIncrementRequest request) {
         return client.atomicIncrement(request);
     }
 
-    public Deferred<Long> increment(AtomicIncrementRequest request,
-                                    Boolean durable) {
+    public Deferred<Long> increment(final AtomicIncrementRequest request,
+                                    final Boolean durable) {
         return client.atomicIncrement(request, durable);
     }
 
-    public Deferred<Boolean> compareAndSet(PutRequest edit, byte[] expected) {
+    public Deferred<Boolean> compareAndSet(final PutRequest edit,
+                                           final byte[] expected) {
         return client.compareAndSet(edit, expected);
     }
 
-    public Deferred<Boolean> compareAndSet(PutRequest edit, String expected) {
+    public Deferred<Boolean> compareAndSet(final PutRequest edit,
+                                           final String expected) {
         return client.compareAndSet(edit, expected);
     }
 
-    public Deferred<Object> delete(DeleteRequest request) {
+    public Deferred<Object> delete(final DeleteRequest request) {
         return client.delete(request);
     }
 
-    public Deferred<Object> ensureTableExists(byte[] table) {
+    public Deferred<Object> ensureTableExists(final byte[] table) {
         return client.ensureTableExists(table);
     }
 
-    public Deferred<Object> ensureTableExists(String table) {
+    public Deferred<Object> ensureTableExists(final String table) {
         return client.ensureTableExists(table);
     }
 
-    public Deferred<Object> ensureTableFamilyExists(byte[] table,
-                                                    byte[] family) {
+    public Deferred<Object> ensureTableFamilyExists(final byte[] table,
+                                                    final byte[] family) {
         return client.ensureTableFamilyExists(table, family);
     }
 
-    public Deferred<Object> ensureTableFamilyExists(String table,
-                                                    String family) {
+    public Deferred<Object> ensureTableFamilyExists(final String table,
+                                                    final String family) {
         return client.ensureTableFamilyExists(table, family);
     }
 
@@ -90,23 +92,23 @@ public class HBaseClientProxy implements HBaseClient {
         return client.flush();
     }
 
-    public Deferred<ArrayList<KeyValue>> get(GetRequest request) {
+    public Deferred<ArrayList<KeyValue>> get(final GetRequest request) {
         return client.get(request);
     }
 
-    public Deferred<RowLock> lockRow(RowLockRequest request) {
+    public Deferred<RowLock> lockRow(final RowLockRequest request) {
         return client.lockRow(request);
     }
 
-    public RowScanner newScanner(byte[] table) {
+    public RowScanner newScanner(final byte[] table) {
         return new RowScannerProxy(client.newScanner(table));
     }
 
-    public RowScanner newScanner(String table) {
+    public RowScanner newScanner(final String table) {
         return new RowScannerProxy(client.newScanner(table));
     }
 
-    public Deferred<Object> put(PutRequest request) {
+    public Deferred<Object> put(final PutRequest request) {
         return client.put(request);
     }
 
@@ -122,7 +124,7 @@ public class HBaseClientProxy implements HBaseClient {
         return client.getTimer();
     }
 
-    public Deferred<Object> unlockRow(RowLock lock) {
+    public Deferred<Object> unlockRow(final RowLock lock) {
         return client.unlockRow(lock);
     }
 }

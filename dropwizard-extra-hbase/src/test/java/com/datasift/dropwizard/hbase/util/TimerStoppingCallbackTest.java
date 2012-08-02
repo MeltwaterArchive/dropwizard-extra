@@ -40,15 +40,15 @@ public class TimerStoppingCallbackTest {
 
     @Test
     public void returnsArg() throws Exception {
-        String arg = "test";
-        TimerContext context = Metrics.newTimer(getClass(), "test").time();
+        final String arg = "test";
+        final TimerContext context = Metrics.newTimer(getClass(), "test").time();
         assertThat("callback returns argument",
                 new TimerStoppingCallback<String>(context).call(arg), is(arg));
     }
 
     @Test
     public void stopsTimer() throws Exception {
-        TimerContext ctx = timer.time();
+        final TimerContext ctx = timer.time();
 
         new TimerStoppingCallback<Object>(ctx).call(new Object());
 
