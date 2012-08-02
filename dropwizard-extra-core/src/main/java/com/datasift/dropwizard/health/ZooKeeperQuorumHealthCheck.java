@@ -3,6 +3,7 @@ package com.datasift.dropwizard.health;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.yammer.metrics.core.HealthCheck;
+import com.yammer.metrics.core.HealthCheck.Result;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,10 @@ import java.util.Map;
  * Each node in the quorum is checked by its own {@link ZooKeeperHealthCheck},
  * but failures are grouped under the quorums'
  * {@link ZooKeeperQuorumHealthCheck}.
- *
- * @todo find a way to actually report the reason for failed node healthchecks
+ * <p>
+ * <b>
+ * TODO: find a way to actually report the reason for failed node healthchecks
+ * </b>
  */
 public class ZooKeeperQuorumHealthCheck extends HealthCheck {
 

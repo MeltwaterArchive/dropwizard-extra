@@ -40,7 +40,7 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      * {@link kafka.consumer.ConsumerTimeoutException} will be thrown by that
      * streams' {@link kafka.consumer.ConsumerIterator}.
      *
-     * @see {@link kafka.consumer.ConsumerIterator#next()}
+     * @see kafka.consumer.ConsumerIterator#next()
      */
     @JsonProperty
     protected Duration timeout = null;
@@ -60,7 +60,7 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      * {@link kafka.common.InvalidMessageSizeException} to be thrown during
      * iteration of the stream.
      *
-     * @see {@link kafka.javaapi.message.ByteBufferMessageSet#iterator()}
+     * @see kafka.javaapi.message.ByteBufferMessageSet#iterator()
      */
     @JsonProperty
     @NotNull

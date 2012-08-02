@@ -1,6 +1,7 @@
 package com.datasift.dropwizard.health;
 
 import com.yammer.metrics.core.HealthCheck;
+import com.yammer.metrics.core.HealthCheck.Result;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -56,8 +57,8 @@ abstract class SocketHealthCheck extends HealthCheck {
      * The socket is provided to implementations already connected.
      *
      * @param socket the {@link Socket} to check the health of
-     * @return if the component is healthy, a healthy {@link HealthCheck.Result};
-     *         otherwise, an unhealthy {@link HealthCheck.Result} with a
+     * @return if the component is healthy, a healthy {@link Result};
+     *         otherwise, an unhealthy {@link Result} with a
      *         descriptive error message or exception
      * @throws Exception if there is an unhandled error during the health check;
      *                   this will result in a failed health check

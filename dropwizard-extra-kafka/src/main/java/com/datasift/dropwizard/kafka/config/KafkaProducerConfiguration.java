@@ -54,8 +54,7 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     /**
      * Compression codec for compressing all messages.
      *
-     * @throws IllegalArgumentException if the compression codec is invalid or
-     *                                  unsupported
+     * @see KafkaProducerConfiguration#getCompression()
      */
     @JsonProperty
     protected Compression compression = Compression.parse("none");
@@ -117,6 +116,8 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     }
 
     /**
+     * @throws IllegalArgumentException if the compression codec is invalid or
+     *                                  unsupported
      * @see KafkaProducerConfiguration#compression
      */
     public Compression getCompression() {
