@@ -8,7 +8,6 @@ This is a bunch of additional abstractions and utilities that extend Dropwizard.
 To keep the nightmare of transitive dependencies at bay, there are several 
 modules:
 
-  * [dropwizard-extra-archetypes](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-archetypes) provide a set of Maven Archetypes for bootstrapping new Dropwizard projects quickly and easily.
   * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
   contains several simple but useful abstractions with no real external dependencies.
   * [dropwizard-extra-hbase](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-hbase)
