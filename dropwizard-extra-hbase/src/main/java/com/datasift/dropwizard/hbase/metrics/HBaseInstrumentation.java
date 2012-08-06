@@ -1,7 +1,6 @@
 package com.datasift.dropwizard.hbase.metrics;
 
 import com.datasift.dropwizard.hbase.HBaseClient;
-import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.Gauge;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
@@ -26,200 +25,187 @@ public class HBaseInstrumentation {
     private final Timer unlocks;
     private final Timer scans;
     private final Timer closes;
+    
+    private final Class<? extends HBaseClient> clazz;
 
     public HBaseInstrumentation(final HBaseClient client,
                                 final MetricsRegistry registry) {
+        this.clazz = client.getClass();
+        
         // timers
-        creates        = registry.newTimer(
-                client.getClass(), "create",        "requests");
-        increments     = registry.newTimer(
-                client.getClass(), "increment",     "requests");
-        compareAndSets = registry.newTimer(
-                client.getClass(), "compareAndSet", "requests");
-        deletes        = registry.newTimer(
-                client.getClass(), "delete",        "requests");
-        assertions     = registry.newTimer(
-                client.getClass(), "assertion",     "requests");
-        flushes        = registry.newTimer(
-                client.getClass(), "flush",         "requests");
-        gets           = registry.newTimer(
-                client.getClass(), "get",           "requests");
-        locks          = registry.newTimer(
-                client.getClass(), "lock",          "requests");
-        puts           = registry.newTimer(
-                client.getClass(), "put",           "requests");
-        unlocks        = registry.newTimer(
-                client.getClass(), "unlock",        "requests");
-        scans          = registry.newTimer(
-                client.getClass(), "scans",         "scanner");
-        closes         = registry.newTimer(
-                client.getClass(), "closes",        "scanner");
+        creates        = registry.newTimer(clazz, "create",        "requests");
+        increments     = registry.newTimer(clazz, "increment",     "requests");
+        compareAndSets = registry.newTimer(clazz, "compareAndSet", "requests");
+        deletes        = registry.newTimer(clazz, "delete",        "requests");
+        assertions     = registry.newTimer(clazz, "assertion",     "requests");
+        flushes        = registry.newTimer(clazz, "flush",         "requests");
+        gets           = registry.newTimer(clazz, "get",           "requests");
+        locks          = registry.newTimer(clazz, "lock",          "requests");
+        puts           = registry.newTimer(clazz, "put",           "requests");
+        unlocks        = registry.newTimer(clazz, "unlock",        "requests");
+        scans          = registry.newTimer(clazz, "scans",         "scanner");
+        closes         = registry.newTimer(clazz, "closes",        "scanner");
 
         // client stats
-        registry.newGauge(getClass(), "atomicIncrements", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "atomicIncrements", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().atomicIncrements();
             }
         });
-        registry.newGauge(getClass(), "connectionsCreated", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "connectionsCreated", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().connectionsCreated();
             }
         });
-        registry.newGauge(getClass(), "contendedMetaLookups", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "contendedMetaLookups", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().contendedMetaLookups();
             }
         });
-        registry.newGauge(getClass(), "deletes", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "deletes", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().deletes();
             }
         });
-        registry.newGauge(getClass(), "flushes", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "flushes", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().flushes();
             }
         });
-        registry.newGauge(getClass(), "gets", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "gets", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().gets();
             }
         });
-        registry.newGauge(getClass(), "noSuchRegionExceptions", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "noSuchRegionExceptions", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().noSuchRegionExceptions();
             }
         });
-        registry.newGauge(getClass(), "numBatchedRpcSent", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "numBatchedRpcSent", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().numBatchedRpcSent();
             }
         });
-        registry.newGauge(getClass(), "numRpcDelayedDueToNSRE", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "numRpcDelayedDueToNSRE", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().numRpcDelayedDueToNSRE();
             }
         });
-        registry.newGauge(getClass(), "puts", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "puts", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().puts();
             }
         });
-        registry.newGauge(getClass(), "rootLookups", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "rootLookups", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().rootLookups();
             }
         });
-        registry.newGauge(getClass(), "rowLocks", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "rowLocks", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().rowLocks();
             }
         });
-        registry.newGauge(getClass(), "scannersOpened", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "scannersOpened", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().scannersOpened();
             }
         });
-        registry.newGauge(getClass(), "scans", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "scans", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().scans();
             }
         });
-        registry.newGauge(getClass(), "uncontendedMetaLookups", new Gauge<Long>() {
-            @Override
-            public Long value() {
+        registry.newGauge(clazz, "uncontendedMetaLookups", new Gauge<Long>() {
+            @Override public Long value() {
                 return client.stats().uncontendedMetaLookups();
             }
         });
 
         // increment buffer stats
-        registry.newGauge(getClass(), "averageLoadPenalty", "incrementBuffer", new Gauge<Double>() {
-            @Override
-            public Double value() {
-                return client.stats().incrementBufferStats().averageLoadPenalty();
-            }
-        });
-        registry.newGauge(getClass(), "evictionCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().evictionCount();
-            }
-        });
-        registry.newGauge(getClass(), "hitCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().hitCount();
-            }
-        });
-        registry.newGauge(getClass(), "hitRate", "incrementBuffer", new Gauge<Double>() {
-            @Override
-            public Double value() {
-                return client.stats().incrementBufferStats().hitRate();
-            }
-        });
-        registry.newGauge(getClass(), "loadCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().loadCount();
-            }
-        });
-        registry.newGauge(getClass(), "loadExceptionCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().loadExceptionCount();
-            }
-        });
-        registry.newGauge(getClass(), "loadExceptionRate", "incrementBuffer", new Gauge<Double>() {
-            @Override
-            public Double value() {
-                return client.stats().incrementBufferStats().loadExceptionRate();
-            }
-        });
-        registry.newGauge(getClass(), "loadSuccessCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().loadSuccessCount();
-            }
-        });
-        registry.newGauge(getClass(), "missCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().missCount();
-            }
-        });
-        registry.newGauge(getClass(), "missRate", "incrementBuffer", new Gauge<Double>() {
-            @Override
-            public Double value() {
-                return client.stats().incrementBufferStats().missRate();
-            }
-        });
-        registry.newGauge(getClass(), "requestCount", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().requestCount();
-            }
-        });
-        registry.newGauge(getClass(), "totalLoadTime", "incrementBuffer", new Gauge<Long>() {
-            @Override
-            public Long value() {
-                return client.stats().incrementBufferStats().totalLoadTime();
-            }
-        });
+        registry.newGauge(clazz, "averageLoadPenalty", "incrementBuffer",
+                new Gauge<Double>() {
+                    @Override public Double value() {
+                        return client.stats().incrementBufferStats()
+                                .averageLoadPenalty();
+                    }
+                });
+        registry.newGauge(clazz, "evictionCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .evictionCount();
+                    }
+                });
+        registry.newGauge(clazz, "hitCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats().hitCount();
+                    }
+                });
+        registry.newGauge(clazz, "hitRate", "incrementBuffer",
+                new Gauge<Double>() {
+                    @Override public Double value() {
+                        return client.stats().incrementBufferStats().hitRate();
+                    }
+                });
+        registry.newGauge(clazz, "loadCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .loadCount();
+                    }
+                });
+        registry.newGauge(clazz, "loadExceptionCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .loadExceptionCount();
+                    }
+                });
+        registry.newGauge(clazz, "loadExceptionRate", "incrementBuffer",
+                new Gauge<Double>() {
+                    @Override public Double value() {
+                        return client.stats().incrementBufferStats()
+                                .loadExceptionRate();
+                    }
+                });
+        registry.newGauge(clazz, "loadSuccessCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .loadSuccessCount();
+                    }
+                });
+        registry.newGauge(clazz, "missCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .missCount();
+                    }
+                });
+        registry.newGauge(clazz, "missRate", "incrementBuffer",
+                new Gauge<Double>() {
+                    @Override public Double value() {
+                        return client.stats().incrementBufferStats()
+                                .missRate();
+                    }
+                });
+        registry.newGauge(clazz, "requestCount", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .requestCount();
+                    }
+                });
+        registry.newGauge(clazz, "totalLoadTime", "incrementBuffer",
+                new Gauge<Long>() {
+                    @Override public Long value() {
+                        return client.stats().incrementBufferStats()
+                                .totalLoadTime();
+                    }
+                });
     }
 
     public Timer getCreates() {
