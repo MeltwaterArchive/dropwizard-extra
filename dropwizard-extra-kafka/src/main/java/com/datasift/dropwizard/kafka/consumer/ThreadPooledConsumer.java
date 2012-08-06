@@ -109,7 +109,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
             final List<KafkaMessageStream<T>> messageStreams = e.getValue();
 
             LOG.info("Consuming from topic '{}' with {} threads",
-                    messageStreams.size(), topic);
+                    topic, messageStreams.size());
 
             for (final KafkaMessageStream<T> stream : messageStreams) {
                 executor.submit(new StreamProcessorRunnable(topic, stream));
