@@ -77,7 +77,7 @@
     <site>
       <id>github</id>
       <name>GitHub Pages Site</name>
-      <url>http://datasift.github.com/dropwizard-extra</url>
+      <!--<url>scm:git:git@github.com:datasift/dropwizard-extra</url>-->
     </site>
   </distributionManagement>
 
@@ -168,11 +168,6 @@
           <version>2.5.1</version>
         </plugin>
         <plugin>
-          <groupId>com.github.github</groupId>
-          <artifactId>site-maven-plugin</artifactId>
-          <version>0.7</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-site-plugin</artifactId>
           <version>3.1</version>
         </plugin>
@@ -201,21 +196,6 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.github.github</groupId>
-        <artifactId>site-maven-plugin</artifactId>
-        <configuration>
-          <message>Create site for ${project.version}</message>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>site</goal>
-            </goals>
-            <phase>site-deploy</phase>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
