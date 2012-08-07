@@ -8,20 +8,20 @@
   <parent>
     <groupId>com.datasift.dropwizard</groupId>
     <artifactId>dropwizard-extra</artifactId>
-    <version>0.5.0-1-SNAPSHOT</version>
+    <version>0.5.1-1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>dropwizard-extra-kafka</artifactId>
 
-  <properties>
-    <kafka.version>0.7.0</kafka.version>
-  </properties>
-
   <name>Dropwizard Extra Kafka</name>
   <description>
     Dropwizard integration for working with Kafka.
   </description>
+
+  <properties>
+    <kafka.version>0.7.0</kafka.version>
+  </properties>
 
   <dependencies>
     <dependency>
