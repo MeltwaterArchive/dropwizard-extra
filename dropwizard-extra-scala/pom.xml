@@ -106,24 +106,14 @@
           </includes>
         </configuration>
       </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
       <plugin>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <reportPlugins>
-            <plugin>
-              <groupId>net.alchim31.maven</groupId>
-              <artifactId>scala-maven-plugin</artifactId>
-            </plugin>
-          </reportPlugins>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*.scala</include>
-          </includes>
-        </configuration>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
