@@ -1,0 +1,5 @@
+com.datasift.dropwizard.hbase
+com.datasift.dropwizard.hbase.config
+com.datasift.dropwizard.hbase.metrics
+com.datasift.dropwizard.hbase.scanner
+com.datasift.dropwizard.hbase.util
