@@ -206,28 +206,31 @@
           </execution>
         </executions>
       </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
       <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <configuration>
+          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+          <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+        </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-site-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <reportPlugins>
-            <plugin>
-              <artifactId>maven-project-info-reports-plugin</artifactId>
-              <configuration>
-                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-              </configuration>
-            </plugin>
-            <plugin>
-              <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-          </reportPlugins>
+          <detectJavaApiLink/>
+          <detectLinks/>
+          <links>
+            <link>http://dropwizard.codahale.com/maven/apidocs/</link>
+            <link>http://metrics.codahale.com/maven/apidocs/</link>
+          </links>
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </reporting>
 
 </project>
 

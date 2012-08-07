@@ -48,5 +48,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links combine.children="append">
+            <link>http://tsunanet.net/~tsuna/async/api/</link>
+            <link>http://tsunanet.net/~tsuna/asynchbase/api/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
 
