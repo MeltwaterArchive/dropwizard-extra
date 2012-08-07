@@ -119,6 +119,15 @@
           </reportPlugins>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <configuration>
+          <includes>
+            <include>**/*.scala</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
