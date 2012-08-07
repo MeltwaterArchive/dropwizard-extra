@@ -12,17 +12,17 @@ import scala.collection.JavaConverters.iterableAsScalaIterableConverter
 package object consumer {
 
   /**
-   * A [[kafka.serializer.Decoder]] for passing through [[kafka.message.Message]]s untouched
+   * [[kafka.serializer.Decoder]] for passing through [[kafka.message.Message]]s untouched.
    */
   implicit val DefaultDecoder: Decoder[Message] = new DefaultDecoder
 
   /**
-   * A [[kafka.serializer.Decoder]] that decodes messages as a [[java.lang.String]].
+   * [[kafka.serializer.Decoder]] that decodes messages as a [[java.lang.String]].
    */
   implicit val StringDecoder: Decoder[String] = new StringDecoder
 
   /**
-   * A [[kafka.serializer.Decoder]] that decodes messages to a raw `byte` array.
+   * [[kafka.serializer.Decoder]] that decodes messages to a raw `byte` array.
    */
   implicit val BytesDecoder: Decoder[Array[Byte]] = MessageDecoder(message => {
     val bytes = new Array[Byte](message.payload.remaining())
@@ -55,7 +55,8 @@ package object consumer {
    *
    * @param f the function to process the stream with
    * @tparam A the type of the messages in the stream to process
-   * @return a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] for processing the stream
+   * @return a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] for
+   *         processing the stream
    */
   implicit def fToStreamProcessor[A](f: (Iterable[A], String) => Any): StreamProcessor[A] = {
     new StreamProcessor[A] {
