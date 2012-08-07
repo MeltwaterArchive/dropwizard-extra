@@ -234,6 +234,7 @@
         <configuration>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
           <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+          <packaging>${project.packaging}</packaging>
         </configuration>
       </plugin>
       <plugin>
