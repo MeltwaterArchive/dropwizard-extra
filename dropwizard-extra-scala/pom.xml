@@ -112,6 +112,7 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
+        <version>3.0.2</version>
       </plugin>
     </plugins>
   </reporting>
@@ -124,7 +125,6 @@
           <plugin>
             <groupId>net.alchim31.maven</groupId>
             <artifactId>scala-maven-plugin</artifactId>
-            <version>3.0.2</version>
             <executions>
               <execution>
                 <goals>
