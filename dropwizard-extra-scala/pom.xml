@@ -14,7 +14,7 @@
   
   <artifactId>dropwizard-extra-scala</artifactId>
 
-  <name>Dropwizard Extra Scala ${scala.version}</name>
+  <name>Dropwizard Extra Scala</name>
   <description>
     Improvements to the Scala API for various Dropwizard modules.
   </description>
