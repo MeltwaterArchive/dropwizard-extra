@@ -77,7 +77,7 @@
     <site>
       <id>github</id>
       <name>GitHub Pages Site</name>
-      <!--<url>scm:git:git@github.com:datasift/dropwizard-extra</url>-->
+      <url>gitsite:git@github.com/datasift/dropwizard-extra.git</url>
     </site>
   </distributionManagement>
 
@@ -216,6 +216,14 @@
         </executions>
       </plugin>
     </plugins>
+
+    <extensions>
+      <extension>
+        <groupId>com.github.stephenc.wagon</groupId>
+        <artifactId>wagon-gitsite</artifactId>
+        <version>0.4.1</version>
+      </extension>
+    </extensions>
   </build>
 
   <reporting>
