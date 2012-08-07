@@ -1,0 +1,4 @@
+com.datasift.dropwizard.kafka
+com.datasift.dropwizard.kafka.config
+com.datasift.dropwizard.kafka.consumer
+com.datasift.dropwizard.kafka.util
