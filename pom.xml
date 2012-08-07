@@ -47,6 +47,10 @@
       <name>Nick Telford</name>
       <email>nick.telford@gmail.com</email>
       <timezone>0</timezone>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
     </developer>
   </developers>
 
