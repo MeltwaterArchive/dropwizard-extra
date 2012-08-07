@@ -10,6 +10,12 @@
     <maven>3.0.0</maven>
   </prerequisites>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
   <groupId>com.datasift.dropwizard</groupId>
   <artifactId>dropwizard-extra</artifactId>
   <version>0.5.1-1-SNAPSHOT</version>
@@ -145,6 +151,9 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <!-- javadoc, source, release, deploy and gpg plugins all configured by
+       Sonatype OSS parent POM -->
 
   <build>
     <pluginManagement>
