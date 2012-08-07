@@ -78,13 +78,6 @@
               <goal>doc-jar</goal>
             </goals>
           </execution>
-          <execution>
-            <id>process-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
       <plugin>
