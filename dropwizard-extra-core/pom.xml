@@ -15,6 +15,7 @@
   <artifactId>dropwizard-extra-core</artifactId>
 
   <name>Dropwizard Extra Core</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-core</url>
   <description>
     Some useful additions to Dropwizard that have no external dependencies.
   </description>

@@ -15,6 +15,7 @@
   <artifactId>dropwizard-extra-kafka</artifactId>
 
   <name>Dropwizard Extra Kafka</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-kafka</url>
   <description>
     Dropwizard integration for working with Kafka.
   </description>

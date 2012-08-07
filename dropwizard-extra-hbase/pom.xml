@@ -15,6 +15,7 @@
   <artifactId>dropwizard-extra-hbase</artifactId>
 
   <name>Dropwizard Extra HBase</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-hbase</url>
   <description>
     Dropwizard integration for working with HBase in Scala.
   </description>

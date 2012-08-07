@@ -18,6 +18,7 @@
   <description>
     Improvements to the Scala API for various Dropwizard modules.
   </description>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-scala</url>
 
   <dependencies>
     <dependency>
