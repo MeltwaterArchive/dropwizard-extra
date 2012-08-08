@@ -13,4 +13,12 @@ public interface KafkaConsumer<T> extends Managed {
      * @see kafka.consumer.ConsumerConnector#commitOffsets()
      */
     public void commitOffsets();
+
+    /**
+     * Determines if this {@link KafkaConsumer} is currently consuming.
+     *
+     * @return true if this {@link KafkaConsumer} is currently consuming from
+     *         at least one partition; otherwise, false
+     */
+    public boolean isRunning();
 }

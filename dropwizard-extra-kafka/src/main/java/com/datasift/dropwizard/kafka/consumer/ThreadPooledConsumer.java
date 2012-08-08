@@ -134,6 +134,17 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
     }
 
     /**
+     * Determines if this {@link KafkaConsumer} is currently consuming.
+     *
+     * @return true if this {@link KafkaConsumer} is currently consuming from
+     *         at least one partition; otherwise, false
+     */
+    public boolean isRunning() {
+        return !executor.isShutdown() &&
+                !executor.isTerminated();
+    }
+
+    /**
      * A {@link Runnable} that processes a {@link KafkaMessageStream}.
      *
      * The configured {@link StreamProcessor} is used to process the stream.

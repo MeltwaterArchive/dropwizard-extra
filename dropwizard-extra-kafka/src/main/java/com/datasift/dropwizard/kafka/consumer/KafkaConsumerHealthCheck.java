@@ -4,8 +4,6 @@ import com.yammer.metrics.core.HealthCheck;
 
 /**
  * A {@link HealthCheck} to monitor the health of a {@link KafkaConsumer}.
- *
- * TODO: figure out a way to check the health of a {@link KafkaConsumer} generically
  */
 public class KafkaConsumerHealthCheck extends HealthCheck {
 
@@ -25,6 +23,8 @@ public class KafkaConsumerHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        return Result.healthy();
+        return consumer.isRunning()
+                ? Result.healthy()
+                : Result.unhealthy("Consumer not consuming any partitions");
     }
 }
