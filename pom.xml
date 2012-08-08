@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -18,7 +15,7 @@
 
   <groupId>com.datasift.dropwizard</groupId>
   <artifactId>dropwizard-extra</artifactId>
-  <version>0.5.1-1-SNAPSHOT</version>
+  <version>0.5.1-1</version>
   <packaging>pom</packaging>
 
   <name>Dropwizard Extra</name>
@@ -247,8 +244,8 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.8.1</version>
         <configuration>
-          <detectJavaApiLink/>
-          <detectLinks/>
+          <detectJavaApiLink />
+          <detectLinks />
           <links>
             <link>http://dropwizard.codahale.com/maven/apidocs/</link>
             <link>http://metrics.codahale.com/maven/apidocs/</link>
