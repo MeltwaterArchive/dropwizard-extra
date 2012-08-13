@@ -36,7 +36,7 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
      *
      * @param registry the {@link MetricsRegistry} to register metrics with
      */
-    public MessageProcessor(MetricsRegistry registry) {
+    public MessageProcessor(final MetricsRegistry registry) {
         processed = registry.newTimer(getClass(), "processed");
     }
 
