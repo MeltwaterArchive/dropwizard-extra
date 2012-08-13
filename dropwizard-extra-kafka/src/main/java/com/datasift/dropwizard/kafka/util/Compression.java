@@ -7,9 +7,8 @@ import org.codehaus.jackson.annotate.JsonCreator;
  * A utility for parsing {@link CompressionCodec}s from a
  * {@link com.yammer.dropwizard.config.Configuration}.
  * <p>
- * To create {@link Compression} instances, use the
- * {@link Compression#parse(String)} factory method to parse an instance
- * from a {@link String}.
+ * To create {@link Compression} instances, use
+ * {@link Compression#parse(String)} to parse an instance from a {@link String}.
  * <p>
  * This is provided to parse textual specifications of a
  * {@link CompressionCodec}, for example in a
