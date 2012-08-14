@@ -19,7 +19,7 @@ object Consumer {
    * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
    */
   def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment)
-                        (f: StreamProcessor[A]): KafkaConsumer[A] = {
+                        (f: StreamProcessor[A]): KafkaConsumer = {
     new KafkaConsumerFactory(env)
       .processWith(implicitly[Decoder[A]], f)
       .build(conf)
@@ -35,7 +35,7 @@ object Consumer {
   def apply[A : Decoder](conf: KafkaConsumerConfiguration,
                          env: Environment,
                          name: String)
-                        (f: StreamProcessor[A]): KafkaConsumer[A] = {
+                        (f: StreamProcessor[A]): KafkaConsumer = {
     new KafkaConsumerFactory(env)
       .processWith(implicitly[Decoder[A]], f)
       .build(conf, name)

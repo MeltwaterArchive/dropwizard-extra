@@ -96,7 +96,7 @@ public class KafkaConsumerFactory {
          *                      to configure the {@link KafkaConsumer} with
          * @return              a managed and configured {@link KafkaConsumer}
          */
-        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration) {
+        public KafkaConsumer build(final KafkaConsumerConfiguration configuration) {
             return build(configuration, "default");
         }
 
@@ -117,8 +117,8 @@ public class KafkaConsumerFactory {
          * @param name          the name of the {@link KafkaConsumer}
          * @return              a managed and configured {@link KafkaConsumer}
          */
-        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration,
-                                      final String name) {
+        public KafkaConsumer build(final KafkaConsumerConfiguration configuration,
+                                   final String name) {
 
             int threads = 0;
             for (final Integer p : configuration.getPartitions().values()) {
@@ -147,11 +147,11 @@ public class KafkaConsumerFactory {
          * @param name          the name of the {@link KafkaConsumer}
          * @return              a managed and configured {@link KafkaConsumer}
          */
-        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration,
-                                      final ExecutorService executor,
-                                      final String name) {
+        public KafkaConsumer build(final KafkaConsumerConfiguration configuration,
+                                   final ExecutorService executor,
+                                   final String name) {
 
-            final KafkaConsumer<T> consumer = new SynchronousConsumer<T>(
+            final SynchronousConsumer consumer = new SynchronousConsumer<T>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(configuration)),
                     configuration.getPartitions(),
                     decoder,
