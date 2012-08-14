@@ -6,7 +6,6 @@ import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
-import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
 import com.yammer.dropwizard.config.Environment;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
