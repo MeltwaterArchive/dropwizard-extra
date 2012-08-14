@@ -4,6 +4,7 @@ import com.yammer.dropwizard.config.Environment
 import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration
 import com.datasift.dropwizard.kafka.KafkaConsumerFactory
 import kafka.serializer.Decoder
+import kafka.message.Message
 
 /**
  * Factory object for a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
@@ -17,7 +18,8 @@ object Consumer {
    * @param env the [[com.yammer.dropwizard.config.Environment]] to manage the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
    * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
    */
-  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment)(f: StreamProcessor[A]): KafkaConsumer[A] = {
+  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment)
+                        (f: StreamProcessor[A]): KafkaConsumer[A] = {
     new KafkaConsumerFactory(env)
       .processWith(implicitly[Decoder[A]], f)
       .build(conf)
@@ -30,7 +32,10 @@ object Consumer {
    * @param env the [[com.yammer.dropwizard.config.Environment]] to manage the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
    * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
    */
-  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment, name: String)(f: StreamProcessor[A]): KafkaConsumer[A] = {
+  def apply[A : Decoder](conf: KafkaConsumerConfiguration,
+                         env: Environment,
+                         name: String)
+                        (f: StreamProcessor[A]): KafkaConsumer[A] = {
     new KafkaConsumerFactory(env)
       .processWith(implicitly[Decoder[A]], f)
       .build(conf, name)
