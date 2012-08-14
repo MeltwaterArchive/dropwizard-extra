@@ -65,6 +65,7 @@
         <artifactId>scala-maven-plugin</artifactId>
         <configuration>
           <charset>UTF-8</charset>
+          <recompileMode>incremental</recompileMode>
         </configuration>
         <executions>
           <execution>
