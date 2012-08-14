@@ -15,7 +15,7 @@ import java.util.concurrent.*;
  * A {@link KafkaConsumer} that processes messages synchronously using an
  * {@link ExecutorService}.
  */
-public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
+public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
     private final Log LOG = Log.forClass(getClass());
 
@@ -26,7 +26,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
     private final StreamProcessor<T> processor;
 
     /**
-     * Creates a {@link ThreadPooledConsumer} to process a stream.
+     * Creates a {@link SynchronousConsumer} to process a stream.
      *
      * @param connector      the {@link ConsumerConnector} of the underlying
      *                       consumer
@@ -39,11 +39,11 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
      * @param executor       the {@link ExecutorService} to process the stream
      *                       with
      */
-    public ThreadPooledConsumer(final ConsumerConnector connector,
-                                final Map<String, Integer> partitions,
-                                final Decoder<T> decoder,
-                                final StreamProcessor<T> processor,
-                                final ExecutorService executor) {
+    public SynchronousConsumer(final ConsumerConnector connector,
+                               final Map<String, Integer> partitions,
+                               final Decoder<T> decoder,
+                               final StreamProcessor<T> processor,
+                               final ExecutorService executor) {
         this.connector = connector;
         this.partitions = partitions;
         this.decoder = decoder;
@@ -59,7 +59,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * Starts this {@link ThreadPooledConsumer} immediately.
+     * Starts this {@link SynchronousConsumer} immediately.
      * <p/>
      * The consumer will immediately begin consuming from the configured topics
      * using the configured {@link Decoder} to decode messages and
@@ -88,7 +88,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * Stops this {@link ThreadPooledConsumer} immediately.
+     * Stops this {@link SynchronousConsumer} immediately.
      *
      * @throws Exception
      */

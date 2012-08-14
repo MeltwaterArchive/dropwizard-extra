@@ -5,7 +5,8 @@ import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
-import com.datasift.dropwizard.kafka.consumer.ThreadPooledConsumer;
+import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
+import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
 import com.yammer.dropwizard.config.Environment;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
@@ -150,7 +151,7 @@ public class KafkaConsumerFactory {
                                       final ExecutorService executor,
                                       final String name) {
 
-            final KafkaConsumer<T> consumer = new ThreadPooledConsumer<T>(
+            final KafkaConsumer<T> consumer = new SynchronousConsumer<T>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(configuration)),
                     configuration.getPartitions(),
                     decoder,
