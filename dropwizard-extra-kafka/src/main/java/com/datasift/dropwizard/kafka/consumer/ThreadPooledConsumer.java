@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.kafka.consumer;
 
+import com.yammer.dropwizard.lifecycle.Managed;
 import com.yammer.dropwizard.logging.Log;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
@@ -14,7 +15,7 @@ import java.util.concurrent.*;
  * A {@link KafkaConsumer} that processes messages synchronously using an
  * {@link ExecutorService}.
  */
-public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
+public class ThreadPooledConsumer<T> implements KafkaConsumer, Managed {
 
     private final Log LOG = Log.forClass(getClass());
 

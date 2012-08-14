@@ -1,11 +1,9 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.yammer.dropwizard.lifecycle.Managed;
-
 /**
- * Interface for consuming a stream of type {@code T} from Kafka.
+ * Interface for consuming a stream of messages from Kafka.
  */
-public interface KafkaConsumer<T> extends Managed {
+public interface KafkaConsumer {
 
     /**
      * Commit the offsets of the current position in the message streams.
