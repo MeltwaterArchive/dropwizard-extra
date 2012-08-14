@@ -21,6 +21,15 @@ public class KafkaConsumerHealthCheck extends HealthCheck {
         this.consumer = consumer;
     }
 
+    /**
+     * Checks that the {@link KafkaConsumer} is still in its <i>running</i>
+     * state.
+     *
+     * @return true if the {@link KafkaConsumer} is still running properly;
+     *         false if it is not
+     * @throws Exception if there is an error checking the state of the
+     *         {@link KafkaConsumer}
+     */
     @Override
     protected Result check() throws Exception {
         return consumer.isRunning()

@@ -8,7 +8,7 @@ import com.yammer.metrics.core.TimerContext;
 
 /**
  * Processes messages of type {@code T} from a Kafka message stream.
- *
+ * <p/>
  * This {@link StreamProcessor} is instrumented with {@link Metric}s;
  * specifically, a {@link Timer} that tracks the time taken to process each
  * message in the stream.
