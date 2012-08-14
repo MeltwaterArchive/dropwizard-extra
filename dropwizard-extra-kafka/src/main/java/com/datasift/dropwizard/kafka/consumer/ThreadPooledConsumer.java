@@ -132,45 +132,38 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
             this.stream = stream;
         }
 
+        /**
+         * Process the stream using the configured {@link StreamProcessor}.
+         * <p/>
+         * If an {@link Exception} is thrown during processing, if it is deemed
+         * <i>recoverable</i>, the stream will continue to be consumed.
+         * <p/>
+         * Unrecoverable {@link Exception}s will cause the consumer to shut
+         * down completely.
+         */
         @Override
         public void run() {
             try {
                 processor.process(stream, topic);
-            } catch (final Exception t) {
-                handleError(t);
+            } catch (final IllegalStateException e) {
+                error(e);
+            } catch (final Exception e) {
+                recoverableError(e);
             }
         }
 
-        /**
-         * Handles an {@link Exception} that has occurred.
-         *
-         * @param e the {@link Exception} to handle
-         */
-        private void handleError(final Exception e) {
-            if (isRecoverable(e)) {
-                LOG.warn(e,
-                        "Error processing stream, restarting stream consumer");
-                executor.submit(this);
-            } else {
-                LOG.error(e,
-                        "Unrecoverable error processing stream, shutting down");
-                try {
-                    stop();
-                } catch (final Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        private void recoverableError(final Exception e) {
+            LOG.warn(e, "Error processing stream, restarting stream consumer");
+            executor.submit(this);
         }
 
-        /**
-         * Determines whether the given {@link Exception} can be recovered from.
-         *
-         * @param t the {@link Exception} to test
-         * @return true if the {@link Exception} is recoverable; false if it is
-         *         not recoverable
-         */
-        private boolean isRecoverable(final Exception t) {
-            return !(t instanceof IllegalStateException);
+        private void error(final Exception e) {
+            LOG.error(e, "Unrecoverable error processing stream, shutting down");
+            try {
+                stop();
+            } catch (final Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
