@@ -1,8 +1,6 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.yammer.dropwizard.logging.Log;
-import com.yammer.dropwizard.util.Duration;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
@@ -13,12 +11,8 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 /**
- * A {@link KafkaConsumer} that processes messages using a fixed-sized
- * {@link ThreadPoolExecutor}.
- *
- * The number of threads used for the {@link ThreadPoolExecutor} is determined
- * automatically by the total number of partitions this {@link KafkaConsumer}
- * is configured to consume.
+ * A {@link KafkaConsumer} that processes messages using an
+ * {@link ExecutorService}.
  */
 public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
 
@@ -27,7 +21,6 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
     private final ConsumerConnector connector;
     private final Map<String, Integer> partitions;
     private final ExecutorService executor;
-    private final Duration shutdownPeriod;
     private final Decoder<T> decoder;
     private final StreamProcessor<T> processor;
 
@@ -37,48 +30,24 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
      * @param connector      the {@link ConsumerConnector} of the underlying
      *                       consumer
      * @param partitions     a mapping of the topic -> partitions to consume
-     * @param shutdownPeriod the time to wait on a graceful shutdown before
-     *                       forcibly stopping the consumer
      * @param decoder        a {@link Decoder} for decoding each
      *                       {@link kafka.message.Message} to type {@code T}
      *                       before being processed
      * @param processor      a {@link StreamProcessor} for processing messages
      *                       of type {@code T}
-     * @param name           the name of this {@link KafkaConsumer}, used to
-     *                       control the name of the underlying thread-pool
+     * @param executor       the {@link ExecutorService} to process the stream
+     *                       with
      */
     public ThreadPooledConsumer(final ConsumerConnector connector,
                                 final Map<String, Integer> partitions,
-                                final Duration shutdownPeriod,
                                 final Decoder<T> decoder,
                                 final StreamProcessor<T> processor,
-                                final String name) {
+                                final ExecutorService executor) {
         this.connector = connector;
         this.partitions = partitions;
-        this.shutdownPeriod = shutdownPeriod;
         this.decoder = decoder;
         this.processor = processor;
-
-        // custom ThreadFactory to customize the Thread names
-        final ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat(String.format("kafka-consumer-%s-%%d", name))
-                .build();
-
-        this.executor = Executors.newFixedThreadPool(getThreads(), threadFactory);
-    }
-
-    /**
-     * Gets the number of {@link Thread}s this {@link ThreadPooledConsumer} will
-     * use.
-     *
-     * @return the number of {@link Thread} to consume with
-     */
-    public int getThreads() {
-        int threads = 0;
-        for (final Integer p : partitions.values()) {
-            threads = threads + p;
-        }
-        return threads;
+        this.executor = executor;
     }
 
     /**
@@ -112,7 +81,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
                     topic, messageStreams.size());
 
             for (final KafkaMessageStream<T> stream : messageStreams) {
-                executor.submit(new StreamProcessorRunnable(topic, stream));
+                executor.execute(new StreamProcessorRunnable(topic, stream));
             }
         }
     }
@@ -126,10 +95,6 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
      */
     @Override
     public void stop() throws Exception {
-        executor.shutdownNow();
-        executor.awaitTermination(
-                shutdownPeriod.toNanoseconds(),
-                TimeUnit.NANOSECONDS);
         connector.shutdown();
     }
 
@@ -172,10 +137,7 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
             try {
                 processor.process(stream, topic);
             } catch (final Exception t) {
-                // only handle the error if the Thread hasn't been interrupted
-                if (!Thread.currentThread().isInterrupted()) {
-                    handleError(t);
-                }
+                handleError(t);
             }
         }
 

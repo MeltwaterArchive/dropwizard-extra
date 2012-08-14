@@ -14,6 +14,8 @@ import kafka.serializer.Decoder;
 import kafka.serializer.DefaultDecoder;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A factory for creating and managing {@link KafkaConsumer} instances.
@@ -99,11 +101,15 @@ public class KafkaConsumerFactory {
 
         /**
          * Builds a {@link KafkaConsumer} instance from the given
-         * {@link KafkaConsumerConfiguration} and name.
-         * <p>
+         * {@link KafkaConsumerConfiguration}, {@link ExecutorService} and name.
+         * <p/>
          * The name is used to identify the returned {@link KafkaConsumer}
          * instance, for example, as the name of its
          * {@link com.yammer.metrics.core.HealthCheck}s, thread pool, etc.
+         * <p/>
+         * This implementation creates a new {@link ExecutorService} with a
+         * fixed-size thread-pool, configured for one thread per-partition the
+         * {@link KafkaConsumer} is being configured to consume.
          *
          * @param configuration the {@link KafkaConsumerConfiguration}
          *                      to configure the {@link KafkaConsumer} with
@@ -112,13 +118,44 @@ public class KafkaConsumerFactory {
          */
         public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration,
                                       final String name) {
+
+            int threads = 0;
+            for (final Integer p : configuration.getPartitions().values()) {
+                threads = threads + p;
+            }
+
+            final ExecutorService executor = environment.managedExecutorService(
+                    String.format("kafka-consumer-%s-%%d", name),
+                    threads, threads, 0, TimeUnit.SECONDS);
+
+            return build(configuration, executor, name);
+        }
+
+        /**
+         * Builds a {@link KafkaConsumer} instance from the given
+         * {@link KafkaConsumerConfiguration}, {@link ExecutorService} and name.
+         * <p>
+         * The name is used to identify the returned {@link KafkaConsumer}
+         * instance, for example, as the name of its
+         * {@link com.yammer.metrics.core.HealthCheck}s, etc.
+         *
+         * @param configuration the {@link KafkaConsumerConfiguration}
+         *                      to configure the {@link KafkaConsumer} with
+         * @param executor      the {@link ExecutorService} to process messages
+         *                      with
+         * @param name          the name of the {@link KafkaConsumer}
+         * @return              a managed and configured {@link KafkaConsumer}
+         */
+        public KafkaConsumer<T> build(final KafkaConsumerConfiguration configuration,
+                                      final ExecutorService executor,
+                                      final String name) {
+
             final KafkaConsumer<T> consumer = new ThreadPooledConsumer<T>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(configuration)),
                     configuration.getPartitions(),
-                    configuration.getShutdownPeriod(),
                     decoder,
                     processor,
-                    name);
+                    executor);
 
             // manage the consumer
             environment.manage(consumer);
