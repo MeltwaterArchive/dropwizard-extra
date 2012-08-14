@@ -17,7 +17,7 @@ modules:
   * [dropwizard-extra-scala](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-scala) 
   provides a more idiomatic Scala API to the other Dropwizard Extra modules.
 
-This is still a work-in-progress, so please use what you see with caution.
+Full documentation for the latest release is available on the [generated Maven Site](http://datasift.github.com/dropwizard-extra/).
 
 License
 -------
