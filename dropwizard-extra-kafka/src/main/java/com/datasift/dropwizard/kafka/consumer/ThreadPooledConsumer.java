@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 /**
- * A {@link KafkaConsumer} that processes messages using an
+ * A {@link KafkaConsumer} that processes messages synchronously using an
  * {@link ExecutorService}.
  */
 public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
@@ -59,11 +59,11 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
 
     /**
      * Starts this {@link ThreadPooledConsumer} immediately.
-     *
+     * <p/>
      * The consumer will immediately begin consuming from the configured topics
      * using the configured {@link Decoder} to decode messages and
      * {@link StreamProcessor} to process the decoded messages.
-     *
+     * <p/>
      * Each partition will be consumed using a separate thread.
      *
      * @throws Exception if an error occurs starting the consumer
@@ -88,8 +88,6 @@ public class ThreadPooledConsumer<T> implements KafkaConsumer<T> {
 
     /**
      * Stops this {@link ThreadPooledConsumer} immediately.
-     *
-     * The underlying {@link java.util.concurrent.ExecutorService}
      *
      * @throws Exception
      */
