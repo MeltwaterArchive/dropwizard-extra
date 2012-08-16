@@ -34,7 +34,7 @@ public class GraphiteReportingBundle
     public void initialize(final GraphiteReportingConfiguration conf,
                            final Environment env) {
         if (conf.getGraphite().getEnabled()) {
-            log.info("Reporting metrics to Graphite at {}:{}, every {} seconds",
+            log.info("Reporting metrics to Graphite at {}:{}, every {}",
                     conf.getGraphite().getHost(),
                     conf.getGraphite().getPort(),
                     conf.getGraphite().getFrequency());
