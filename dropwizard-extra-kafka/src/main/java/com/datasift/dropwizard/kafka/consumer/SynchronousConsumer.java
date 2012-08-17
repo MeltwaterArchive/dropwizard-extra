@@ -153,7 +153,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
         private void recoverableError(final Exception e) {
             LOG.warn(e, "Error processing stream, restarting stream consumer");
-            executor.submit(this);
+            executor.execute(this);
         }
 
         private void error(final Exception e) {
