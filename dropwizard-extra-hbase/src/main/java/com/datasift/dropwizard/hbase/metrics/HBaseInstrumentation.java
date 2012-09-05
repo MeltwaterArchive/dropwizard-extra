@@ -45,77 +45,77 @@ public class HBaseInstrumentation {
         closes         = registry.newTimer(clazz, "closes",        "scanner");
 
         // client stats
-        registry.newGauge(clazz, "atomicIncrements", new Gauge<Long>() {
+        registry.newGauge(clazz, "atomicIncrements", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().atomicIncrements();
             }
         });
-        registry.newGauge(clazz, "connectionsCreated", new Gauge<Long>() {
+        registry.newGauge(clazz, "connectionsCreated", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().connectionsCreated();
             }
         });
-        registry.newGauge(clazz, "contendedMetaLookups", new Gauge<Long>() {
+        registry.newGauge(clazz, "contendedMetaLookups", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().contendedMetaLookups();
             }
         });
-        registry.newGauge(clazz, "deletes", new Gauge<Long>() {
+        registry.newGauge(clazz, "deletes", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().deletes();
             }
         });
-        registry.newGauge(clazz, "flushes", new Gauge<Long>() {
+        registry.newGauge(clazz, "flushes", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().flushes();
             }
         });
-        registry.newGauge(clazz, "gets", new Gauge<Long>() {
+        registry.newGauge(clazz, "gets", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().gets();
             }
         });
-        registry.newGauge(clazz, "noSuchRegionExceptions", new Gauge<Long>() {
+        registry.newGauge(clazz, "noSuchRegionExceptions", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().noSuchRegionExceptions();
             }
         });
-        registry.newGauge(clazz, "numBatchedRpcSent", new Gauge<Long>() {
+        registry.newGauge(clazz, "numBatchedRpcSent", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().numBatchedRpcSent();
             }
         });
-        registry.newGauge(clazz, "numRpcDelayedDueToNSRE", new Gauge<Long>() {
+        registry.newGauge(clazz, "numRpcDelayedDueToNSRE", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().numRpcDelayedDueToNSRE();
             }
         });
-        registry.newGauge(clazz, "puts", new Gauge<Long>() {
+        registry.newGauge(clazz, "puts", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().puts();
             }
         });
-        registry.newGauge(clazz, "rootLookups", new Gauge<Long>() {
+        registry.newGauge(clazz, "rootLookups", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().rootLookups();
             }
         });
-        registry.newGauge(clazz, "rowLocks", new Gauge<Long>() {
+        registry.newGauge(clazz, "rowLocks", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().rowLocks();
             }
         });
-        registry.newGauge(clazz, "scannersOpened", new Gauge<Long>() {
+        registry.newGauge(clazz, "scannersOpened", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().scannersOpened();
             }
         });
-        registry.newGauge(clazz, "scans", new Gauge<Long>() {
+        registry.newGauge(clazz, "scans", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().scans();
             }
         });
-        registry.newGauge(clazz, "uncontendedMetaLookups", new Gauge<Long>() {
+        registry.newGauge(clazz, "uncontendedMetaLookups", "totals", new Gauge<Long>() {
             @Override public Long value() {
                 return client.stats().uncontendedMetaLookups();
             }
