@@ -345,10 +345,10 @@ public class BoundedHBaseClient implements HBaseClient {
      *
      * @param table the table to scan
      * @return a new {@link RowScanner} for the specified table
-     * @see HBaseClient#newScanner(byte[])
+     * @see HBaseClient#scan(byte[])
      */
-    public RowScanner newScanner(final byte[] table) {
-        return new BoundedRowScanner(client.newScanner(table), semaphore);
+    public RowScanner scan(final byte[] table) {
+        return new BoundedRowScanner(client.scan(table), semaphore);
     }
 
     /**
@@ -356,10 +356,10 @@ public class BoundedHBaseClient implements HBaseClient {
      *
      * @param table the table to scan
      * @return a new {@link RowScanner} for the specified table
-     * @see HBaseClient#newScanner(String)
+     * @see HBaseClient#scan(String)
      */
-    public RowScanner newScanner(final String table) {
-        return new BoundedRowScanner(client.newScanner(table), semaphore);
+    public RowScanner scan(final String table) {
+        return new BoundedRowScanner(client.scan(table), semaphore);
     }
 
     /**

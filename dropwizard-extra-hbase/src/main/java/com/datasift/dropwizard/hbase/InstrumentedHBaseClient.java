@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 /**
  * An {@link HBaseClient} that is instrumented with {@link Metric}s.
- * <p>
+ * <p/>
  * For each asynchronous request method, a {@link Timer} tracks the time taken
  * for the request.
- * <p>
+ * <p/>
  * This implementation proxies all requests through an underlying
  * {@link HBaseClient}, provided to the
  * {@link this#InstrumentedHBaseClient(HBaseClient) constructor}; it merely
@@ -369,10 +369,10 @@ public class InstrumentedHBaseClient implements HBaseClient {
      *
      * @param table the table to scan
      * @return a new {@link RowScanner} for the specified table
-     * @see HBaseClient#newScanner(byte[])
+     * @see HBaseClient#scan(byte[])
      */
-    public RowScanner newScanner(final byte[] table) {
-        return new InstrumentedRowScanner(client.newScanner(table), metrics);
+    public RowScanner scan(final byte[] table) {
+        return new InstrumentedRowScanner(client.scan(table), metrics);
     }
 
     /**
@@ -380,10 +380,10 @@ public class InstrumentedHBaseClient implements HBaseClient {
      *
      * @param table the table to scan
      * @return a new {@link RowScanner} for the specified table
-     * @see HBaseClient#newScanner(String)
+     * @see HBaseClient#scan(String)
      */
-    public RowScanner newScanner(final String table) {
-        return new InstrumentedRowScanner(client.newScanner(table), metrics);
+    public RowScanner scan(final String table) {
+        return new InstrumentedRowScanner(client.scan(table), metrics);
     }
 
     /**

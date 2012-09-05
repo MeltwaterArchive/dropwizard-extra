@@ -100,11 +100,11 @@ public class HBaseClientProxy implements HBaseClient {
         return client.lockRow(request);
     }
 
-    public RowScanner newScanner(final byte[] table) {
+    public RowScanner scan(final byte[] table) {
         return new RowScannerProxy(client.newScanner(table));
     }
 
-    public RowScanner newScanner(final String table) {
+    public RowScanner scan(final String table) {
         return new RowScannerProxy(client.newScanner(table));
     }
 

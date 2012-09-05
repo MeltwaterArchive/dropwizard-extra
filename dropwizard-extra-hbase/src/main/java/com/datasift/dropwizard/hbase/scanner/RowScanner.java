@@ -8,94 +8,95 @@ import java.util.ArrayList;
 
 /**
  * Client for scanning over a selection of rows.
- *
- * To obtain an instance of a {@link RowScanner},
- * call {@link com.datasift.dropwizard.hbase.HBaseClient#newScanner(byte[])}.
- *
- * All implementations are wrapper proxies around {@link org.hbase.async.Scanner}
- * providing additional functionality.
+ * <p/>
+ * To obtain an instance of a {@link RowScanner}, call
+ * {@link com.datasift.dropwizard.hbase.HBaseClient#scan(byte[])}.
+ * <p/>
+ * All implementations are wrapper proxies around {@link org.hbase.async.Scanner} providing
+ * additional functionality.
  */
 public interface RowScanner {
-
-    /**
-     * Get the key of the current row being scanned.
-     *
-     * @see org.hbase.async.Scanner#getCurrentKey()
-     * @return the key of the current row
-     */
-    public byte[] getCurrentKey();
 
     /**
      * Set the first key in the range to scan.
      *
      * @see org.hbase.async.Scanner#setStartKey(byte[])
-     * @param start_key the first key to scan from (inclusive)
+     * @param key the first key to scan from (inclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStartKey(byte[] start_key);
+    public RowScanner setStartKey(byte[] key);
 
     /**
      * Set the first key in the range to scan.
      *
      * @see org.hbase.async.Scanner#setStartKey(String)
-     * @param start_key the first key to scan from (inclusive)
+     * @param key the first key to scan from (inclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStartKey(String start_key);
+    public RowScanner setStartKey(String key);
 
     /**
      * Set the end key in the range to scan.
      *
      * @see org.hbase.async.Scanner#setStopKey(byte[])
-     * @param stop_key the end key to scan until (exclusive)
+     * @param key the end key to scan until (exclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStopKey(byte[] stop_key);
+    public RowScanner setStopKey(byte[] key);
 
     /**
      * Set the end key in the range to scan.
      *
      * @see org.hbase.async.Scanner#setStopKey(byte[])
-     * @param stop_key the end key to scan until (exclusive)
+     * @param key the end key to scan until (exclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStopKey(String stop_key);
+    public RowScanner setStopKey(String key);
 
     /**
      * Set the family to scan.
      *
      * @see org.hbase.async.Scanner#setFamily(byte[])
      * @param family the family to scan
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setFamily(byte[] family);
+    public RowScanner setFamily(byte[] family);
 
     /**
      * Set the family to scan.
      *
      * @see org.hbase.async.Scanner#setFamily(String)
      * @param family the family to scan
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setFamily(String family);
+    public RowScanner setFamily(String family);
 
     /**
      * Set the qualifier to select from cells
      *
      * @see org.hbase.async.Scanner#setQualifier(byte[])
      * @param qualifier the family to select from cells
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setQualifier(byte[] qualifier);
+    public RowScanner setQualifier(byte[] qualifier);
 
     /**
      * Set the qualifier to select from cells
      *
      * @see org.hbase.async.Scanner#setQualifier(String)
      * @param qualifier the family to select from cells
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setQualifier(String qualifier);
+    public RowScanner setQualifier(String qualifier);
 
     /**
      * Set a regular expression to filter keys being scanned.
      *
      * @see org.hbase.async.Scanner#setKeyRegexp(String)
      * @param regexp a regular expression to filter keys with
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setKeyRegexp(String regexp);
+    public RowScanner setKeyRegexp(String regexp);
 
     /**
      * Set a regular expression to filter keys being scanned.
@@ -103,41 +104,46 @@ public interface RowScanner {
      * @see org.hbase.async.Scanner#setKeyRegexp(String)
      * @param regexp a regular expression to filter keys with
      * @param charset the charset to decode the keys as
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setKeyRegexp(String regexp, Charset charset);
+    public RowScanner setKeyRegexp(String regexp, Charset charset);
 
     /**
      * Set whether to use the server-side block cache during the scan.
      *
      * @see org.hbase.async.Scanner#setServerBlockCache(boolean)
-     * @param populate_blockcache whether to use the server-side block cache
+     * @param populateBlockcache whether to use the server-side block cache
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setServerBlockCache(boolean populate_blockcache);
+    public RowScanner setServerBlockCache(boolean populateBlockcache);
 
     /**
      * Set the maximum number of rows to fetch in each batch.
      *
      * @see org.hbase.async.Scanner#setMaxNumRows(int)
-     * @param max_num_rows the maximum number of rows to fetch in each batch
+     * @param maxRows the maximum number of rows to fetch in each batch
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxNumRows(int max_num_rows);
+    public RowScanner setMaxNumRows(int maxRows);
 
     /**
      * Set the maximum number of {@link KeyValue}s to fetch in each batch.
      *
      * @see org.hbase.async.Scanner#setMaxNumKeyValues(int)
-     * @param max_num_kvs the maximum number of {@link KeyValue}s to fetch in
+     * @param maxKeyValues the maximum number of {@link KeyValue}s to fetch in
      *                    each batch
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxNumKeyValues(int max_num_kvs);
+    public RowScanner setMaxNumKeyValues(int maxKeyValues);
 
     /**
      * Sets the minimum timestamp of the cells to yield.
      *
      * @see org.hbase.async.Scanner#setMinTimestamp(long)
      * @param timestamp the minimum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMinTimestamp(long timestamp);
+    public RowScanner setMinTimestamp(long timestamp);
 
     /**
      * Gets the minimum timestamp of the cells to yield.
@@ -152,8 +158,9 @@ public interface RowScanner {
      *
      * @see org.hbase.async.Scanner#setMaxTimestamp(long)
      * @param timestamp the maximum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxTimestamp(long timestamp);
+    public RowScanner setMaxTimestamp(long timestamp);
 
     /**
      * Gets the maximum timestamp of the cells to yield.
@@ -167,10 +174,19 @@ public interface RowScanner {
      * Sets the timerange of the cells to yield.
      *
      * @see org.hbase.async.Scanner#setMinTimestamp(long)
-     * @param min_timestamp the minimum timestamp of the cells to yield
-     * @param max_timestamp the maximum timestamp of the cells to yield
+     * @param minTimestamp the minimum timestamp of the cells to yield
+     * @param maxTimestamp the maximum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setTimeRange(long min_timestamp, long max_timestamp);
+    public RowScanner setTimeRange(long minTimestamp, long maxTimestamp);
+
+    /**
+     * Get the key of the current row being scanned.
+     *
+     * @see org.hbase.async.Scanner#getCurrentKey()
+     * @return the key of the current row
+     */
+    public byte[] getCurrentKey();
 
     /**
      * Closes this Scanner

@@ -11,9 +11,9 @@ import java.util.concurrent.Semaphore;
 
 /**
  * A Scanner that constraints concurrent requests with a {@link Semaphore}.
- *
+ * <p/>
  * To obtain an instance of a {@link RowScanner}, call
- * {@link BoundedHBaseClient#newScanner(byte[])}.
+ * {@link BoundedHBaseClient#scan(byte[])}.
  */
 public class BoundedRowScanner implements RowScanner {
 
@@ -35,53 +35,51 @@ public class BoundedRowScanner implements RowScanner {
     }
 
     /**
-     * Get the key of the current row being scanned.
-     *
-     * @see RowScanner#getCurrentKey()
-     * @return the key of the current row
-     */
-    public byte[] getCurrentKey() {
-        return scanner.getCurrentKey();
-    }
-
-    /**
      * Set the first key in the range to scan.
      *
      * @see RowScanner#setStartKey(byte[])
-     * @param start_key the first key to scan from (inclusive)
+     * @param key the first key to scan from (inclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStartKey(final byte[] start_key) {
-        scanner.setStartKey(start_key);
+    public RowScanner setStartKey(final byte[] key) {
+        scanner.setStartKey(key);
+        return this;
     }
 
     /**
      * Set the first key in the range to scan.
      *
      * @see RowScanner#setStartKey(String)
-     * @param start_key the first key to scan from (inclusive)
+     * @param key the first key to scan from (inclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStartKey(final String start_key) {
-        scanner.setStartKey(start_key);
+    public RowScanner setStartKey(final String key) {
+        scanner.setStartKey(key);
+        return this;
     }
 
     /**
      * Set the end key in the range to scan.
      *
      * @see RowScanner#setStopKey(byte[])
-     * @param stop_key the end key to scan until (exclusive)
+     * @param key the end key to scan until (exclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStopKey(final byte[] stop_key) {
-        scanner.setStopKey(stop_key);
+    public RowScanner setStopKey(final byte[] key) {
+        scanner.setStopKey(key);
+        return this;
     }
 
     /**
      * Set the end key in the range to scan.
      *
      * @see RowScanner#setStopKey(byte[])
-     * @param stop_key the end key to scan until (exclusive)
+     * @param key the end key to scan until (exclusive)
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setStopKey(final String stop_key) {
-        scanner.setStopKey(stop_key);
+    public RowScanner setStopKey(final String key) {
+        scanner.setStopKey(key);
+        return this;
     }
 
     /**
@@ -89,9 +87,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setFamily(byte[])
      * @param family the family to scan
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setFamily(final byte[] family) {
+    public RowScanner setFamily(final byte[] family) {
         scanner.setFamily(family);
+        return this;
     }
 
     /**
@@ -99,9 +99,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setFamily(String)
      * @param family the family to scan
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setFamily(final String family) {
+    public RowScanner setFamily(final String family) {
         scanner.setFamily(family);
+        return this;
     }
 
     /**
@@ -109,9 +111,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setQualifier(byte[])
      * @param qualifier the family to select from cells
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setQualifier(final byte[] qualifier) {
+    public RowScanner setQualifier(final byte[] qualifier) {
         scanner.setQualifier(qualifier);
+        return this;
     }
 
     /**
@@ -119,9 +123,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setQualifier(String)
      * @param qualifier the family to select from cells
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setQualifier(final String qualifier) {
+    public RowScanner setQualifier(final String qualifier) {
         scanner.setQualifier(qualifier);
+        return this;
     }
 
     /**
@@ -129,9 +135,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setKeyRegexp(String)
      * @param regexp a regular expression to filter keys with
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setKeyRegexp(final String regexp) {
+    public RowScanner setKeyRegexp(final String regexp) {
         scanner.setKeyRegexp(regexp);
+        return this;
     }
 
     /**
@@ -140,40 +148,48 @@ public class BoundedRowScanner implements RowScanner {
      * @see RowScanner#setKeyRegexp(String)
      * @param regexp a regular expression to filter keys with
      * @param charset the charset to decode the keys as
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setKeyRegexp(final String regexp, Charset charset) {
+    public RowScanner setKeyRegexp(final String regexp, Charset charset) {
         scanner.setKeyRegexp(regexp, charset);
+        return this;
     }
 
     /**
      * Set whether to use the server-side block cache during the scan.
      *
      * @see RowScanner#setServerBlockCache(boolean)
-     * @param populate_blockcache whether to use the server-side block cache
+     * @param populateBlockcache whether to use the server-side block cache
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setServerBlockCache(final boolean populate_blockcache) {
-        scanner.setServerBlockCache(populate_blockcache);
+    public RowScanner setServerBlockCache(final boolean populateBlockcache) {
+        scanner.setServerBlockCache(populateBlockcache);
+        return this;
     }
 
     /**
      * Set the maximum number of rows to fetch in each batch.
      *
      * @see RowScanner#setMaxNumRows(int)
-     * @param max_num_rows the maximum number of rows to fetch in each batch
+     * @param maxRows the maximum number of rows to fetch in each batch
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxNumRows(final int max_num_rows) {
-        scanner.setMaxNumRows(max_num_rows);
+    public RowScanner setMaxNumRows(final int maxRows) {
+        scanner.setMaxNumRows(maxRows);
+        return this;
     }
 
     /**
      * Set the maximum number of {@link KeyValue}s to fetch in each batch.
      *
      * @see RowScanner#setMaxNumKeyValues(int)
-     * @param max_num_kvs the maximum number of {@link KeyValue}s to fetch in 
+     * @param maxKeyValues the maximum number of {@link KeyValue}s to fetch in
      *                    each batch
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxNumKeyValues(final int max_num_kvs) {
-        scanner.setMaxNumKeyValues(max_num_kvs);
+    public RowScanner setMaxNumKeyValues(final int maxKeyValues) {
+        scanner.setMaxNumKeyValues(maxKeyValues);
+        return this;
     }
 
     /**
@@ -181,9 +197,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setMinTimestamp(long)
      * @param timestamp the minimum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMinTimestamp(final long timestamp) {
+    public RowScanner setMinTimestamp(final long timestamp) {
         scanner.setMinTimestamp(timestamp);
+        return this;
     }
 
     /**
@@ -201,9 +219,11 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setMaxTimestamp(long)
      * @param timestamp the maximum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setMaxTimestamp(final long timestamp) {
+    public RowScanner setMaxTimestamp(final long timestamp) {
         scanner.setMaxTimestamp(timestamp);
+        return this;
     }
 
     /**
@@ -220,12 +240,23 @@ public class BoundedRowScanner implements RowScanner {
      * Sets the timerange of the cells to yield.
      *
      * @see RowScanner#setMinTimestamp(long)
-     * @param min_timestamp the minimum timestamp of the cells to yield
-     * @param max_timestamp the maximum timestamp of the cells to yield
+     * @param minTimestamp the minimum timestamp of the cells to yield
+     * @param maxTimestamp the maximum timestamp of the cells to yield
+     * @return this {@link RowScanner} to facilitate method chaining
      */
-    public void setTimeRange(final long min_timestamp,
-                             final long max_timestamp) {
-        scanner.setTimeRange(min_timestamp, max_timestamp);
+    public RowScanner setTimeRange(final long minTimestamp, final long maxTimestamp) {
+        scanner.setTimeRange(minTimestamp, maxTimestamp);
+        return this;
+    }
+
+    /**
+     * Get the key of the current row being scanned.
+     *
+     * @see RowScanner#getCurrentKey()
+     * @return the key of the current row
+     */
+    public byte[] getCurrentKey() {
+        return scanner.getCurrentKey();
     }
 
     /**

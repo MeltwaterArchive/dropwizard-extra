@@ -197,7 +197,7 @@ public interface HBaseClient {
      * @return a new {@link RowScanner} for the specified table
      * @see org.hbase.async.HBaseClient#newScanner(byte[])
      */
-    public RowScanner newScanner(byte[] table);
+    public RowScanner scan(byte[] table);
 
     /**
      * Create a new {@link RowScanner} for a table.
@@ -206,7 +206,7 @@ public interface HBaseClient {
      * @return a new {@link RowScanner} for the specified table
      * @see org.hbase.async.HBaseClient#newScanner(String)
      */
-    public RowScanner newScanner(String table);
+    public RowScanner scan(String table);
 
     /**
      * Store the specified cell(s).
