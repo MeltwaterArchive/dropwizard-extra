@@ -25,12 +25,10 @@ public class HBaseInstrumentation {
     private final Timer unlocks;
     private final Timer scans;
     private final Timer closes;
-    
-    private final Class<? extends HBaseClient> clazz;
 
     public HBaseInstrumentation(final HBaseClient client,
                                 final MetricsRegistry registry) {
-        this.clazz = client.getClass();
+        final Class<? extends HBaseClient> clazz = client.getClass();
         
         // timers
         creates        = registry.newTimer(clazz, "create",        "requests");
