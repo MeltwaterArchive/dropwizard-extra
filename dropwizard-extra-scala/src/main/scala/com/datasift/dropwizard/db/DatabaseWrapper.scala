@@ -14,6 +14,6 @@ class DatabaseWrapper(db: com.yammer.dropwizard.db.Database) {
    * @return a DAO instance for the specified type
    */
   def daoFor[T : Manifest]: T = {
-    db.onDemand[T](implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]])
+    db.onDemand[T](manifest[T].erasure.asInstanceOf[Class[T]])
   }
 }
