@@ -88,7 +88,7 @@ public class Primitives {
 
     /**
      * Determines whether the objects of the given source {@link Class} can be assigned to the
-     * type of the given target {@link Class}.
+     * primitive type of the given target {@link Class}.
      * <p/>
      * If either type is a boxed-primitive, it will be unboxed automatically; all comparisons
      * will be of the native primitive types.
@@ -99,6 +99,21 @@ public class Primitives {
      *         target {@link Class}; otherwise, false.
      */
     public static boolean isAssignableFrom(final Class target, final Class source) {
+        if (target.equals(Classes.Null.class)) {
+            throw new NullPointerException("target for type assignment may not be the null type");
+        }
+
+        // permit null sources for boxed targets
+        if (Primitives.isBoxedPrimitive(target) && source.equals(Classes.Null.class)) {
+            return true;
+        }
+
+        // ensure source type is a primitive type
+        if (!Primitives.isPrimitive(source)) {
+            return false;
+        }
+
+        // unbox both types for comparison
         final Class unboxedTarget = unbox(target);
         final Class unboxedSource = unbox(source);
 

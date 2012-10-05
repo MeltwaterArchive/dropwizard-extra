@@ -316,19 +316,8 @@ public class Classes {
 
         // check if each source type can be assigned to each target type
         for (int i = 0; i < targets.length; i++) {
-            final Class target = targets[i];
-            final Class source = sources[i];
-
-            if (Primitives.isPrimitive(target) && Primitives.isPrimitive(source)) {
-                // primitive types (including boxed primitives)
-                if (!Primitives.isAssignableFrom(target, source)) {
-                    return false;
-                }
-            } else {
-                // non-primitive types
-                if (!Classes.isAssignableFrom(target, source)) {
-                    return false;
-                }
+            if (!Classes.isAssignableFrom(targets[i], sources[i])) {
+                return false;
             }
         }
 
@@ -351,8 +340,10 @@ public class Classes {
         if (target.equals(Null.class)) {
             throw new NullPointerException("target for type assignment may not be the null type");
         }
-        return (!Primitives.isNativePrimitive(target) && source.equals(Null.class))
-                || target.isAssignableFrom(source);
+
+        return Primitives.isPrimitive(target)
+                ? Primitives.isAssignableFrom(target, source)
+                : source.equals(Null.class) || target.isAssignableFrom(source);
     }
 
     /**
