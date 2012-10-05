@@ -175,7 +175,6 @@ public class Classes {
      * @param arguments the objects to generate {@link Class}es for
      * @return an array of {@link Class} objects, in the same order as the argument list
      */
-    @SuppressWarnings("unchecked")
     public static Class[] of(final Object... arguments) {
         final Object[] args = resolveVarArgs(arguments);
         final Class[] classes = new Class[args.length];
