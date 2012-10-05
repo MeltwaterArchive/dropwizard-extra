@@ -75,7 +75,7 @@ public class Classes {
     public static <T> T newInstanceFrom(final T template, final Object... args)
             throws NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
-        return Classes.newInstance(((Class<T>) template.getClass()), args);
+        return Classes.newInstance(((Class<? extends T>) template.getClass()), args);
     }
 
     /**
@@ -158,7 +158,7 @@ public class Classes {
     @SuppressWarnings("unchecked")
     public static <T> T unsafeNewInstanceFrom(final T template, final Object... args)
             throws NoSuchMethodException, InstantiationException, InvocationTargetException {
-        return unsafeNewInstance((Class<T>) template.getClass(), args);
+        return unsafeNewInstance((Class<? extends T>) template.getClass(), args);
     }
 
     /**
