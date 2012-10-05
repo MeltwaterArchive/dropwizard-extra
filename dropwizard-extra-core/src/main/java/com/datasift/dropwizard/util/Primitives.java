@@ -173,7 +173,7 @@ public class Primitives {
      */
     public static Class requirePrimitiveClass(final Class clazz) {
         if (!isPrimitive(clazz)) {
-            throw new AssertionError("Class must be for a primitive type; " + clazz + "given");
+            throw new AssertionError("Class must be for a primitive type; " + clazz + " given");
         }
         return clazz;
     }
