@@ -63,7 +63,7 @@ public class HBaseClientFactory {
         final HBaseClient proxy = new HBaseClientProxy(
                 new org.hbase.async.HBaseClient(
                         zkConfiguration.getQuorumSpec(),
-                        zkConfiguration.getNamespace()));
+                        zkConfiguration.getNamespace().toString()));
 
         // wrap the client conditionally, based on the configuration
         final HBaseClient client =

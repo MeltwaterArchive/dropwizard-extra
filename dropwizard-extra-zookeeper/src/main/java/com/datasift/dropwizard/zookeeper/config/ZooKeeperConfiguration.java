@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.zookeeper.config;
 
+import com.datasift.dropwizard.zookeeper.util.Path;
 import com.google.common.base.Joiner;
 import com.yammer.dropwizard.util.Duration;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -34,8 +35,8 @@ public class ZooKeeperConfiguration {
      * service to a root path.
      */
     @JsonProperty
-    @NotEmpty
-    protected String namespace = "/";
+    @NotNull
+    protected Path namespace = new Path("/");
 
     /**
      * Maximum time to wait for a successful connection to a node in the quorum.
@@ -82,7 +83,7 @@ public class ZooKeeperConfiguration {
     /**
      * @see ZooKeeperConfiguration#namespace
      */
-    public String getNamespace() {
+    public Path getNamespace() {
         return namespace;
     }
 

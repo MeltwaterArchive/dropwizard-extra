@@ -62,7 +62,7 @@ public class CuratorFactory {
                 .ensembleProvider(new DropwizardConfiguredEnsembleProvider(configuration))
                 .connectionTimeoutMs((int) configuration.getConnectionTimeout().toMilliseconds())
                 .sessionTimeoutMs((int) configuration.getSessionTimeout().toMilliseconds())
-                .namespace(configuration.getNamespace())
+                .namespace(configuration.getNamespace().toString())
                 .build();
 
         environment.addHealthCheck(new CuratorHealthCheck(framework, name));
