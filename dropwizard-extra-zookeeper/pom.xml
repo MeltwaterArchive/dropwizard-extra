@@ -8,43 +8,29 @@
     <version>0.5.1-4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  
+  <artifactId>dropwizard-extra-zookeeper</artifactId>
 
-  <artifactId>dropwizard-extra-kafka</artifactId>
-
-  <name>Dropwizard Extra Kafka</name>
-  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-kafka</url>
+  <name>Dropwizard Extra ZooKeeper</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-zookeeper</url>
   <description>
-    Dropwizard integration for working with Kafka.
+    Dropwizard integration for working with ZooKeeper.
   </description>
 
-  <properties>
-    <kafka.version>0.7.0</kafka.version>
-  </properties>
-
   <dependencies>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
       <artifactId>dropwizard-extra-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-zookeeper</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>kafka</groupId>
-      <artifactId>core-kafka_${scala.version}</artifactId>
-      <version>${kafka.version}</version>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>3.4.4</version>
       <exclusions>
         <exclusion>
-          <groupId>com.sun.jmx</groupId>
-          <artifactId>jmxri</artifactId>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
         </exclusion>
         <exclusion>
           <groupId>javax.jms</groupId>
@@ -55,11 +41,24 @@
           <artifactId>jmxtools</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
+  
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links combine.children="append">
+            <link>http://zookeeper.apache.org/doc/current/api/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
 

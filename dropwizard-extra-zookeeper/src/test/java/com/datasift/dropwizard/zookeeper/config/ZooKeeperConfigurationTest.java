@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.config;
+package com.datasift.dropwizard.zookeeper.config;
 
 import com.yammer.dropwizard.util.Duration;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.hbase.config;
 
-import com.datasift.dropwizard.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.yammer.dropwizard.util.Duration;
 import com.yammer.dropwizard.util.Size;
 import org.codehaus.jackson.annotate.JsonProperty;

@@ -9,12 +9,12 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   
-  <artifactId>dropwizard-extra-hbase</artifactId>
+  <artifactId>dropwizard-extra-curator</artifactId>
 
-  <name>Dropwizard Extra HBase</name>
-  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-hbase</url>
+  <name>Dropwizard Extra Curator</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-curator</url>
   <description>
-    Dropwizard integration for working with HBase in Scala.
+    Dropwizard integration for working with ZooKeeper using Netflix's Curator client.
   </description>
 
   <dependencies>
@@ -29,27 +29,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hbase</groupId>
-      <artifactId>asynchbase</artifactId>
-      <version>1.3.1</version>
+      <groupId>com.netflix.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+      <version>1.2.4</version>
     </dependency>
   </dependencies>
-
-  <!-- manage the transitive deps from asynchbase -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty</artifactId>
-        <version>3.4.5.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.zookeeper</groupId>
-        <artifactId>zookeeper</artifactId>
-        <version>3.3.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <reporting>
     <plugins>
@@ -57,8 +41,8 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <links combine.children="append">
-            <link>http://tsunanet.net/~tsuna/async/api/</link>
-            <link>http://tsunanet.net/~tsuna/asynchbase/api/</link>
+            <link>http://netflix.github.com/curator/doc/</link>
+            <link>http://zookeeper.apache.org/doc/current/api/</link>
           </links>
         </configuration>
       </plugin>

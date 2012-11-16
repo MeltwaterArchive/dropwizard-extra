@@ -12,7 +12,7 @@ import java.net.Socket;
  * Use this as a basis for {@link HealthCheck}s for remote services, such as
  * databases or web-services.
  */
-abstract class SocketHealthCheck extends HealthCheck {
+public abstract class SocketHealthCheck extends HealthCheck {
 
     private final String host;
     private final int port;

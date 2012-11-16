@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.config;
+package com.datasift.dropwizard.zookeeper.config;
 
 import com.google.common.base.Joiner;
 import com.yammer.dropwizard.util.Duration;
@@ -26,6 +26,16 @@ public class ZooKeeperConfiguration {
     @JsonProperty
     @Range(min = 0, max = 49151)
     protected int port = 2181;
+
+    /**
+     * Namespace to to prepend to all paths accessed by the ZooKeeper client.
+     * <p/>
+     * Since ZooKeeper is a shared space, this is a useful way to localise a
+     * service to a root path.
+     */
+    @JsonProperty
+    @NotEmpty
+    protected String namespace = "/";
 
     /**
      * Maximum time to wait for a successful connection to a node in the quorum.
@@ -67,6 +77,13 @@ public class ZooKeeperConfiguration {
      */
     public Duration getSessionTimeout() {
         return sessionTimeout;
+    }
+
+    /**
+     * @see ZooKeeperConfiguration#namespace
+     */
+    public String getNamespace() {
+        return namespace;
     }
 
     /**
