@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.zookeeper.config;
 
+import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.yammer.dropwizard.util.Duration;
 import org.junit.Test;
 
@@ -20,6 +21,8 @@ public class ZooKeeperConfigurationTest {
                 conf.getHosts(), hasItemInArray("localhost"));
         assertThat("default port is ZooKeeper default",
                 conf.getPort(), is(2181));
+        assertThat("default namespace is ZooKeeper root",
+                conf.getNamespace(), is(new ZNode("/")));
         assertThat("default connection timeout is 6 seconds",
                 conf.getConnectionTimeout(), equalTo(Duration.seconds(6)));
         assertThat("default session timeout is 6 seconds",
@@ -42,5 +45,14 @@ public class ZooKeeperConfigurationTest {
 
         assertThat("quorum spec is correct for multiple hosts",
                 conf.getQuorumSpec(), is("remote1:2181,remote2:2181"));
+    }
+
+    @Test
+    public void namespacePath() {
+        final ZooKeeperConfiguration conf = mock(ZooKeeperConfiguration.class);
+        when(conf.getNamespace()).thenReturn(new ZNode("/"));
+        assertThat("namespace represents a valid path", conf.getNamespace(), is(new ZNode("/")));
+        assertThat("namespace String represents a valid path",
+                conf.getNamespace().toString(), is("/"));
     }
 }

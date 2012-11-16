@@ -28,7 +28,7 @@ public class CuratorHealthCheck extends HealthCheck {
         if (!framework.isStarted()) {
             return Result.unhealthy("Client not started");
         } else if (framework.checkExists().forPath("/") == null) {
-            return Result.unhealthy("Root namespace does not exist");
+            return Result.unhealthy("Root for namespace does not exist");
         }
 
         return Result.healthy();

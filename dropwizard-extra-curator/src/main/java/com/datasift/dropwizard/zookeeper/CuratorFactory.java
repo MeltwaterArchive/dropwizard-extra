@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.zookeeper;
 
+import com.datasift.dropwizard.zookeeper.config.CuratorConfiguration;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.zookeeper.ensemble.DropwizardConfiguredEnsembleProvider;
 import com.datasift.dropwizard.zookeeper.health.CuratorHealthCheck;
@@ -33,36 +34,38 @@ public class CuratorFactory {
 
     /**
      * Builds a default {@link CuratorFramework} instance from the given {@link
-     * ZooKeeperConfiguration}.
+     * CuratorConfiguration}.
      *
-     * @param configuration the {@link ZooKeeperConfiguration} for the ensemble
+     * @param configuration the {@link CuratorConfiguration} for the ensemble
      *                      to configure the {@link CuratorFramework} instance
      *                      for.
      * @return a {@link CuratorFramework} instance, managed and configured
      *         according to the {@code configuration}.
      */
-    public CuratorFramework build(final ZooKeeperConfiguration configuration) {
+    public CuratorFramework build(final CuratorConfiguration configuration) {
         return build(configuration, "default");
     }
 
     /**
      * Builds a {@link CuratorFramework} instance from the given {@link
-     * ZooKeeperConfiguration} with the given {@code name}.
+     * CuratorConfiguration} with the given {@code name}.
      *
-     * @param configuration the {@link ZooKeeperConfiguration} for the ensemble
+     * @param configuration the {@link CuratorConfiguration} for the ensemble
      *                      to configure the {@link CuratorFramework} instance
      *                      for.
      * @param name the name for the {@link CuratorFramework} instance.
      * @return a {@link CuratorFramework} instance, managed and configured
      *         according to the {@code configuration}.
      */
-    public CuratorFramework build(final ZooKeeperConfiguration configuration,
+    public CuratorFramework build(final CuratorConfiguration configuration,
                                   final String name) {
+        final ZooKeeperConfiguration zkConfiguration = configuration.getEnsembleConfiguration();
         final CuratorFramework framework = CuratorFrameworkFactory.builder()
-                .ensembleProvider(new DropwizardConfiguredEnsembleProvider(configuration))
-                .connectionTimeoutMs((int) configuration.getConnectionTimeout().toMilliseconds())
-                .sessionTimeoutMs((int) configuration.getSessionTimeout().toMilliseconds())
-                .namespace(configuration.getNamespace().toString())
+                .ensembleProvider(new DropwizardConfiguredEnsembleProvider(zkConfiguration))
+                .connectionTimeoutMs((int) zkConfiguration.getConnectionTimeout().toMilliseconds())
+                .sessionTimeoutMs((int) zkConfiguration.getSessionTimeout().toMilliseconds())
+                .namespace(zkConfiguration.getNamespace().toString())
+                .retryPolicy(configuration.getRetryPolicy())
                 .build();
 
         environment.addHealthCheck(new CuratorHealthCheck(framework, name));

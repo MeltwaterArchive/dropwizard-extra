@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.zookeeper.config;
 
-import com.datasift.dropwizard.zookeeper.util.Path;
+import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.google.common.base.Joiner;
 import com.yammer.dropwizard.util.Duration;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -31,12 +31,11 @@ public class ZooKeeperConfiguration {
     /**
      * Namespace to to prepend to all paths accessed by the ZooKeeper client.
      * <p/>
-     * Since ZooKeeper is a shared space, this is a useful way to localise a
-     * service to a root path.
+     * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
      */
     @JsonProperty
     @NotNull
-    protected Path namespace = new Path("/");
+    protected ZNode namespace = new ZNode("/");
 
     /**
      * Maximum time to wait for a successful connection to a node in the quorum.
@@ -83,7 +82,7 @@ public class ZooKeeperConfiguration {
     /**
      * @see ZooKeeperConfiguration#namespace
      */
-    public Path getNamespace() {
+    public ZNode getNamespace() {
         return namespace;
     }
 

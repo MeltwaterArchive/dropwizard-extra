@@ -1,9 +1,8 @@
 package com.datasift.dropwizard.zookeeper.health;
 
+import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.yammer.metrics.core.HealthCheck;
 import org.apache.zookeeper.ZooKeeper;
-
-import java.net.Socket;
 
 /**
  * A {@link HealthCheck} for a ZooKeeper ensemble.
@@ -14,10 +13,10 @@ import java.net.Socket;
 public class ZooKeeperHealthCheck extends HealthCheck {
 
     private final ZooKeeper client;
-    private final String namespace;
+    private final ZNode namespace;
 
     public ZooKeeperHealthCheck(final ZooKeeper client,
-                                final String namespace,
+                                final ZNode namespace,
                                 final String name) {
         super(name  + " (zookeeper, " + namespace + ")");
         this.client = client;
@@ -26,7 +25,7 @@ public class ZooKeeperHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        if (client.exists(namespace, false) == null) {
+        if (client.exists(namespace.toString(), false) == null) {
             return Result.unhealthy("Root namespace does not exist");
         }
 
