@@ -18,7 +18,7 @@ public class CuratorHealthCheck extends HealthCheck {
      *             underlying ZooKeeper ensemble this HealthCheck tests)
      */
     public CuratorHealthCheck(final CuratorFramework framework,
-                                 final String name) {
+                              final String name) {
         super(name + " (zookeeper)");
         this.framework = framework;
     }
