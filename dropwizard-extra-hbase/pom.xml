@@ -30,22 +30,6 @@
     </dependency>
   </dependencies>
 
-  <!-- manage the transitive deps from asynchbase -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty</artifactId>
-        <version>3.4.5.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.zookeeper</groupId>
-        <artifactId>zookeeper</artifactId>
-        <version>3.3.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <reporting>
     <plugins>
       <plugin>
