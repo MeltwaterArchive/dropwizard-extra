@@ -1,15 +1,16 @@
 package com.datasift.dropwizard.kafka.consumer;
 
 import com.yammer.dropwizard.lifecycle.Managed;
-import com.yammer.dropwizard.logging.Log;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
 
 /**
  * A {@link KafkaConsumer} that processes messages synchronously using an
@@ -17,7 +18,7 @@ import java.util.concurrent.*;
  */
 public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
-    private final Log LOG = Log.forClass(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final ConsumerConnector connector;
     private final Map<String, Integer> partitions;
@@ -152,12 +153,12 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         }
 
         private void recoverableError(final Exception e) {
-            LOG.warn(e, "Error processing stream, restarting stream consumer");
+            LOG.warn("Error processing stream, restarting stream consumer", e);
             executor.execute(this);
         }
 
         private void error(final Exception e) {
-            LOG.error(e, "Unrecoverable error processing stream, shutting down");
+            LOG.error("Unrecoverable error processing stream, shutting down", e);
             try {
                 stop();
             } catch (final Exception ex) {

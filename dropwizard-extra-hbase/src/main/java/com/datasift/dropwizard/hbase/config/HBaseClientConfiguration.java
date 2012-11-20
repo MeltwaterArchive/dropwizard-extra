@@ -1,10 +1,10 @@
 package com.datasift.dropwizard.hbase.config;
 
 import com.datasift.dropwizard.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.hbase.HBaseClient;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.util.Duration;
 import com.yammer.dropwizard.util.Size;
-import org.codehaus.jackson.annotate.JsonProperty;
-import com.datasift.dropwizard.hbase.HBaseClient;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
