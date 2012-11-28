@@ -1,3 +1,4 @@
 com.datasift.dropwizard.bundles
 com.datasift.dropwizard.config
 com.datasift.dropwizard.health
+com.datasift.dropwizard.util
