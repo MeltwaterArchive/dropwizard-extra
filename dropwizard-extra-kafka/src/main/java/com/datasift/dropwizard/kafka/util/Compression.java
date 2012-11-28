@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.kafka.util;
 
 import kafka.message.*;
-import org.codehaus.jackson.annotate.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * A utility for parsing {@link CompressionCodec}s from a

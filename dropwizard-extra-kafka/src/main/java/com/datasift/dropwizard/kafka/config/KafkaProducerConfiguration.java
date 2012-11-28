@@ -3,7 +3,7 @@ package com.datasift.dropwizard.kafka.config;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.yammer.dropwizard.util.Duration;
 import com.yammer.dropwizard.util.Size;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

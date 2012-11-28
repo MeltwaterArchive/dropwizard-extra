@@ -2,7 +2,7 @@ package com.datasift.dropwizard.kafka.config;
 
 import com.datasift.dropwizard.config.ZooKeeperConfiguration;
 import com.yammer.dropwizard.util.Duration;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

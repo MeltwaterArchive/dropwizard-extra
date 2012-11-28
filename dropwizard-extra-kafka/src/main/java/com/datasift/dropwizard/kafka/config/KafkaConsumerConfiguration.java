@@ -3,7 +3,7 @@ package com.datasift.dropwizard.kafka.config;
 import com.google.common.collect.ImmutableMap;
 import com.yammer.dropwizard.util.Duration;
 import com.yammer.dropwizard.util.Size;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 
