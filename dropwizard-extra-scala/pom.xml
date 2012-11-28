@@ -36,6 +36,12 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-jdbi</artifactId>
+      <version>${dropwizard.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.datasift.dropwizard</groupId>
       <artifactId>dropwizard-extra-hbase</artifactId>
       <version>${project.version}</version>
