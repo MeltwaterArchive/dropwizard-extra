@@ -28,7 +28,7 @@ public abstract class SocketHealthCheck extends HealthCheck {
     public SocketHealthCheck(final String host,
                              final int port,
                              final String name) {
-        super(String.format("%s (%s:%d)", name, host, port));
+        super(String.format("%s-%s:%d", name, host, port));
         this.host = host;
         this.port = port;
     }
