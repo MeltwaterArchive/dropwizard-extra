@@ -33,7 +33,7 @@ public class GraphiteReportingBundle
      *             {@link GraphiteReporter} with
      * @param env  the {@link Service} environment
      */
-    public void run(GraphiteReportingConfiguration conf, Environment env) throws Exception {
+    public void run(final GraphiteReportingConfiguration conf, final Environment env) {
 
         if (conf.getGraphite().getEnabled()) {
             log.info("Reporting metrics to Graphite at {}:{}, every {}",
@@ -56,7 +56,7 @@ public class GraphiteReportingBundle
         }
     }
 
-    public void initialize(Bootstrap<?> bootstrap) {
+    public void initialize(final Bootstrap<?> bootstrap) {
         // nothing doing
     }
 }
