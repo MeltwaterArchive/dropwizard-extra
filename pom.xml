@@ -43,6 +43,9 @@
     <developer>
       <name>Nick Telford</name>
       <email>nick.telford@gmail.com</email>
+      <url>https://github.com/nicktelford</url>
+      <organization>DataSift Inc.</organization>
+      <organizationUrl>http://datasift.com</organizationUrl>
       <timezone>0</timezone>
       <roles>
         <role>architect</role>
@@ -50,6 +53,13 @@
       </roles>
     </developer>
   </developers>
+
+  <contributors>
+    <contributor>
+      <name>David Morgantini</name>
+      <url>https://github.com/dmorgantini</url>
+    </contributor>
+  </contributors>
 
   <licenses>
     <license>
