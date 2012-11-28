@@ -15,7 +15,7 @@
 
   <groupId>com.datasift.dropwizard</groupId>
   <artifactId>dropwizard-extra</artifactId>
-  <version>0.5.1-4-SNAPSHOT</version>
+  <version>0.6.0-1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Dropwizard Extra</name>
