@@ -6,7 +6,7 @@ import com.netflix.curator.ensemble.EnsembleProvider;
 import java.io.IOException;
 
 /**
- * An {@link EnsembleProvider} for a fixed ensemble, configured by a {@link ZooKeeperConfiguration}
+ * An {@link EnsembleProvider} for a fixed ensemble, configured by a {@link ZooKeeperConfiguration}.
  */
 public class DropwizardConfiguredEnsembleProvider implements EnsembleProvider {
 
