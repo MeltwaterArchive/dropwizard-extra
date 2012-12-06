@@ -3,11 +3,13 @@ package com.datasift.dropwizard.bundles;
 import com.datasift.dropwizard.config.GraphiteReportingConfiguration;
 import com.datasift.dropwizard.health.GraphiteHealthCheck;
 import com.yammer.dropwizard.ConfiguredBundle;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.logging.Log;
-import com.yammer.metrics.reporting.GraphiteReporter;
-import com.yammer.dropwizard.config.Configuration;
 import com.yammer.dropwizard.Service;
+import com.yammer.dropwizard.config.Bootstrap;
+import com.yammer.dropwizard.config.Configuration;
+import com.yammer.dropwizard.config.Environment;
+import com.yammer.metrics.reporting.GraphiteReporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class GraphiteReportingBundle
         implements ConfiguredBundle<GraphiteReportingConfiguration> {
 
-    private final Log log = Log.forClass(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Initializes the Graphite reporter, if enabled.
@@ -31,8 +33,8 @@ public class GraphiteReportingBundle
      *             {@link GraphiteReporter} with
      * @param env  the {@link Service} environment
      */
-    public void initialize(final GraphiteReportingConfiguration conf,
-                           final Environment env) {
+    public void run(final GraphiteReportingConfiguration conf, final Environment env) {
+
         if (conf.getGraphite().getEnabled()) {
             log.info("Reporting metrics to Graphite at {}:{}, every {}",
                     conf.getGraphite().getHost(),
@@ -52,5 +54,9 @@ public class GraphiteReportingBundle
                     conf.getGraphite().getPort(),
                     "graphite"));
         }
+    }
+
+    public void initialize(final Bootstrap<?> bootstrap) {
+        // nothing doing
     }
 }

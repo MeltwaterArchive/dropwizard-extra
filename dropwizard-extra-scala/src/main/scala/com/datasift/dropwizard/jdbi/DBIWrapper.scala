@@ -1,11 +1,11 @@
-package com.datasift.dropwizard.db
+package com.datasift.dropwizard.jdbi
 
 /**
  * Provides enhancements to the Dropwizard DB API.
  *
- * @param db [[com.yammer.dropwizard.db.Database]] to wrap
+ * @param db [[org.skife.jdbi.v2.DBI]] to wrap
  */
-class DatabaseWrapper(db: com.yammer.dropwizard.db.Database) {
+class DBIWrapper(db: org.skife.jdbi.v2.DBI) {
 
   /**
    * Creates a DAO instance.

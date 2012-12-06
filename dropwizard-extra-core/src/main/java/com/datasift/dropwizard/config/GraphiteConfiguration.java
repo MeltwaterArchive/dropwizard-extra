@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.util.Duration;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 

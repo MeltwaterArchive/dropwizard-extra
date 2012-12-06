@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.zookeeper.config;
 
 import com.datasift.dropwizard.zookeeper.util.ZNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
 import com.yammer.dropwizard.util.Duration;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
