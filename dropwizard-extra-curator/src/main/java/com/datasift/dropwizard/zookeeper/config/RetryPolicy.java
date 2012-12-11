@@ -1,10 +1,10 @@
 package com.datasift.dropwizard.zookeeper.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import com.netflix.curator.retry.RetryNTimes;
 import com.netflix.curator.retry.RetryUntilElapsed;
 import com.yammer.dropwizard.util.Duration;
-import org.codehaus.jackson.annotate.JsonCreator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -2,7 +2,6 @@ package com.datasift.dropwizard.zookeeper;
 
 import com.yammer.dropwizard.lifecycle.Managed;
 import org.apache.zookeeper.ZooKeeper;
-import org.eclipse.jetty.util.component.LifeCycle;
 
 /**
  * Manages the lifecycle of a {@link ZooKeeper} client instance.
