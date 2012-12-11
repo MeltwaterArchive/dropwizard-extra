@@ -15,9 +15,9 @@ public class CuratorConfiguration {
     /**
      * The policy to take in the event of failures.
      * <p/>
-     * The following options are availble:
+     * The following options are available:
      * <ul>
-     *     <li><i>Exponential Backoff</i> -
+     *     <li><i>Exponential Back-off</i> -
      *     "backoff [upto] &lt;N&gt; times [sleeping [for] M (seconds|millis|...)"</li>
      *     <li><i>Fixed Retries</i> - "[retry] N times [sleeping [for] M (seconds|millis|...)"</li>
      *     <li><i>Timed Retries</i> -

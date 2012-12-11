@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.NotNull;
 
 /**
- * A {@link com.yammer.dropwizard.config.Configuration} for a ZooKeeper cluster.
+ * Configuration for a ZooKeeper cluster.
  */
 public class ZooKeeperConfiguration {
 
@@ -87,8 +87,8 @@ public class ZooKeeperConfiguration {
     }
 
     /**
-     * Retrieves a formatted specification of the ZooKeeper quroum.
-     * <p>
+     * Retrieves a formatted specification of the ZooKeeper quorum..
+     * <p/>
      * The specification is formatted as: host1:port,host2:port[,hostN:port]
      *
      * @return a specification of the ZooKeeper quorum, formatted as a String
