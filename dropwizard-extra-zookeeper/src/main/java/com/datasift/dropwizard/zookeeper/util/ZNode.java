@@ -46,7 +46,7 @@ public class ZNode {
      * @return {@code true} if the object is a ZNode that represents the same node as this one.
      */
     public boolean equals(final Object other) {
-        return (other instanceof ZNode) && ((ZNode) other).path.equals(path);
+        return (other instanceof ZNode) && other.toString().equals(toString());
     }
 
     public int hashCode() {
