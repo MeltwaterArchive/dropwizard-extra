@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Factory to generate {@link ManagedZooKeeperClient} instances from the config.
  */
-public class ZookeeperClientFactory {
+public class ZooKeeperClientFactory {
 
     private final Environment environment;
 
@@ -19,7 +19,7 @@ public class ZookeeperClientFactory {
      * Constructor
      * @param environment See {@link Environment}. This is the Dropwizard Environment.
      */
-    ZookeeperClientFactory(Environment environment) {
+    ZooKeeperClientFactory(Environment environment) {
         this.environment = environment;
     }
 
