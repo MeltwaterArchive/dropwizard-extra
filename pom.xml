@@ -52,6 +52,17 @@
         <role>developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Jairam Chandar</name>
+      <email>jairam.chandar@gmail.com</email>
+      <url>https://github.com/jairamc</url>
+      <organization>DataSift Inc.</organization>
+      <organizationUrl>http://datasift.com</organizationUrl>
+      <timezone>0</timezone>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>
