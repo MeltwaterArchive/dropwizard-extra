@@ -93,6 +93,7 @@
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
     <module>dropwizard-extra-scala</module>
+    <module>dropwizard-extra-zookeeper</module>
   </modules>
 
   <dependencyManagement>
