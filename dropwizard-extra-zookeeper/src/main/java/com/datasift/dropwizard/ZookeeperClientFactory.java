@@ -9,7 +9,7 @@ import org.apache.zookeeper.ZooKeeper;
 import java.io.IOException;
 
 /**
- * Factory to generate {@link ZooKeeperClient} instances from the config.
+ * Factory to generate {@link ManagedZooKeeperClient} instances from the config.
  */
 public class ZookeeperClientFactory {
 
@@ -25,15 +25,32 @@ public class ZookeeperClientFactory {
 
 
     /**
-     * Function to build the {@link ZooKeeperClient} class
+     * Function to build the {@link ZooKeeper} class
      * It also adds {@link ZooKeeperQuorumHealthCheck} to the list of Dropwizard Healthchecks
      * @param config ZooKeeper Configuration {@link ZooKeeperConfiguration}
      * @param watcher Watcher class to watch for Zookeeper events. See {@link Watcher}
-     * @return {@link ZooKeeperClient} instance
+     * @return {@link ManagedZooKeeperClient} instance
      * @throws IOException
      * @throws InterruptedException
      */
     public ZooKeeper build(ZooKeeperConfiguration config, Watcher watcher) throws IOException, InterruptedException {
+        return build(config, watcher, 0, null);
+    }
+
+
+    /**
+     * Function to build the {@link ZooKeeper} class with existing sessionId and sessionPwd
+     * It also adds {@link ZooKeeperQuorumHealthCheck} to the list of Dropwizard Healthchecks
+     * @param config ZooKeeper Configuration {@link ZooKeeperConfiguration}
+     * @param watcher Watcher class to watch for Zookeeper events. See {@link Watcher}
+     * @param sessionId Session Id with ZooKeeper
+     * @param sessionPasswd Session Password with ZooKeeper
+     * @return {@link ManagedZooKeeperClient} instance
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public ZooKeeper build(ZooKeeperConfiguration config, Watcher watcher,
+                           long sessionId, byte[] sessionPasswd) throws IOException, InterruptedException {
         // Build connection string
         StringBuilder connectionString = new StringBuilder();
         int port = config.getPort();
@@ -43,15 +60,21 @@ public class ZookeeperClientFactory {
         }
         String cString = connectionString.substring(0, connectionString.length() - 1);
 
-        ZooKeeperClient zk = new ZooKeeperClient(cString,
-                                        (int) config.getSessionTimeout().toSeconds(), watcher);
-        environment.manage(zk);
+        ZooKeeper zk = null;
+        if (sessionId == 0 && sessionPasswd == null) {
+            zk = new ZooKeeper(cString, (int) config.getSessionTimeout().toSeconds(), watcher);
+        } else {
+            zk = new ZooKeeper(cString, (int) config.getSessionTimeout().toSeconds(), watcher,
+                                                                        sessionId, sessionPasswd);
+        }
 
+        ManagedZooKeeperClient managedZooKeeperClient = new ManagedZooKeeperClient(zk);
+        environment.manage(managedZooKeeperClient);
         environment.addHealthCheck(ZooKeeperQuorumHealthCheck.forNodes(config.getHosts(),
-                                                                       config.getPort(), "zookeeper-healthcheck"));
-
+                config.getPort(), "zookeeper-healthcheck"));
 
         return zk;
+
     }
 
 }

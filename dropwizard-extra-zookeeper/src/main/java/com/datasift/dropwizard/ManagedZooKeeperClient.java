@@ -1,40 +1,27 @@
 package com.datasift.dropwizard;
 
 import com.yammer.dropwizard.lifecycle.Managed;
-import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+
 import java.io.IOException;
 
 /**
  * A managed ZooKeeper client. See {@link Managed}
  * It ensures that the ZooKeeper connection is closed when the application stops
  */
-public class ZooKeeperClient extends ZooKeeper implements Managed {
+public class ManagedZooKeeperClient implements Managed {
+
+    private ZooKeeper zooKeeper = null;
 
     /**
      * See {@link ZooKeeper#ZooKeeper(String, int, org.apache.zookeeper.Watcher)}
-     * @param connectionString
-     * @param sessionTimeout
-     * @param watcher
+     * @param zk ZooKeeper client instance
      * @throws IOException
      */
-    ZooKeeperClient(String connectionString, int sessionTimeout, Watcher watcher) throws IOException {
-        super(connectionString, sessionTimeout, watcher);
+    ManagedZooKeeperClient(ZooKeeper zk) throws IOException {
+        zooKeeper = zk;
     }
 
-    /**
-     * See {@link ZooKeeper#ZooKeeper(String, int, org.apache.zookeeper.Watcher, long, byte[])}
-     * @param connectionString
-     * @param sessionTimeout
-     * @param watcher
-     * @param sessionId
-     * @param sessionPasswd
-     * @throws IOException
-     */
-    ZooKeeperClient(String connectionString, int sessionTimeout, Watcher watcher,
-                                            long sessionId, byte[] sessionPasswd) throws IOException {
-        super(connectionString, sessionTimeout, watcher, sessionId, sessionPasswd);
-    }
 
     /**
      * Does nothing in this case as the constructor initialization of {@link ZooKeeper} class
@@ -52,7 +39,7 @@ public class ZooKeeperClient extends ZooKeeper implements Managed {
      */
     @Override
     public void stop() throws Exception {
-        super.close();
+        zooKeeper.close();
     }
 
 }
