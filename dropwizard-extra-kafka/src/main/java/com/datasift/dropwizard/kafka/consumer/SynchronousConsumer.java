@@ -1,7 +1,8 @@
 package com.datasift.dropwizard.kafka.consumer;
 
 import com.yammer.dropwizard.lifecycle.Managed;
-import kafka.consumer.KafkaMessageStream;
+
+import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
 import org.slf4j.Logger;
@@ -72,17 +73,17 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      */
     @Override
     public void start() throws Exception {
-        final Set<Map.Entry<String, List<KafkaMessageStream<T>>>> streams =
+        final Set<Map.Entry<String, List<KafkaStream<T>>>> streams =
                 connector.createMessageStreams(partitions, decoder).entrySet();
 
-        for (final Map.Entry<String, List<KafkaMessageStream<T>>> e : streams) {
+        for (final Map.Entry<String, List<KafkaStream<T>>> e : streams) {
             final String topic = e.getKey();
-            final List<KafkaMessageStream<T>> messageStreams = e.getValue();
+            final List<KafkaStream<T>> messageStreams = e.getValue();
 
             LOG.info("Consuming from topic '{}' with {} threads",
                     topic, messageStreams.size());
 
-            for (final KafkaMessageStream<T> stream : messageStreams) {
+            for (final KafkaStream<T> stream : messageStreams) {
                 executor.execute(new StreamProcessorRunnable(topic, stream));
             }
         }
@@ -110,24 +111,24 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * A {@link Runnable} that processes a {@link KafkaMessageStream}.
+     * A {@link Runnable} that processes a {@link KafkaStream}.
      *
      * The configured {@link StreamProcessor} is used to process the stream.
      */
     private class StreamProcessorRunnable implements Runnable {
 
-        private final KafkaMessageStream<T> stream;
+        private final KafkaStream<T> stream;
         private final String topic;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and
          * stream.
          *
-         * @param topic  the topic the {@link KafkaMessageStream} belongs to
+         * @param topic  the topic the {@link KafkaStream} belongs to
          * @param stream a stream of {@link kafka.message.Message}s in the topic
          */
         public StreamProcessorRunnable(final String topic,
-                                       final KafkaMessageStream<T> stream) {
+                                       final KafkaStream<T> stream) {
             this.topic = topic;
             this.stream = stream;
         }
