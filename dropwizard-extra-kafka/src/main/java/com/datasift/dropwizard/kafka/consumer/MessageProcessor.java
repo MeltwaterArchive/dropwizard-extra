@@ -5,6 +5,8 @@ import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
 import com.yammer.metrics.core.TimerContext;
+import kafka.consumer.KafkaStream;
+import kafka.message.MessageAndMetadata;
 
 /**
  * Processes messages of type {@code T} from a Kafka message stream.
@@ -54,12 +56,12 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
      * @param stream the stream of messages to process
      * @param topic  the topic the {@code stream} belongs to
      *
-     * @see StreamProcessor#process(Iterable, String)
+     * @see StreamProcessor#process(KafkaStream, String)
      */
-    public void process(final Iterable<T> stream, final String topic) {
-        for (final T message : stream) {
+    public void process(final KafkaStream<T> stream, final String topic) {
+        for (final MessageAndMetadata<T> msgAndMetadata : stream) {
             final TimerContext context = processed.time();
-            process(message, topic);
+            process(msgAndMetadata.message(), topic);
             context.stop();
         }
     }

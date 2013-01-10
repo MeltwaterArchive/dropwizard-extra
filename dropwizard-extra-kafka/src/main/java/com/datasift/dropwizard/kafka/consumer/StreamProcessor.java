@@ -1,5 +1,9 @@
 package com.datasift.dropwizard.kafka.consumer;
 
+import kafka.consumer.KafkaStream;
+
+import java.util.Collection;
+
 /**
  * Processes an {@link Iterable} of messages of type {@code T}.
  * <p/>
@@ -18,5 +22,5 @@ public interface StreamProcessor<T> {
      * @param stream the stream of messages to process
      * @param topic the topic the {@code stream} belongs to
      */
-    public void process(Iterable<T> stream, String topic);
+    public void process(KafkaStream<T> stream, String topic);
 }
