@@ -1,6 +1,7 @@
-package com.datasift.dropwizard.zookeeper.config;
+package com.datasift.dropwizard.curator.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import com.netflix.curator.retry.RetryNTimes;
 import com.netflix.curator.retry.RetryUntilElapsed;

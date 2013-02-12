@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.zookeeper;
+package com.datasift.dropwizard.curator;
 
 import com.netflix.curator.framework.CuratorFramework;
 import com.yammer.dropwizard.lifecycle.Managed;

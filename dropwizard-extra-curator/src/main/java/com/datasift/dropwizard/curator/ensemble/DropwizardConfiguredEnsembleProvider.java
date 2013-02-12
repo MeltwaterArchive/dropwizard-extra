@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.zookeeper.ensemble;
+package com.datasift.dropwizard.curator.ensemble;
 
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.netflix.curator.ensemble.EnsembleProvider;

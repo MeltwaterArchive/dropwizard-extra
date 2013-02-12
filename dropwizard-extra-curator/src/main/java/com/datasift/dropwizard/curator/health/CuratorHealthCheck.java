@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.zookeeper.health;
+package com.datasift.dropwizard.curator.health;
 
 import com.netflix.curator.framework.CuratorFramework;
 import com.yammer.metrics.core.HealthCheck;
@@ -16,8 +16,7 @@ public class CuratorHealthCheck extends HealthCheck {
      *
      * @param name the name of the health check
      */
-    public CuratorHealthCheck(final CuratorFramework framework,
-                              final String name) {
+    public CuratorHealthCheck(final CuratorFramework framework, final String name) {
         super(String.format("%s-curator-%s-%s",
                 name,
                 framework.getZookeeperClient().getCurrentConnectionString(),

@@ -32,6 +32,13 @@
       <groupId>com.netflix.curator</groupId>
       <artifactId>curator-framework</artifactId>
       <version>1.2.4</version>
+        <exclusions>
+            <!-- use version from dropwizard-core -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
 

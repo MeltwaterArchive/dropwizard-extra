@@ -1,9 +1,11 @@
-package com.datasift.dropwizard.zookeeper;
+package com.datasift.dropwizard.curator;
 
-import com.datasift.dropwizard.zookeeper.config.CuratorConfiguration;
+import com.datasift.dropwizard.curator.config.CuratorConfiguration;
+import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredEnsembleProvider;
+import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFactory;
+import com.datasift.dropwizard.curator.health.CuratorHealthCheck;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.datasift.dropwizard.zookeeper.ensemble.DropwizardConfiguredEnsembleProvider;
-import com.datasift.dropwizard.zookeeper.health.CuratorHealthCheck;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.yammer.dropwizard.config.Environment;
@@ -60,11 +62,13 @@ public class CuratorFactory {
     public CuratorFramework build(final CuratorConfiguration configuration,
                                   final String name) {
         final ZooKeeperConfiguration zkConfiguration = configuration.getEnsembleConfiguration();
+        final ZooKeeperFactory factory = new ZooKeeperFactory(environment);
         final CuratorFramework framework = CuratorFrameworkFactory.builder()
+                .zookeeperFactory(new DropwizardConfiguredZooKeeperFactory(factory, name))
                 .ensembleProvider(new DropwizardConfiguredEnsembleProvider(zkConfiguration))
                 .connectionTimeoutMs((int) zkConfiguration.getConnectionTimeout().toMilliseconds())
                 .sessionTimeoutMs((int) zkConfiguration.getSessionTimeout().toMilliseconds())
-                .namespace(zkConfiguration.getNamespace().toString())
+                .namespace(zkConfiguration.getNamespace())
                 .retryPolicy(configuration.getRetryPolicy())
                 .build();
 
@@ -73,5 +77,4 @@ public class CuratorFactory {
 
         return framework;
     }
-
 }
