@@ -1,7 +1,10 @@
 package com.datasift.dropwizard.hbase;
 
 import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
+import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.zookeeper.health.ZooKeeperHealthCheck;
 import com.yammer.dropwizard.config.Environment;
+import org.apache.zookeeper.ZooKeeper;
 
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
@@ -49,8 +52,12 @@ public class HBaseClientFactory {
      */
     public HBaseClient build(final HBaseClientConfiguration configuration,
                              final String name) {
+        final ZooKeeperConfiguration zkConfiguration = configuration.getZookeeper();
+
         final HBaseClient proxy = new HBaseClientProxy(
-                new org.hbase.async.HBaseClient(configuration.getZookeeper().getQuorumSpec()));
+                new org.hbase.async.HBaseClient(
+                        zkConfiguration.getQuorumSpec(),
+                        zkConfiguration.getNamespace().toString()));
 
         // optionally instrument and bound requests for the client
         final HBaseClient client = instrument(configuration, boundRequests(configuration, proxy));

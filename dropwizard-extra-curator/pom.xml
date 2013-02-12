@@ -9,12 +9,12 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   
-  <artifactId>dropwizard-extra-hbase</artifactId>
+  <artifactId>dropwizard-extra-curator</artifactId>
 
-  <name>Dropwizard Extra HBase</name>
-  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-hbase</url>
+  <name>Dropwizard Extra Curator</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-curator</url>
   <description>
-    Dropwizard integration for working with HBase in Scala.
+    Dropwizard integration for working with ZooKeeper using Netflix's Curator client.
   </description>
 
   <dependencies>
@@ -29,9 +29,16 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hbase</groupId>
-      <artifactId>asynchbase</artifactId>
-      <version>1.4.0</version>
+      <groupId>com.netflix.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+      <version>1.2.4</version>
+        <exclusions>
+            <!-- use version from dropwizard-core -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
 
@@ -41,8 +48,8 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <links combine.children="append">
-            <link>http://tsunanet.net/~tsuna/async/api/</link>
-            <link>http://tsunanet.net/~tsuna/asynchbase/api/</link>
+            <link>http://netflix.github.com/curator/doc/</link>
+            <link>http://zookeeper.apache.org/doc/current/api/</link>
           </links>
         </configuration>
       </plugin>

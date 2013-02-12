@@ -1,0 +1,9 @@
+ensemble:
+  hosts:
+    - test1
+    - test2
+  port: 2182
+  sessionTimeout: 30 seconds
+maxRetries: 5
+backOffBaseTime: 2 seconds
+compression: gzip

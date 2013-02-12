@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;

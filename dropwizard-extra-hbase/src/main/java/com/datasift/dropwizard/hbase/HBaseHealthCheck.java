@@ -15,7 +15,7 @@ public class HBaseHealthCheck extends HealthCheck {
     public HBaseHealthCheck(final HBaseClient client,
                             final String name,
                             final String table) {
-        super(name + " (HBase): " + table);
+        super(String.format("%s-hbase-%s", name, table));
 
         this.client = client;
         this.table = table;

@@ -19,7 +19,7 @@ public class GraphiteHealthCheck extends SocketHealthCheck {
     public GraphiteHealthCheck(final String host,
                                final int port,
                                final String name) {
-        super(host, port, name);
+        super(host, port, name + "-graphite");
     }
 
     @Override

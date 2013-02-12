@@ -33,6 +33,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.datasift.dropwizard</groupId>
+      <artifactId>dropwizard-extra-zookeeper</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>kafka</groupId>
       <artifactId>core-kafka_${scala.version}</artifactId>
       <version>${kafka.version}</version>
