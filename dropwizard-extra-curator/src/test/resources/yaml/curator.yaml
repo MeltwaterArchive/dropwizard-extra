@@ -6,3 +6,4 @@ ensemble:
   sessionTimeout: 30 seconds
 maxRetries: 5
 backOffBaseTime: 2 seconds
+compression: gzip
