@@ -6,9 +6,12 @@ import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFac
 import com.datasift.dropwizard.curator.health.CuratorHealthCheck;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.yammer.dropwizard.config.Environment;
+
+import java.util.concurrent.ThreadFactory;
 
 /**
  * A factory for creating and managing {@link CuratorFramework} instances.
@@ -63,14 +66,24 @@ public class CuratorFactory {
                                   final String name) {
         final ZooKeeperConfiguration zkConfiguration = configuration.getEnsembleConfiguration();
         final ZooKeeperFactory factory = new ZooKeeperFactory(environment);
-        final CuratorFramework framework = CuratorFrameworkFactory.builder()
+        final CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
                 .zookeeperFactory(new DropwizardConfiguredZooKeeperFactory(factory, name))
                 .ensembleProvider(new DropwizardConfiguredEnsembleProvider(zkConfiguration))
                 .connectionTimeoutMs((int) zkConfiguration.getConnectionTimeout().toMilliseconds())
+                .threadFactory(new ThreadFactoryBuilder().setNameFormat(name + "-%d").build())
                 .sessionTimeoutMs((int) zkConfiguration.getSessionTimeout().toMilliseconds())
                 .namespace(zkConfiguration.getNamespace())
+                .compressionProvider(configuration.getCompressionProvider())
                 .retryPolicy(configuration.getRetryPolicy())
-                .build();
+                .canBeReadOnly(zkConfiguration.canBeReadOnly());
+
+        // add optional auth details
+        final ZooKeeperConfiguration.Auth auth = zkConfiguration.getAuth();
+        if (auth != null) {
+            builder.authorization(auth.getScheme(), auth.getId());
+        }
+
+        final CuratorFramework framework = builder.build();
 
         environment.addHealthCheck(new CuratorHealthCheck(framework, name));
         environment.manage(new ManagedCuratorFramework(framework));

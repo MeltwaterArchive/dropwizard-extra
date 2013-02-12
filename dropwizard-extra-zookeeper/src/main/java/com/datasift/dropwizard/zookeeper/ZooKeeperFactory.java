@@ -111,6 +111,11 @@ public class ZooKeeperFactory {
                 watcher,
                 configuration.canBeReadOnly());
 
+        final ZooKeeperConfiguration.Auth auth = configuration.getAuth();
+        if (auth != null) {
+            client.addAuthInfo(auth.getScheme(), auth.getId());
+        }
+
         environment.addHealthCheck(new ZooKeeperHealthCheck(client, quorumSpec, namespace, name));
         environment.manage(new ManagedZooKeeper(client));
 

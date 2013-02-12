@@ -16,6 +16,42 @@ import javax.validation.constraints.NotNull;
 public class ZooKeeperConfiguration {
 
     /**
+     * Authorization details for a ZooKeeper ensemble.
+     */
+    public static class Auth {
+
+        /**
+         * The authorization scheme to use (e.g. "host").
+         */
+        @JsonProperty
+        @NotEmpty
+        protected String scheme;
+
+        /**
+         * The authorization id to use (e.g. "foo.example.com").
+         * <p/>
+         * This is dependent on the authorization {@link #scheme} being used.
+         */
+        @JsonProperty
+        @NotEmpty
+        protected String id;
+
+        /**
+         * @see #scheme
+         */
+        public String getScheme() {
+            return scheme;
+        }
+
+        /**
+         * @see #id
+         */
+        public byte[] getId() {
+            return id.getBytes();
+        }
+    }
+
+    /**
      * Hostnames of every node in the ZooKeeper quorum.
      */
     @JsonProperty
@@ -28,6 +64,14 @@ public class ZooKeeperConfiguration {
     @JsonProperty
     @Range(min = 0, max = 49151)
     protected int port = 2181;
+
+    /**
+     * Authorization details to provide to this ZooKeeper connection.
+     *
+     * @see Auth
+     */
+    @JsonProperty
+    protected Auth auth = null;
 
     /**
      * Namespace to to prepend to all paths accessed by the ZooKeeper client.
@@ -73,6 +117,13 @@ public class ZooKeeperConfiguration {
      */
     public int getPort() {
         return port;
+    }
+
+    /**
+     * @see Auth#auth
+     */
+    public Auth getAuth() {
+        return auth;
     }
 
     /**
