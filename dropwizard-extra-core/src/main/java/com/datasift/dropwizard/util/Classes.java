@@ -301,7 +301,8 @@ public class Classes {
      *
      * @param targets the {@link Class}s representing the types to assign to.
      * @param sources the {@link Class}s representing the types to assign from.
-     * @return
+     * @return true if all source {@link Class}es represent a type that can be assigned to their
+     *         corresponding target {@link Class}.
      */
     public static boolean isAssignableFrom(final Class[] targets, final Class[] sources) {
         // must have same number of types
@@ -336,7 +337,7 @@ public class Classes {
      * @return true if the source {@link Class} represents a type that can be assigned to the type
      *         represented by the target {@link Class}.
      */
-    public static boolean isAssignableFrom(final Class target, final Class source) {
+    public static boolean isAssignableFrom(final Class<?> target, final Class<?> source) {
         if (target.equals(Null.class)) {
             throw new NullPointerException("target for type assignment may not be the null type");
         }
