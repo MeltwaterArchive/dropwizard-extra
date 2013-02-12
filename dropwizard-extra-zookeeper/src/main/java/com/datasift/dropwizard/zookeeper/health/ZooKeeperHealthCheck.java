@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.zookeeper.health;
 
-import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.yammer.metrics.core.HealthCheck;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -29,11 +28,11 @@ public class ZooKeeperHealthCheck extends HealthCheck {
      */
     public ZooKeeperHealthCheck(final ZooKeeper client,
                                 final String quorumSpec,
-                                final ZNode namespace,
+                                final String namespace,
                                 final String name) {
         super(String.format("%s-zookeeper-%s-%s", name, quorumSpec, namespace));
         this.client = client;
-        this.namespace = namespace.toString();
+        this.namespace = namespace;
     }
 
     /**

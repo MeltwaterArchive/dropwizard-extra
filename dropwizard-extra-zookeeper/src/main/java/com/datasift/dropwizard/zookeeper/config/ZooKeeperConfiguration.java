@@ -1,9 +1,10 @@
 package com.datasift.dropwizard.zookeeper.config;
 
-import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
 import com.yammer.dropwizard.util.Duration;
+import com.yammer.dropwizard.validation.ValidationMethod;
+import org.apache.zookeeper.common.PathUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
@@ -34,8 +35,8 @@ public class ZooKeeperConfiguration {
      * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
      */
     @JsonProperty
-    @NotNull
-    protected ZNode namespace = new ZNode("/");
+    @NotEmpty
+    protected String namespace = "/";
 
     /**
      * Maximum time to wait for a successful connection to a node in the quorum.
@@ -50,6 +51,15 @@ public class ZooKeeperConfiguration {
     @JsonProperty
     @NotNull
     protected Duration sessionTimeout = Duration.seconds(6);
+
+    /**
+     * Whether or not this client can connect to read-only ZooKeeper instances.
+     * <p/>
+     * During a network partition, some or all nodes in the quorum may be in a read-only state. This
+     * controls whether the client may enter read-only mode during a network partition.
+     */
+    @JsonProperty
+    protected boolean readOnly = false;
 
     /**
      * @see ZooKeeperConfiguration#hosts
@@ -82,7 +92,7 @@ public class ZooKeeperConfiguration {
     /**
      * @see ZooKeeperConfiguration#namespace
      */
-    public ZNode getNamespace() {
+    public String getNamespace() {
         return namespace;
     }
 
@@ -101,5 +111,31 @@ public class ZooKeeperConfiguration {
                 .append(':')
                 .append(getPort())
                 .toString();
+    }
+
+    /**
+     * Whether the ZooKeeper client may enter read-only mode during a network partition.
+     *
+     * @return true if the client may enter read-only mode; false otherwise.
+     */
+    public boolean canBeReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Validates that the ZooKeeper client namespace is a valid ZNode.
+     * <p/>
+     * Note: this validation doesn't ensure that the ZNode exists, just that it is valid.
+     *
+     * @return true if the namespace is a valid ZNode; false if it is not.
+     */
+    @ValidationMethod(message = "namespace must be a valid ZooKeeper ZNode")
+    public boolean isNamespaceValid() {
+        try {
+            PathUtils.validatePath(namespace);
+        } catch (final IllegalArgumentException e) {
+            return false;
+        }
+        return true;
     }
 }

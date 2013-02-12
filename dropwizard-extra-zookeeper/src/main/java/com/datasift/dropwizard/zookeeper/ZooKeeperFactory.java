@@ -2,7 +2,6 @@ package com.datasift.dropwizard.zookeeper;
 
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.zookeeper.health.ZooKeeperHealthCheck;
-import com.datasift.dropwizard.zookeeper.util.ZNode;
 import com.yammer.dropwizard.config.Environment;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -104,14 +103,15 @@ public class ZooKeeperFactory {
                            final String name) throws IOException {
 
         final String quorumSpec = configuration.getQuorumSpec();
-        final ZNode namespace = configuration.getNamespace();
+        final String namespace = configuration.getNamespace();
+
         final ZooKeeper client = new ZooKeeper(
-                quorumSpec + namespace.toString(),
+                quorumSpec + namespace,
                 (int) configuration.getSessionTimeout().toMilliseconds(),
-                watcher);
+                watcher,
+                configuration.canBeReadOnly());
 
         environment.addHealthCheck(new ZooKeeperHealthCheck(client, quorumSpec, namespace, name));
-
         environment.manage(new ManagedZooKeeper(client));
 
         return client;

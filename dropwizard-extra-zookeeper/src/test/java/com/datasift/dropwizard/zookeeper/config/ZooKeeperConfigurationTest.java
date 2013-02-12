@@ -1,8 +1,13 @@
 package com.datasift.dropwizard.zookeeper.config;
 
-import com.datasift.dropwizard.zookeeper.util.ZNode;
+import com.google.common.io.Resources;
+import com.yammer.dropwizard.config.ConfigurationFactory;
 import com.yammer.dropwizard.util.Duration;
+import com.yammer.dropwizard.validation.Validator;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -13,27 +18,46 @@ import static org.mockito.Mockito.*;
  */
 public class ZooKeeperConfigurationTest {
 
+    ZooKeeperConfiguration config = null;
+
+    @Before
+    public void setup() throws Exception {
+        config = ConfigurationFactory
+                .forClass(ZooKeeperConfiguration.class, new Validator())
+                .build(new File(Resources.getResource("yaml/zookeeper.yaml").toURI()));
+    }
+
     @Test
     public void hasValidDefaults() {
         final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
 
         assertThat("default hostname is localhost",
-                conf.getHosts(), hasItemInArray("localhost"));
+                conf.getHosts(),
+                hasItemInArray("localhost"));
+
         assertThat("default port is ZooKeeper default",
-                conf.getPort(), is(2181));
+                conf.getPort(),
+                is(2181));
+
         assertThat("default namespace is ZooKeeper root",
-                conf.getNamespace(), is(new ZNode("/")));
+                conf.getNamespace(),
+                is("/"));
+
         assertThat("default connection timeout is 6 seconds",
-                conf.getConnectionTimeout(), equalTo(Duration.seconds(6)));
+                conf.getConnectionTimeout(),
+                equalTo(Duration.seconds(6)));
+
         assertThat("default session timeout is 6 seconds",
-                conf.getSessionTimeout(), equalTo(Duration.seconds(6)));
+                conf.getSessionTimeout(),
+                equalTo(Duration.seconds(6)));
     }
 
     @Test
     public void quorumSpecForOneHost() {
         final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
         assertThat("quorum spec is correct for single host",
-                conf.getQuorumSpec(), is("localhost:2181"));
+                conf.getQuorumSpec(),
+                is("localhost:2181"));
     }
 
     @Test
@@ -44,15 +68,42 @@ public class ZooKeeperConfigurationTest {
         when(conf.getQuorumSpec()).thenCallRealMethod();
 
         assertThat("quorum spec is correct for multiple hosts",
-                conf.getQuorumSpec(), is("remote1:2181,remote2:2181"));
+                conf.getQuorumSpec(),
+                is("remote1:2181,remote2:2181"));
     }
 
     @Test
     public void namespacePath() {
-        final ZooKeeperConfiguration conf = mock(ZooKeeperConfiguration.class);
-        when(conf.getNamespace()).thenReturn(new ZNode("/"));
-        assertThat("namespace represents a valid path", conf.getNamespace(), is(new ZNode("/")));
+        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        assertThat("namespace represents a valid path",
+                conf.getNamespace(),
+                is("/"));
+
         assertThat("namespace String represents a valid path",
-                conf.getNamespace().toString(), is("/"));
+                conf.getNamespace(),
+                is("/"));
+    }
+
+    @Test
+    public void parsedConfig() {
+        assertThat("contains hosts",
+                config.getHosts(),
+                is(new String[] { "test1", "test2" }));
+
+        assertThat("parses port",
+                config.getPort(),
+                is(2182));
+
+        assertThat("parses namespace",
+                config.getNamespace(),
+                is("/test"));
+
+        assertThat("parses connection timeout",
+                config.getConnectionTimeout(),
+                is(Duration.seconds(10)));
+
+        assertThat("parses session timeout",
+                config.getSessionTimeout(),
+                is(Duration.seconds(30)));
     }
 }
