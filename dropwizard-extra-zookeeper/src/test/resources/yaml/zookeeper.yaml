@@ -1,0 +1,7 @@
+hosts:
+  - test1
+  - test2
+port: 2182
+namespace: /test
+connectionTimeout: 10 seconds
+sessionTimeout: 30 seconds
