@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.hbase;
 
-import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
 import com.datasift.dropwizard.hbase.scanner.BoundedRowScanner;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.datasift.dropwizard.hbase.util.*;
@@ -43,34 +42,6 @@ public class BoundedHBaseClient implements HBaseClient {
      * asynchronous requests.
      */
     private final Semaphore semaphore;
-
-    /**
-     * Builds a new {@link HBaseClient} according to the given
-     * {@link HBaseClientConfiguration}.
-     * <p>
-     * If the {@link HBaseClientConfiguration#maxConcurrentRequests} is
-     * non-zero in the configuration, this will build a
-     * {@link BoundedHBaseClient} that wraps the given client.
-     * <p>
-     * If {@link HBaseClientConfiguration#maxConcurrentRequests} is zero,
-     * the given {@link HBaseClient} will be returned verbatim.
-     *
-     * @param configuration an {@link HBaseClientConfiguration} defining the
-     *                      {@link HBaseClient}s parameters
-     * @param client        an underlying {@link HBaseClient} implementation
-     * @return an {@link HBaseClient} that satisfies the configuration of
-     *         the maximum concurrent requests
-     */
-    public static HBaseClient wrap(final HBaseClientConfiguration configuration,
-                                   final HBaseClient client) {
-        if (configuration.getMaxConcurrentRequests() > 0) {
-            return new BoundedHBaseClient(
-                    client,
-                    configuration.getMaxConcurrentRequests());
-        } else {
-            return client;
-        }
-    }
 
     /**
      * Create a new instance with the given limit on concurrent requests for the

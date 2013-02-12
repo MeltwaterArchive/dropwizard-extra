@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.hbase;
 
-import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
 import com.datasift.dropwizard.hbase.scanner.InstrumentedRowScanner;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
@@ -41,33 +40,6 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * The instrumentation for this {@link HBaseClient}.
      */
     private final HBaseInstrumentation metrics;
-
-    /**
-     * Builds a new {@link HBaseClient} according to the given
-     * {@link HBaseClientConfiguration}.
-     * <p>
-     * If instrumentation
-     * {@link HBaseClientConfiguration#instrumented is enabled} in the
-     * configuration, this will build an {@link InstrumentedHBaseClient}
-     * wrapping the given {@link HBaseClient}.
-     * <p>
-     * If instrumentation is not enabled, the given {@link HBaseClient} will be
-     * returned verbatim.
-     *
-     * @param configuration an {@link HBaseClientConfiguration} defining the
-     *                      {@link HBaseClient}s parameters
-     * @param client        an underlying {@link HBaseClient} implementation
-     * @return an {@link HBaseClient} that satisfies the configuration of
-     *         instrumentation
-     */
-    public static HBaseClient wrap(final HBaseClientConfiguration configuration,
-                                   final HBaseClient client) {
-        if (configuration.isInstrumented()) {
-            return new InstrumentedHBaseClient(client);
-        } else {
-            return client;
-        }
-    }
 
     /**
      * Creates a new {@link InstrumentedHBaseClient} for the given underlying
