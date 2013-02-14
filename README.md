@@ -40,7 +40,7 @@ so just add the module(s) you wish to use to your `pom.xml`:
     <dependency>
         <groupId>com.datasift.dropwizard</groupId>
         <artifactId>dropwizard-extra-core</artifactId>
-        <version>0.6.2-1</version>
+        <version>0.6.1-1</version>
     </dependency>
 </dependencies>
 ```
@@ -55,7 +55,7 @@ Dropwizard Extra is versioned in lock-step with upstream Dropwizard.
 All Dropwizard Extra modules have a transitive dependency on the version of Dropwizard they're built against. The 
 versioning scheme for Dropwizard Extra is as follows:
 
-    ${dropwizard.version}.{dw-extra.release.number}
+    ${dropwizard.version}-{dw-extra.release.number}
 
 The "release number" signifies the differences between two builds of Dropwizard Extra that are built against the same 
 upstream version of Dropwizard.
