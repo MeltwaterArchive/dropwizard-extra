@@ -1,4 +1,5 @@
 package com.datasift.dropwizard.hbase;
+
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
 import com.stumbleupon.async.Deferred;
 import com.yammer.dropwizard.util.Duration;
@@ -24,10 +25,9 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link InstrumentedHBaseClient}.
- * <p>
- * Each method is tested first, that it proxies its implementation to the
- * underlying {@link HBaseClient}, and then that the method is timed as
- * expected.
+ * <p/>
+ * Each method is tested first, that it proxies its implementation to the underlying {@link
+ * HBaseClient}, and then that the method is timed as expected.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({

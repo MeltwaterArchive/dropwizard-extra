@@ -25,7 +25,7 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Mapping of the number of partitions to consume from each topic.
-     * <p>
+     * <p/>
      * Topics not referenced will not be consumed from.
      */
     @JsonProperty
@@ -33,12 +33,11 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     protected Map<String, Integer> partitions = ImmutableMap.of();
 
     /**
-     * Time the {@link KafkaConsumer} should wait to receive messages before
-     * timing out the stream.
-     * <p>
-     * When a {@link KafkaConsumer} times out a stream, a
-     * {@link kafka.consumer.ConsumerTimeoutException} will be thrown by that
-     * streams' {@link kafka.consumer.ConsumerIterator}.
+     * Time the {@link KafkaConsumer} should wait to receive messages before timing out the stream.
+     * <p/>
+     * When a {@link KafkaConsumer} times out a stream, a {@link
+     * kafka.consumer.ConsumerTimeoutException} will be thrown by that streams' {@link
+     * kafka.consumer.ConsumerIterator}.
      *
      * @see kafka.consumer.ConsumerIterator#next()
      */
@@ -54,11 +53,10 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Maximum size of a batch of messages to fetch in a single request.
-     * <p>
-     * This dictates the maximum size of a message that may be received by the
-     * {@link KafkaConsumer}. Messages larger than this size will cause a
-     * {@link kafka.common.InvalidMessageSizeException} to be thrown during
-     * iteration of the stream.
+     * <p/>
+     * This dictates the maximum size of a message that may be received by the {@link
+     * KafkaConsumer}. Messages larger than this size will cause a {@link
+     * kafka.common.InvalidMessageSizeException} to be thrown during iteration of the stream.
      *
      * @see kafka.javaapi.message.ByteBufferMessageSet#iterator()
      */
@@ -68,10 +66,10 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Cumulative delay before polling a broker again when no data is returned.
-     * <p>
-     * When fetching data from a broker, if there is no new data, there will be
-     * a delay before polling the broker again. This controls the duration of
-     * the delay by increasing it linearly, on each poll attempt.
+     * <p/>
+     * When fetching data from a broker, if there is no new data, there will be a delay before
+     * polling the broker again. This controls the duration of the delay by increasing it linearly,
+     * on each poll attempt.
      */
     @JsonProperty
     @NotNull
@@ -79,13 +77,12 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Maximum number of chunks to queue in internal buffers.
-     * <p>
-     * The consumer internally buffers fetched messages in a set of queues,
-     * which are used to iterate the stream. This controls the size of these
-     * queues.
-     * <p>
-     * Once a queue has been filled, it will block subsequent attempts to fill
-     * it until (some of) it has been iterated.
+     * <p/>
+     * The consumer internally buffers fetched messages in a set of queues, which are used to
+     * iterate the stream. This controls the size of these queues.
+     * <p/>
+     * Once a queue has been filled, it will block subsequent attempts to fill it until (some of) it
+     * has been iterated.
      */
     @JsonProperty
     @Min(0)
@@ -116,16 +113,6 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     protected int rebalanceRetries = 4;
 
     /**
-     * Time to wait for the consumer to shutdown gracefully.
-     * <p>
-     * If this timeout is exceeded without the consumer having shutdown
-     * completely, it will be forcibly stopped.
-     */
-    @JsonProperty
-    @NotNull
-    protected Duration shutdownPeriod = Duration.seconds(5);
-
-    /**
      * @see KafkaConsumerConfiguration#group
      */
     public String getGroup() {
@@ -143,7 +130,9 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      * @see KafkaConsumerConfiguration#timeout
      */
     public Duration getTimeout() {
-        return timeout == null ? Duration.milliseconds(-1) : timeout;
+        return timeout == null
+                ? Duration.milliseconds(-1)
+                : timeout;
     }
 
     /**
@@ -193,12 +182,5 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      */
     public int getRebalanceRetries() {
         return rebalanceRetries;
-    }
-
-    /**
-     * @see KafkaConsumerConfiguration#shutdownPeriod
-     */
-    public Duration getShutdownPeriod() {
-        return shutdownPeriod;
     }
 }

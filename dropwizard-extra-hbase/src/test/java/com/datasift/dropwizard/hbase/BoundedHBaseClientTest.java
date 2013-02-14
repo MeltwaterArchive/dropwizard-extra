@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests {@link HBaseClientProxy}
+ * Tests {@link HBaseClientProxy}.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({

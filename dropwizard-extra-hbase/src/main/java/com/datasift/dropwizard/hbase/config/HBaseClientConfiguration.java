@@ -26,8 +26,8 @@ public class HBaseClientConfiguration {
     protected ZooKeeperConfiguration zookeeper = new ZooKeeperConfiguration();
 
     /**
-     * The maximum amount of time requests may be buffered client-side before
-     * sending them to the server.
+     * The maximum amount of time requests may be buffered client-side before sending them to the
+     * server.
      *
      * @see org.hbase.async.HBaseClient#setFlushInterval(short)
      */
@@ -37,9 +37,9 @@ public class HBaseClientConfiguration {
 
     /**
      * The maximum size of the buffer for increment operations.
-     * <p>
-     * Once this buffer is full, a flush is forced irrespective of the
-     * {@link HBaseClientConfiguration#flushInterval flushInterval}.
+     * <p/>
+     * Once this buffer is full, a flush is forced irrespective of the {@link
+     * HBaseClientConfiguration#flushInterval flushInterval}.
      *
      * @see org.hbase.async.HBaseClient#setIncrementBufferSize(int)
      */
@@ -49,12 +49,12 @@ public class HBaseClientConfiguration {
 
     /**
      * The maximum number of concurrent asynchronous requests for the client.
-     * <p>
-     * Useful for throttling high-throughput applications when HBase is the
-     * bottle-neck to prevent the client running out of memory.
-     * <p>
-     * With this is zero ("0"), no limit will be placed on the number of
-     * concurrent asynchronous requests.
+     * <p/>
+     * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
+     * the client running out of memory.
+     * <p/>
+     * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
+     * requests.
      *
      * @see com.datasift.dropwizard.hbase.BoundedHBaseClient
      */
@@ -63,16 +63,15 @@ public class HBaseClientConfiguration {
     protected int maxConcurrentRequests = 0;
 
     /**
-     * The maximum time to wait for a connection to a region server before
-     * failing.
+     * The maximum time to wait for a connection to a region server before failing.
      */
     @JsonProperty
     @NotNull
     protected Duration connectionTimeout = Duration.seconds(5);
 
     /**
-     * Whether the {@link HBaseClient} should be instrumented with
-     * {@link com.yammer.metrics.core.Metric}s.
+     * Whether the {@link HBaseClient} should be instrumented with {@link
+     * com.yammer.metrics.core.Metric}s.
      */
     @JsonProperty
     protected boolean instrumented = true;

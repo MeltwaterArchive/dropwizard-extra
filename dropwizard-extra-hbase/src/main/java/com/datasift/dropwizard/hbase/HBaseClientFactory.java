@@ -8,10 +8,10 @@ import org.apache.zookeeper.ZooKeeper;
 
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
- * <p>
+ * <p/>
  * The implementation of the {@link HBaseClient} is determined by the {@link
  * HBaseClientConfiguration}.
- * <p>
+ * <p/>
  * The resulting {@link HBaseClient} will have its lifecycle managed by the {@link Environment} and
  * will have {@link com.yammer.metrics.core.HealthCheck}s installed for the {@code .META.} and
  * {@code -ROOT-} tables.
@@ -46,12 +46,13 @@ public class HBaseClientFactory {
      * Builds an {@link HBaseClient} instance from the specified {@link HBaseClientConfiguration}
      * with the given {@code name}.
      *
-     * @param configuration the {@link HBaseClientConfiguration} to configure an {@link HBaseClient}
-     * @param name the name for the {@link HBaseClient}
-     * @return an {@link HBaseClient}, managed and configured according to the {@code configuration}
+     * @param configuration the {@link HBaseClientConfiguration} for the {@link HBaseClient}.
+     * @param name the name for the {@link HBaseClient}.
+     *
+     * @return an {@link HBaseClient}, managed and configured according to the {@code
+     *         configuration}.
      */
-    public HBaseClient build(final HBaseClientConfiguration configuration,
-                             final String name) {
+    public HBaseClient build(final HBaseClientConfiguration configuration, final String name) {
         final ZooKeeperConfiguration zkConfiguration = configuration.getZookeeper();
 
         final HBaseClient proxy = new HBaseClientProxy(
@@ -79,37 +80,40 @@ public class HBaseClientFactory {
 
     /**
      * Builds a new {@link HBaseClient} according to the given {@link HBaseClientConfiguration}.
-     * <p>
-     * If instrumentation
-     * {@link HBaseClientConfiguration#instrumented is enabled} in the configuration, this will
-     * build an {@link InstrumentedHBaseClient} wrapping the given {@link HBaseClient}.
-     * <p>
+     * <p/>
+     * If instrumentation {@link HBaseClientConfiguration#instrumented is enabled} in the
+     * configuration, this will build an {@link InstrumentedHBaseClient} wrapping the given {@link
+     * HBaseClient}.
+     * <p/>
      * If instrumentation is not enabled, the given {@link HBaseClient} will be returned verbatim.
      *
      * @param configuration an {@link HBaseClientConfiguration} defining the {@link HBaseClient}s
-     *                      parameters
-     * @param client        an underlying {@link HBaseClient} implementation
-     * @return an {@link HBaseClient} that satisfies the configuration of instrumentation
+     *                      parameters.
+     * @param client an underlying {@link HBaseClient} implementation.
+     * @return an {@link HBaseClient} that satisfies the configuration of instrumentation.
      */
     private HBaseClient instrument(final HBaseClientConfiguration configuration,
                                    final HBaseClient client) {
-        return configuration.isInstrumented() ? new InstrumentedHBaseClient(client) : client;
+        return configuration.isInstrumented()
+                ? new InstrumentedHBaseClient(client)
+                : client;
     }
 
     /**
      * Builds a new {@link HBaseClient} according to the given {@link HBaseClientConfiguration}.
-     * <p>
+     * <p/>
      * If the {@link HBaseClientConfiguration#maxConcurrentRequests} is non-zero in the
      * configuration, this will build a {@link BoundedHBaseClient} that wraps the given client.
-     * <p>
+     * <p/>
      * If {@link HBaseClientConfiguration#maxConcurrentRequests} is zero, the given {@link
      * HBaseClient} will be returned verbatim.
      *
      * @param configuration an {@link HBaseClientConfiguration} defining the {@link HBaseClient}s
-     *                      parameters
-     * @param client        an underlying {@link HBaseClient} implementation
+     *                      parameters.
+     * @param client an underlying {@link HBaseClient} implementation.
+     *
      * @return an {@link HBaseClient} that satisfies the configuration of the maximum concurrent
-     *         requests
+     *         requests.
      */
     private HBaseClient boundRequests(final HBaseClientConfiguration configuration,
                                       final HBaseClient client) {

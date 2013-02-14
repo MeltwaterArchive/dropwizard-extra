@@ -5,7 +5,7 @@ import com.yammer.dropwizard.config.Environment
 
 /**
  * Factory object for [[com.datasift.dropwizard.hbase.HBaseClient]] instances
- * */
+ */
 object HBase {
 
   /**

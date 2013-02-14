@@ -10,12 +10,12 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Configuration for the Kafka producer.
- * <p>
- * By default, the producer will be synchronous, blocking the calling thread
- * until the message has been sent.
- * <p>
- * To use an asynchronous producer, set {@link KafkaProducerConfiguration#async}
- * with the desired properties.
+ * <p/>
+ * By default, the producer will be synchronous, blocking the calling thread until the message has
+ * been sent.
+ * <p/>
+ * To use an asynchronous producer, set {@link KafkaProducerConfiguration#async} with the desired
+ * properties.
  */
 public class KafkaProducerConfiguration extends KafkaClientConfiguration {
 
@@ -42,10 +42,9 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Maximum size of a message payload.
-     * <p>
-     * Attempts to produce a {@link kafka.message.Message} with a payload that
-     * exceeds this limit will cause the producer to throw a
-     * {@link kafka.common.MessageSizeTooLargeException}.
+     * <p/>
+     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
+     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
      */
     @JsonProperty
     @NotNull
@@ -61,10 +60,10 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Optional list of the topics to compress.
-     * <p>
-     * If {@link KafkaProducerConfiguration#compression} is enabled, this
-     * filters the topics compression is enabled for. Leaving this empty and
-     * enabling compression will cause all topics to be compressed.
+     * <p/>
+     * If {@link KafkaProducerConfiguration#compression} is enabled, this filters the topics
+     * compression is enabled for. Leaving this empty and enabling compression will cause all topics
+     * to be compressed.
      */
     @JsonProperty
     protected String[] compressedTopics = new String[0];
@@ -78,9 +77,8 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
 
     /**
      * Configuration for the asynchronous producer, defaults to synchronous.
-     * <p>
-     * If this is provided, the producer will be asynchronous; otherwise, it
-     * will be synchronous.
+     * <p/>
+     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
      *
      * @see KafkaAsyncProducerConfiguration
      */
@@ -121,14 +119,18 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
      * @see KafkaProducerConfiguration#compression
      */
     public Compression getCompression() {
-        return compression == null ? Compression.parse("default") : compression;
+        return compression == null
+                ? Compression.parse("default")
+                : compression;
     }
 
     /**
      * @see KafkaProducerConfiguration#compressedTopics
      */
     public String[] getCompressedTopics() {
-        return compressedTopics == null ? new String[0] : compressedTopics;
+        return compressedTopics == null
+                ? new String[0]
+                : compressedTopics;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.config;
 
+import com.datasift.dropwizard.bundles.GraphiteReportingBundle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.util.Duration;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
  * Configuration for a Graphite metrics reporter.
  *
  * @see com.yammer.metrics.reporting.GraphiteReporter
+ * @see GraphiteReportingBundle
  */
 public class GraphiteConfiguration {
 

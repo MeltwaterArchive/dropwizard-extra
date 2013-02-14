@@ -26,8 +26,14 @@ public class HBaseInstrumentation {
     private final Timer scans;
     private final Timer closes;
 
-    public HBaseInstrumentation(final HBaseClient client,
-                                final MetricsRegistry registry) {
+    /**
+     * Initialises instrumentation for the given {@link HBaseClient} using the given {@link
+     * MetricsRegistry}.
+     *
+     * @param client the client to create metrics for.
+     * @param registry the registry to register the metrics with.
+     */
+    public HBaseInstrumentation(final HBaseClient client, final MetricsRegistry registry) {
         final Class<? extends HBaseClient> clazz = client.getClass();
         
         // timers
@@ -206,50 +212,110 @@ public class HBaseInstrumentation {
                 });
     }
 
+    /**
+     * Gets the {@link Timer} for create requests.
+     *
+     * @return the {@link Timer} for create requests.
+     */
     public Timer getCreates() {
         return creates;
     }
 
+    /**
+     * Gets the {@link Timer} for increment requests.
+     *
+     * @return the {@link Timer} for increment requests.
+     */
     public Timer getIncrements() {
         return increments;
     }
 
+    /**
+     * Gets the {@link Timer} for compare-and-set requests.
+     *
+     * @return the {@link Timer} for compare-and-set requests.
+     */
     public Timer getCompareAndSets() {
         return compareAndSets;
     }
 
+    /**
+     * Gets the {@link Timer} for delete requests.
+     *
+     * @return the {@link Timer} for delete requests.
+     */
     public Timer getDeletes() {
         return deletes;
     }
 
+    /**
+     * Gets the {@link Timer} for assertion requests.
+     *
+     * @return the {@link Timer} for assertion requests.
+     */
     public Timer getAssertions() {
         return assertions;
     }
 
+    /**
+     * Gets the {@link Timer} for flush requests.
+     *
+     * @return the {@link Timer} for flush requests.
+     */
     public Timer getFlushes() {
         return flushes;
     }
 
+    /**
+     * Gets the {@link Timer} for get requests.
+     *
+     * @return the {@link Timer} for get requests.
+     */
     public Timer getGets() {
         return gets;
     }
 
+    /**
+     * Gets the {@link Timer} for lock requests.
+     *
+     * @return the {@link Timer} for lock requests.
+     */
     public Timer getLocks() {
         return locks;
     }
 
+    /**
+     * Gets the {@link Timer} for put requests.
+     *
+     * @return the {@link Timer} for put requests.
+     */
     public Timer getPuts() {
         return puts;
     }
 
+    /**
+     * Gets the {@link Timer} for unlock requests.
+     *
+     * @return the {@link Timer} for unlock requests.
+     */
     public Timer getUnlocks() {
         return unlocks;
     }
 
+    /**
+     * Gets the {@link Timer} for scan requests.
+     *
+     * @return the {@link Timer} for scan requests.
+     */
     public Timer getScans() {
         return scans;
     }
 
+    /**
+     * Gets the {@link Timer} for close requests.
+     *
+     * @return the {@link Timer} for close requests.
+     */
     public Timer getCloses() {
         return closes;
     }
