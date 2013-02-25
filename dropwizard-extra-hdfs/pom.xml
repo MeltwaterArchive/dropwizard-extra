@@ -14,24 +14,8 @@
     </description>
     <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-hdfs</url>
     <properties>
-        <scala.version>2.9.1</scala.version>
     </properties>
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>scala-tools.org</id>-->
-            <!--<name>Scala-Tools Maven2 Repository</name>-->
-            <!--<url>http://scala-tools.org/repo-releases</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
-
-    <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-            <!--<id>scala-tools.org</id>-->
-            <!--<name>Scala-Tools Maven2 Repository</name>-->
-            <!--<url>http://scala-tools.org/repo-releases</url>-->
-        <!--</pluginRepository>-->
-    <!--</pluginRepositories>-->
 
     <dependencies>
         <!--<dependency>-->
@@ -88,11 +72,6 @@
             <!--<version>0.23.1</version>-->
         <!--</dependency>-->
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.datasift.dropwizard</groupId>
             <artifactId>dropwizard-extra-core</artifactId>
             <version>${project.version}</version>
@@ -120,53 +99,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-        <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.scala-tools</groupId>-->
-                <!--<artifactId>maven-scala-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>compile</goal>-->
-                            <!--<goal>testCompile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<scalaVersion>${scala.version}</scalaVersion>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <buildcommands>
-                        <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-                    </buildcommands>
-                    <additionalProjectnatures>
-                        <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-                    </additionalProjectnatures>
-                    <classpathContainers>
-                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-                        <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-                    </classpathContainers>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <reporting>
-        <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.scala-tools</groupId>-->
-                <!--<artifactId>maven-scala-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<scalaVersion>${scala.version}</scalaVersion>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        </plugins>
-    </reporting>
 </project>
