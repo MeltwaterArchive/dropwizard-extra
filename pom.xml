@@ -106,6 +106,7 @@
     <module>dropwizard-extra-kafka</module>
     <module>dropwizard-extra-scala</module>
     <module>dropwizard-extra-zookeeper</module>
+      <module>dropwizard-extra-hdfs</module>
   </modules>
 
   <dependencyManagement>
