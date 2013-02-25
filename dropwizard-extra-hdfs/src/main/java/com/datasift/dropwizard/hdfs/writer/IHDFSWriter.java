@@ -21,15 +21,7 @@ import java.io.IOException;
 public interface IHDFSWriter {
 
     public void instance (final String path, final CompressionType compType, final CompressionCodec codec, final boolean append, final Writable key, final Writable value) throws IOException;
-//    public void open(String filePath) throws IOException;
 //
-//    // public void open(String filePath, CompressionCodec codec, CompressionType
-//    // cType) throws IOException;
-//
-//    public void open(String filePath, CompressionCodec codec,
-//                     CompressionType cType) throws IOException;
-
-    // public void append(long key, byte [] val) throws IOException;
 
     /**
      * Appends a byte array to the implemented output type, all data be it strings and so will need to be converted to byte arrays.

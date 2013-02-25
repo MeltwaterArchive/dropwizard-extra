@@ -62,12 +62,10 @@ public class TextWriter extends AbstractHDFSWriter{
         outStream.write(val);
         this.incrementWriterCounter();
         this.incrementBytesWritten(val);
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void sync() throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
         outStream.flush();
         outStream.sync();
         this.incrementHDFSSynchsCounter();
@@ -75,7 +73,6 @@ public class TextWriter extends AbstractHDFSWriter{
 
     @Override
     public void close() throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
         outStream.flush();
         outStream.sync();
         outStream.close();

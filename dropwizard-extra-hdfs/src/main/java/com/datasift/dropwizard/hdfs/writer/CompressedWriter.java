@@ -31,7 +31,6 @@ public class CompressedWriter extends AbstractHDFSWriter{
 
     @Override
     public void instance(final String path, final SequenceFile.CompressionType compType, final CompressionCodec codec, final boolean append, final Writable key, final Writable value) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
         Configuration conf = new Configuration();
         Path dstPath = new Path(path);
         this.hdfs = dstPath.getFileSystem(conf);

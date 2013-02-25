@@ -21,15 +21,10 @@ public class SequenceFileWriter  extends AbstractHDFSWriter{
     private Path outpath = null;
     private Configuration conf = null;
     private FileSystem fs = null;
-//    private K key = null;
-//    private V value = null;
     private SequenceFile.Writer writer = null;
 
 
-//    public SequenceFileWriter(String path, SequenceFile.CompressionType compType, CompressionCodec codec, final boolean append, Writable key, Writable value, HDFSInstrumentation instrumentation){
-//        super(path, compType,codec,append, key,value, instrumentation);
-//
-//    }
+
     public SequenceFileWriter(String path, SequenceFile.CompressionType compType, CompressionCodec codec, final boolean append, Writable key, Writable value){
         super(path, compType,codec,append, key,value);
 
@@ -38,7 +33,7 @@ public class SequenceFileWriter  extends AbstractHDFSWriter{
 
     @Override
     public void instance(final String path, final SequenceFile.CompressionType compType, final CompressionCodec codec, final boolean append, Writable key, Writable value) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
+
 
         fs = getFileSystem();
         if (conf.getBoolean("hdfs.append.support", false) == false && append){
@@ -75,7 +70,7 @@ public class SequenceFileWriter  extends AbstractHDFSWriter{
     }
     public void append(Writable key, Writable val) throws IOException {
         writer.append(key, val);
-        //This is bit kludy and not the best way to get the bytes written, it will be padded out with UTF bytes as its a string representation.
+        //This is bit kludgey and not the best way to get the bytes written, it will be padded out with UTF bytes as its a string representation.
         this.incrementBytesWritten(val.toString().getBytes());
        this.incrementWriterCounter();
 

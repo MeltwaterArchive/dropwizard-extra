@@ -8,7 +8,7 @@ import com.datasift.dropwizard.hdfs.writer.type.WriterTypeFactory;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.compress.CompressionCodec;
-//import org.apache.hadoop.io.compress.SnappyCodec;
+
 
 
 /**
@@ -54,7 +54,7 @@ public class WriterFactory  {
         CompressionCodec codec = com.datasift.dropwizard.hdfs.writer.CodecFactory.getCodec(hdfsConfiguration.getCompressionCodec());
         SequenceFile.CompressionType compType = hdfsConfiguration.getCompressionType();
         IHDFSWriter writer = null;
-        //SequenceFile.CompressionType.
+
 
         if(type.equalsIgnoreCase(SEQUENCEWRITER))   {
             writer= new SequenceFileWriter(path, compType, codec, append, key, value);
