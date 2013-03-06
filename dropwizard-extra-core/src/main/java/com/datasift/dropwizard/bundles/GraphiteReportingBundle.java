@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.bundles;
 
+import com.datasift.dropwizard.config.GraphiteConfiguration;
 import com.datasift.dropwizard.config.GraphiteReportingConfiguration;
 import com.datasift.dropwizard.health.GraphiteHealthCheck;
 import com.yammer.dropwizard.ConfiguredBundle;
@@ -7,6 +8,10 @@ import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Configuration;
 import com.yammer.dropwizard.config.Environment;
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.Metric;
+import com.yammer.metrics.core.MetricName;
+import com.yammer.metrics.core.MetricPredicate;
 import com.yammer.metrics.reporting.GraphiteReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,23 +77,44 @@ public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReporti
     public void run(final GraphiteReportingConfiguration configuration,
                     final Environment environment) {
 
-        if (configuration.getGraphite().getEnabled()) {
+        final GraphiteConfiguration graphiteConfiguration = configuration.getGraphite();
+
+        if (graphiteConfiguration.getEnabled()) {
             log.info("Reporting metrics to Graphite at {}:{}, every {}",
-                    configuration.getGraphite().getHost(),
-                    configuration.getGraphite().getPort(),
-                    configuration.getGraphite().getFrequency());
+                    graphiteConfiguration.getHost(),
+                    graphiteConfiguration.getPort(),
+                    graphiteConfiguration.getFrequency());
 
             GraphiteReporter.enable(
-                    configuration.getGraphite().getFrequency().toNanoseconds(),
+                    Metrics.defaultRegistry(),
+                    graphiteConfiguration.getFrequency().toNanoseconds(),
                     TimeUnit.NANOSECONDS,
-                    configuration.getGraphite().getHost(),
-                    configuration.getGraphite().getPort(),
-                    configuration.getGraphite().getPrefix()
+                    graphiteConfiguration.getHost(),
+                    graphiteConfiguration.getPort(),
+                    graphiteConfiguration.getPrefix(),
+                    new MetricPredicate() {
+                        @Override
+                        public boolean matches(final MetricName name, final Metric metric) {
+                            return !graphiteConfiguration.getExcludes().contains(pathFor(name));
+                        }
+
+                        private String pathFor(final MetricName name) {
+                            final StringBuilder sb = new StringBuilder(name.getGroup())
+                                    .append('.')
+                                    .append(name.getType())
+                                    .append('.');
+                            if (name.hasScope()) {
+                                sb.append(name.getScope()).append('.');
+                            }
+
+                            return sb.append(name.getName()).toString();
+                        }
+                    }
             );
 
             environment.addHealthCheck(new GraphiteHealthCheck(
-                    configuration.getGraphite().getHost(),
-                    configuration.getGraphite().getPort(),
+                    graphiteConfiguration.getHost(),
+                    graphiteConfiguration.getPort(),
                     "graphite"));
         }
     }
