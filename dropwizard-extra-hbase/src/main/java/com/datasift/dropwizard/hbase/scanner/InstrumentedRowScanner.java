@@ -2,6 +2,7 @@ package com.datasift.dropwizard.hbase.scanner;
 
 import com.datasift.dropwizard.hbase.InstrumentedHBaseClient;
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
+import com.datasift.dropwizard.hbase.metrics.ScannerInstrumentation;
 import com.datasift.dropwizard.hbase.util.TimerStoppingCallback;
 import com.stumbleupon.async.Deferred;
 import com.yammer.metrics.core.Metric;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class InstrumentedRowScanner implements RowScanner {
 
     private final RowScanner scanner;
-    private final HBaseInstrumentation metrics;
+    private final ScannerInstrumentation metrics;
 
     /**
      * Creates a new {@link InstrumentedRowScanner} for the given underlying {@link RowScanner},
@@ -28,7 +29,7 @@ public class InstrumentedRowScanner implements RowScanner {
      * @param scanner the underlying {@link RowScanner} implementation
      * @param metrics the {@link Metric}s to instrument this {@link InstrumentedRowScanner} with
      */
-    public InstrumentedRowScanner(final RowScanner scanner, final HBaseInstrumentation metrics) {
+    public InstrumentedRowScanner(final RowScanner scanner, final ScannerInstrumentation metrics) {
         this.scanner = scanner;
         this.metrics = metrics;
     }

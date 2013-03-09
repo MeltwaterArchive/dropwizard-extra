@@ -1,6 +1,7 @@
 package com.datasift.dropwizard.hbase;
 
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
+import com.datasift.dropwizard.hbase.metrics.ScannerInstrumentation;
 import com.datasift.dropwizard.hbase.scanner.InstrumentedRowScanner;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.datasift.dropwizard.hbase.util.TimerStoppingCallback;
@@ -47,8 +48,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      *
      * @param client the underlying {@link HBaseClient} implementation to dispatch requests.
      */
-    public InstrumentedHBaseClient(final HBaseClient client) {
-        this(client, Metrics.defaultRegistry());
+    public InstrumentedHBaseClient(final HBaseClient client, final String name) {
+        this(client, Metrics.defaultRegistry(), name);
     }
 
     /**
@@ -61,9 +62,12 @@ public class InstrumentedHBaseClient implements HBaseClient {
      *
      * @param client   the underlying {@link HBaseClient} implementation to dispatch requests.
      * @param registry the {@link MetricsRegistry} to register {@link Metric}s with.
+     * @param name     the name of the client to register metrics under.
      */
-    public InstrumentedHBaseClient(final HBaseClient client, final MetricsRegistry registry) {
-        this(client, new HBaseInstrumentation(client, registry));
+    public InstrumentedHBaseClient(final HBaseClient client,
+                                   final MetricsRegistry registry,
+                                   final String name) {
+        this(client, new HBaseInstrumentation(client, registry, name));
     }
 
     /**
@@ -352,7 +356,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#scan(byte[])
      */
     public RowScanner scan(final byte[] table) {
-        return new InstrumentedRowScanner(client.scan(table), metrics);
+        final RowScanner scanner = client.scan(table);
+        return new InstrumentedRowScanner(scanner, metrics.instrument(scanner));
     }
 
     /**
@@ -365,7 +370,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#scan(String)
      */
     public RowScanner scan(final String table) {
-        return new InstrumentedRowScanner(client.scan(table), metrics);
+        final RowScanner scanner = client.scan(table);
+        return new InstrumentedRowScanner(scanner, metrics.instrument(scanner));
     }
 
     /**

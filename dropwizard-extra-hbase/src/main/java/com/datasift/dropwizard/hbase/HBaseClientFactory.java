@@ -61,7 +61,7 @@ public class HBaseClientFactory {
                         zkConfiguration.getNamespace().toString()));
 
         // optionally instrument and bound requests for the client
-        final HBaseClient client = instrument(configuration, boundRequests(configuration, proxy));
+        final HBaseClient client = instrument(configuration, boundRequests(configuration, proxy), name);
 
         // configure client
         client.setFlushInterval(configuration.getFlushInterval());
@@ -93,9 +93,10 @@ public class HBaseClientFactory {
      * @return an {@link HBaseClient} that satisfies the configuration of instrumentation.
      */
     private HBaseClient instrument(final HBaseClientConfiguration configuration,
-                                   final HBaseClient client) {
+                                   final HBaseClient client,
+                                   final String name) {
         return configuration.isInstrumented()
-                ? new InstrumentedHBaseClient(client)
+                ? new InstrumentedHBaseClient(client, name)
                 : client;
     }
 

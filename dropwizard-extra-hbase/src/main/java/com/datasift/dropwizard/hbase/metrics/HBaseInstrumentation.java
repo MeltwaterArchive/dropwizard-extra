@@ -1,6 +1,7 @@
 package com.datasift.dropwizard.hbase.metrics;
 
 import com.datasift.dropwizard.hbase.HBaseClient;
+import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.yammer.metrics.core.Gauge;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
@@ -23,32 +24,37 @@ public class HBaseInstrumentation {
     private final Timer locks;
     private final Timer puts;
     private final Timer unlocks;
-    private final Timer scans;
-    private final Timer closes;
+
+    private final String name;
+    private final MetricsRegistry registry;
 
     /**
      * Initialises instrumentation for the given {@link HBaseClient} using the given {@link
      * MetricsRegistry}.
      *
-     * @param client the client to create metrics for.
+     * @param client   the client to create metrics for.
      * @param registry the registry to register the metrics with.
+     * @param name     the name of the client/scanner to register metrics under.
      */
-    public HBaseInstrumentation(final HBaseClient client, final MetricsRegistry registry) {
+    public HBaseInstrumentation(final HBaseClient client,
+                                final MetricsRegistry registry,
+                                final String name) {
         final Class<? extends HBaseClient> clazz = client.getClass();
-        
+
+        this.name = name;
+        this.registry = registry;
+
         // timers
-        creates        = registry.newTimer(clazz, "create",        "requests");
-        increments     = registry.newTimer(clazz, "increment",     "requests");
-        compareAndSets = registry.newTimer(clazz, "compareAndSet", "requests");
-        deletes        = registry.newTimer(clazz, "delete",        "requests");
-        assertions     = registry.newTimer(clazz, "assertion",     "requests");
-        flushes        = registry.newTimer(clazz, "flush",         "requests");
-        gets           = registry.newTimer(clazz, "get",           "requests");
-        locks          = registry.newTimer(clazz, "lock",          "requests");
-        puts           = registry.newTimer(clazz, "put",           "requests");
-        unlocks        = registry.newTimer(clazz, "unlock",        "requests");
-        scans          = registry.newTimer(clazz, "scans",         "scanner");
-        closes         = registry.newTimer(clazz, "closes",        "scanner");
+        creates        = registry.newTimer(clazz, "create",        name);
+        increments     = registry.newTimer(clazz, "increment",     name);
+        compareAndSets = registry.newTimer(clazz, "compareAndSet", name);
+        deletes        = registry.newTimer(clazz, "delete",        name);
+        assertions     = registry.newTimer(clazz, "assertion",     name);
+        flushes        = registry.newTimer(clazz, "flush",         name);
+        gets           = registry.newTimer(clazz, "get",           name);
+        locks          = registry.newTimer(clazz, "lock",          name);
+        puts           = registry.newTimer(clazz, "put",           name);
+        unlocks        = registry.newTimer(clazz, "unlock",        name);
 
         // client stats
         registry.newGauge(clazz, "atomicIncrements", "totals", new Gauge<Long>() {
@@ -303,20 +309,13 @@ public class HBaseInstrumentation {
     }
 
     /**
-     * Gets the {@link Timer} for scan requests.
+     * Creates the instrumentation for a {@link RowScanner}.
      *
-     * @return the {@link Timer} for scan requests.
-     */
-    public Timer getScans() {
-        return scans;
-    }
-
-    /**
-     * Gets the {@link Timer} for close requests.
+     * @param scanner The {@link RowScanner} to instrument with metrics.
      *
-     * @return the {@link Timer} for close requests.
+     * @return The instrumentation for the {@link RowScanner}.
      */
-    public Timer getCloses() {
-        return closes;
+    public ScannerInstrumentation instrument(final RowScanner scanner) {
+        return new ScannerInstrumentation(scanner, registry, name);
     }
 }
