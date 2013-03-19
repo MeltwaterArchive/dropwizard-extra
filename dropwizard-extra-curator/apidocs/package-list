@@ -1,0 +1,4 @@
+com.datasift.dropwizard.curator
+com.datasift.dropwizard.curator.config
+com.datasift.dropwizard.curator.ensemble
+com.datasift.dropwizard.curator.health
