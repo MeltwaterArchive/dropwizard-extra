@@ -11,6 +11,10 @@
   
   <artifactId>dropwizard-extra-scala</artifactId>
 
+  <properties>
+    <scala.version>2.9.1</scala.version>
+  </properties>
+
   <name>Dropwizard Extra Scala</name>
   <description>
     Improvements to the Scala API for various Dropwizard modules.
@@ -18,14 +22,31 @@
   <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-scala</url>
 
   <dependencies>
+
+    <!-- Scala core library (we'll need this!) -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+
+    <!-- Core dependencies (for core Scala support) -->
     <dependency>
       <groupId>com.yammer.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
       <version>${dropwizard.version}</version>
     </dependency>
+
+    <!-- Optional Dependencies (for per-module Scala support) -->
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
       <artifactId>dropwizard-extra-core</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.datasift.dropwizard</groupId>
+      <artifactId>dropwizard-extra-hbase</artifactId>
       <version>${project.version}</version>
       <optional>true</optional>
     </dependency>
@@ -43,17 +64,29 @@
     </dependency>
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-hbase</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.datasift.dropwizard</groupId>
       <artifactId>dropwizard-extra-kafka</artifactId>
       <version>${project.version}</version>
       <optional>true</optional>
     </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.specs2</groupId>
+      <artifactId>specs2_${scala.version}</artifactId>
+      <version>1.12.4</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.1.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement>
@@ -61,7 +94,6 @@
         <plugin>
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
-          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -116,7 +148,6 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.1.0</version>
       </plugin>
     </plugins>
   </reporting>
