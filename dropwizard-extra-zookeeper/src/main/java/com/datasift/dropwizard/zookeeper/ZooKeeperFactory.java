@@ -41,8 +41,10 @@ public class ZooKeeperFactory {
      * {@link #build(ZooKeeperConfiguration, Watcher)}.
      *
      * @param configuration the configuration to configure the {@link ZooKeeper} instance with.
+     *
      * @return a {@link ZooKeeper} client, managed and configured according to the {@code
      *         configuration}.
+     *
      * @throws IOException if there is a network failure.
      */
     public ZooKeeper build(final ZooKeeperConfiguration configuration) throws IOException {
@@ -57,12 +59,14 @@ public class ZooKeeperFactory {
      *
      * @param configuration the configuration to configure the {@link ZooKeeper} instance with.
      * @param watcher the watcher to handle all events that occur on the {@link ZooKeeper} client.
+     *
      * @return a {@link ZooKeeper} client, managed and configured according to the {@code
      *         configuration}.
+     *
      * @throws IOException if there is a network failure.
      */
-    public ZooKeeper build(final ZooKeeperConfiguration configuration,
-                           final Watcher watcher) throws IOException {
+    public ZooKeeper build(final ZooKeeperConfiguration configuration, final Watcher watcher)
+            throws IOException {
         return build(configuration, watcher, DEFAULT_NAME);
     }
 
@@ -70,17 +74,19 @@ public class ZooKeeperFactory {
      * Builds a named {@link ZooKeeper} instance from the given {@link ZooKeeperConfiguration}.
      * <p/>
      * No {@link Watcher} will be configured for the built {@link ZooKeeper} instance. If you wish
-     * to watch all events on the {@link ZooKeeper} client, use
-     * {@link #build(ZooKeeperConfiguration, Watcher, String)}.
+     * to watch all events on the {@link ZooKeeper} client, use {@link
+     * #build(ZooKeeperConfiguration, Watcher, String)}.
      *
      * @param configuration the configuration to configure the {@link ZooKeeper} instance with.
      * @param name the name for this {@link ZooKeeper instance}.
+     *
      * @return a {@link ZooKeeper} client, managed and configured according to the {@code
      *         configuration}.
+     *
      * @throws IOException if there is a network failure.
      */
-    public ZooKeeper build(final ZooKeeperConfiguration configuration,
-                           final String name) throws IOException {
+    public ZooKeeper build(final ZooKeeperConfiguration configuration, final String name)
+            throws IOException {
         return build(configuration, null, name);
     }
 
@@ -94,8 +100,10 @@ public class ZooKeeperFactory {
      * @param configuration the configuration to configure the {@link ZooKeeper} instance with.
      * @param watcher the watcher to handle all events that occur on the {@link ZooKeeper} client.
      * @param name the name for this {@link ZooKeeper instance}.
+     *
      * @return a {@link ZooKeeper} client, managed and configured according to the {@code
      *         configuration}.
+     *
      * @throws IOException if there is a network failure.
      */
     public ZooKeeper build(final ZooKeeperConfiguration configuration,

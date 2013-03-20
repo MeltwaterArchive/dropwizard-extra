@@ -1,4 +1,5 @@
 package com.datasift.dropwizard.hbase;
+
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
 import com.stumbleupon.async.Deferred;
 import com.yammer.dropwizard.util.Duration;
@@ -24,10 +25,9 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link InstrumentedHBaseClient}.
- * <p>
- * Each method is tested first, that it proxies its implementation to the
- * underlying {@link HBaseClient}, and then that the method is timed as
- * expected.
+ * <p/>
+ * Each method is tested first, that it proxies its implementation to the underlying {@link
+ * HBaseClient}, and then that the method is timed as expected.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
@@ -75,7 +75,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.getFlushInterval()).thenReturn(Duration.seconds(10));
 
         assertThat("gets flush interval via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .getFlushInterval(),
                 is(Duration.seconds(10)));
     }
@@ -85,7 +85,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.getIncrementBufferSize()).thenReturn(Size.bytes(1024));
 
         assertThat("gets increment buffer size via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .getIncrementBufferSize(),
                 is(Size.bytes(1024)));
     }
@@ -95,7 +95,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.setFlushInterval(Duration.seconds(5)))
                 .thenReturn(Duration.seconds(10));
         assertThat("sets flush interval via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .setFlushInterval(Duration.seconds(5)),
                 is(Duration.seconds(10)));
     }
@@ -105,7 +105,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.setIncrementBufferSize(Size.bytes(2048)))
                 .thenReturn(Size.bytes(1024));
         assertThat("sets increment buffer size via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .setIncrementBufferSize(Size.bytes(2048)),
                 is(Size.bytes(1024)));
     }
@@ -117,7 +117,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.create(req)).thenReturn(resp);
 
         assertThat("creates cell(s) via proxy",
-                new InstrumentedHBaseClient(underlying).create(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").create(req), is(resp));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.bufferIncrement(req)).thenReturn(resp);
 
         assertThat("buffers increment(s) via proxy",
-                new InstrumentedHBaseClient(underlying).bufferIncrement(req),
+                new InstrumentedHBaseClient(underlying, "test").bufferIncrement(req),
                 is(resp));
     }
 
@@ -172,7 +172,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.increment(req)).thenReturn(resp);
 
         assertThat("increment(s) via proxy",
-                new InstrumentedHBaseClient(underlying).increment(req),
+                new InstrumentedHBaseClient(underlying, "test").increment(req),
                 is(resp));
     }
 
@@ -201,7 +201,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.increment(req, true)).thenReturn(resp);
 
         assertThat("buffer durable increment(s) via proxy",
-                new InstrumentedHBaseClient(underlying).increment(req, true),
+                new InstrumentedHBaseClient(underlying, "test").increment(req, true),
                 is(resp));
     }
 
@@ -229,7 +229,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.compareAndSet(req, new byte[0])).thenReturn(resp);
 
         assertThat("compares and sets via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .compareAndSet(req, new byte[0]),
                 is(resp));
     }
@@ -258,7 +258,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.compareAndSet(req, "")).thenReturn(resp);
 
         assertThat("compares and sets Strings via proxy",
-                new InstrumentedHBaseClient(underlying).compareAndSet(req, ""),
+                new InstrumentedHBaseClient(underlying, "test").compareAndSet(req, ""),
                 is(resp));
     }
 
@@ -286,7 +286,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.delete(req)).thenReturn(resp);
 
         assertThat("deletes Strings via proxy",
-                new InstrumentedHBaseClient(underlying).delete(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").delete(req), is(resp));
     }
 
     @Test
@@ -312,7 +312,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.ensureTableExists(new byte[0])).thenReturn(resp);
 
         assertThat("ensures table exists via proxy",
-                new InstrumentedHBaseClient(underlying)
+                new InstrumentedHBaseClient(underlying, "test")
                         .ensureTableExists(new byte[0]),
                 is(resp));
     }
@@ -339,7 +339,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.ensureTableExists("")).thenReturn(resp);
 
         assertThat("ensures String table exists via proxy",
-                new InstrumentedHBaseClient(underlying).ensureTableExists(""),
+                new InstrumentedHBaseClient(underlying, "test").ensureTableExists(""),
                 is(resp));
     }
 
@@ -365,7 +365,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.flush()).thenReturn(resp);
 
         assertThat("flushes via proxy",
-                new InstrumentedHBaseClient(underlying).flush(), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").flush(), is(resp));
     }
 
     @Test
@@ -392,7 +392,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.get(req)).thenReturn(resp);
 
         assertThat("gets via proxy",
-                new InstrumentedHBaseClient(underlying).get(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").get(req), is(resp));
     }
 
     @Test
@@ -420,7 +420,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.lockRow(req)).thenReturn(resp);
 
         assertThat("locks rows via proxy",
-                new InstrumentedHBaseClient(underlying).lockRow(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").lockRow(req), is(resp));
     }
 
     @Test
@@ -447,7 +447,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.put(req)).thenReturn(resp);
 
         assertThat("puts via proxy",
-                new InstrumentedHBaseClient(underlying).put(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").put(req), is(resp));
     }
 
     @Test
@@ -473,7 +473,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.shutdown()).thenReturn(resp);
 
         assertThat("shuts down via proxy",
-                new InstrumentedHBaseClient(underlying).shutdown(), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").shutdown(), is(resp));
     }
 
     @Test
@@ -483,7 +483,7 @@ public class InstrumentedHBaseClientTest {
         when(underlying.lockRow(req)).thenReturn(resp);
 
         assertThat("unlocks rows via proxy",
-                new InstrumentedHBaseClient(underlying).lockRow(req), is(resp));
+                new InstrumentedHBaseClient(underlying, "test").lockRow(req), is(resp));
     }
 
     @Test

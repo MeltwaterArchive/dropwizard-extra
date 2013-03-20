@@ -41,6 +41,7 @@ public class ZooKeeperHealthCheck extends HealthCheck {
      * @return {@link Result#unhealthy(String)} if the client is not functioning correctly or the
      *         connected ZooKeeper ensemble is not operating correctly; otherwise, {@link
      *         Result#healthy()}.
+     *
      * @throws Exception if an error occurs checking the health of the {@link ZooKeeper} client.
      */
     @Override

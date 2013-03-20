@@ -1,17 +1,16 @@
 package com.datasift.dropwizard.kafka.util;
 
-import kafka.message.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import kafka.message.*;
 
 /**
- * A utility for parsing {@link CompressionCodec}s from a
- * {@link com.yammer.dropwizard.config.Configuration}.
+ * A utility for parsing {@link CompressionCodec}s from a {@link
+ * com.yammer.dropwizard.config.Configuration}.
  * <p/>
- * To create {@link Compression} instances, use
- * {@link Compression#parse(String)} to parse an instance from a {@link String}.
+ * To create {@link Compression} instances, use {@link Compression#parse(String)} to parse an
+ * instance from a {@link String}.
  * <p/>
- * This is provided to parse textual specifications of a
- * {@link CompressionCodec}, for example in a
+ * This is provided to parse textual specifications of a {@link CompressionCodec}, for example in a
  * {@link com.yammer.dropwizard.config.Configuration}.
  */
 public class Compression {
@@ -23,11 +22,10 @@ public class Compression {
      * <p/>
      * The valid codec values are defined by {@link CompressionCodec}.
      * <p/>
-     * To create {@link Compression} instances, use the
-     * {@link Compression#parse(String)} factory method to parse an instance
-     * from a {@link String}.
+     * To create {@link Compression} instances, use the {@link Compression#parse(String)} factory
+     * method to parse an instance from a {@link String}.
      *
-     * @param codec the codec to use, as an integer index
+     * @param codec the codec to use, as an integer index.
      *
      * @see Compression#parse(String)
      */
@@ -47,11 +45,11 @@ public class Compression {
     /**
      * Parses a String representation of a {@link CompressionCodec}.
      *
-     * @param codec the name of the {@link CompressionCodec} to parse
-     * @return      a {@link Compression} instance for the codec
+     * @param codec the name of the {@link CompressionCodec} to parse.
      *
-     * @throws IllegalArgumentException if codec is not a valid
-     *                                  {@link CompressionCodec}
+     * @return a {@link Compression} instance for the codec.
+     *
+     * @throws IllegalArgumentException if codec is not a valid {@link CompressionCodec}.
      */
     @JsonCreator
     public static Compression parse(final String codec) {
@@ -59,7 +57,11 @@ public class Compression {
             return new Compression(GZIPCompressionCodec.codec());
         } else if ("none".equals(codec) || "no".equals(codec) || "false".equals(codec)) {
             return new Compression(NoCompressionCodec.codec());
-        } else if ("default".equals(codec) || "yes".equals(codec) || "null".equals(codec) || codec == null) {
+        } else if ("default".equals(codec)
+                || "yes".equals(codec)
+                || "null".equals(codec)
+                || codec == null)
+        {
             return new Compression(DefaultCompressionCodec.codec());
         } else {
             throw new IllegalArgumentException("Invalid Compression: " + codec);

@@ -13,18 +13,24 @@ import java.util.regex.Pattern;
 /**
  * Provides integration for Dropwizard's ZooKeeper functionality with Curator.
  * <p/>
- * This furnishes all {@link ZooKeeper} clients that Curator creates with all
- * the integration that Dropwizard provides (e.g. metrics).
+ * This ensures that {@link ZooKeeper} instances created by Curator integrate properly with the
+ * Dropwizard application life-cycle.
  */
 public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
 
-    public static final Pattern PORT_PATTERN = Pattern.compile(":(\\d+)");
+    private static final Pattern PORT_PATTERN = Pattern.compile(":(\\d+)");
 
     private final ZooKeeperFactory factory;
     private final String name;
 
-    public DropwizardConfiguredZooKeeperFactory(final ZooKeeperFactory factory,
-                                                final String name) {
+    /**
+     * Initializes this factory with the {@link ZooKeeperFactory} to create {@link ZooKeeper}
+     * clients from.
+     *
+     * @param factory the factory to create {@link ZooKeeper} instances from.
+     * @param name the name of the Curator instance creating {@link ZooKeeper} clients.
+     */
+    public DropwizardConfiguredZooKeeperFactory(final ZooKeeperFactory factory, final String name) {
         this.factory = factory;
         this.name = name;
     }
@@ -47,7 +53,8 @@ public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
                                       final int sessionTimeout,
                                       final boolean canBeReadOnly) {
             final int idx = connectString.indexOf('/');
-            final String authority = connectString.substring(0, idx == -1 ? connectString.length() : idx);
+            final int hostLength = idx == -1 ? connectString.length() : idx;
+            final String authority = connectString.substring(0, hostLength);
             final Matcher matcher = PORT_PATTERN.matcher(authority);
             this.hosts = matcher.replaceAll("").split(",");
             this.port = Integer.parseInt(matcher.reset().group(1));

@@ -12,6 +12,12 @@ public class DropwizardConfiguredEnsembleProvider implements EnsembleProvider {
 
     private final ZooKeeperConfiguration configuration;
 
+    /**
+     * Initializes this provider with the given {@code configuration}.
+     *
+     * @param configuration the configuration of the ZooKeeper ensemble to provide to Curator
+     *                      instances.
+     */
     public DropwizardConfiguredEnsembleProvider(final ZooKeeperConfiguration configuration) {
         this.configuration = configuration;
     }

@@ -15,8 +15,8 @@ public interface KafkaConsumer {
     /**
      * Determines if this {@link KafkaConsumer} is currently consuming.
      *
-     * @return true if this {@link KafkaConsumer} is currently consuming from
-     *         at least one partition; otherwise, false
+     * @return true if this {@link KafkaConsumer} is currently consuming from at least one
+     *              partition; otherwise, false.
      */
     public boolean isRunning();
 }

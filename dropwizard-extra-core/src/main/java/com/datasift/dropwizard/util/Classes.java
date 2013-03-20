@@ -278,8 +278,7 @@ public class Classes {
      */
     public static Method getApplicableMethod(final Class clazz,
                                              final String name,
-                                             final Class... args)
-            throws NoSuchMethodException {
+                                             final Class... args) throws NoSuchMethodException {
         final Method[] methods = clazz.getDeclaredMethods();
         for (final Method method : methods) {
             if (method.getName().equals(name) &&

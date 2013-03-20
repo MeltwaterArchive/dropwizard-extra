@@ -18,7 +18,14 @@ import java.util.Locale;
  */
 public class CuratorConfiguration {
 
+    /**
+     * An enumeration of the available compression codecs available for compressed entries.
+     */
     enum CompressionCodec {
+
+        /**
+         * GZIP compression.
+         */
         GZIP(new GzipCompressionProvider());
 
         final private CompressionProvider provider;
@@ -27,13 +34,24 @@ public class CuratorConfiguration {
             this.provider = provider;
         }
 
+        /**
+         * Gets the {@link CompressionProvider} for this codec.
+         *
+         * @return the provider for this codec.
+         */
         public CompressionProvider getProvider() {
             return provider;
         }
 
+        /**
+         * Parses a {@link CompressionCodec} from the given String representation.
+         *
+         * @param codec the name of the codec.
+         * @return the named {@link CompressionCodec} or null, if the codec doesn't exist.
+         */
         @JsonCreator
-        public static CompressionCodec parse(String type) {
-            return valueOf(type.toUpperCase(Locale.ENGLISH).replace('+', '_'));
+        public static CompressionCodec parse(final String codec) {
+            return valueOf(codec.toUpperCase(Locale.ENGLISH).replace('+', '_'));
         }
     }
 
@@ -77,8 +95,7 @@ public class CuratorConfiguration {
      * @see #retryPolicy
      */
     public RetryPolicy getRetryPolicy() {
-        return new ExponentialBackoffRetry(
-                (int) backOffBaseTime.toMilliseconds(), maxRetries);
+        return new ExponentialBackoffRetry((int) backOffBaseTime.toMilliseconds(), maxRetries);
     }
 
     /**

@@ -13,8 +13,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
- * A {@link KafkaConsumer} that processes messages synchronously using an
- * {@link ExecutorService}.
+ * A {@link KafkaConsumer} that processes messages synchronously using an {@link ExecutorService}.
  */
 public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
@@ -29,16 +28,12 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     /**
      * Creates a {@link SynchronousConsumer} to process a stream.
      *
-     * @param connector      the {@link ConsumerConnector} of the underlying
-     *                       consumer
-     * @param partitions     a mapping of the topic -> partitions to consume
-     * @param decoder        a {@link Decoder} for decoding each
-     *                       {@link kafka.message.Message} to type {@code T}
-     *                       before being processed
-     * @param processor      a {@link StreamProcessor} for processing messages
-     *                       of type {@code T}
-     * @param executor       the {@link ExecutorService} to process the stream
-     *                       with
+     * @param connector the {@link ConsumerConnector} of the underlying consumer.
+     * @param partitions a mapping of the topic -> partitions to consume.
+     * @param decoder a {@link Decoder} for decoding each {@link kafka.message.Message} to type
+     *                {@code T} before being processed.
+     * @param processor a {@link StreamProcessor} for processing messages of type {@code T}.
+     * @param executor the {@link ExecutorService} to process the stream with.
      */
     public SynchronousConsumer(final ConsumerConnector connector,
                                final Map<String, Integer> partitions,
@@ -62,9 +57,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     /**
      * Starts this {@link SynchronousConsumer} immediately.
      * <p/>
-     * The consumer will immediately begin consuming from the configured topics
-     * using the configured {@link Decoder} to decode messages and
-     * {@link StreamProcessor} to process the decoded messages.
+     * The consumer will immediately begin consuming from the configured topics using the configured
+     * {@link Decoder} to decode messages and {@link StreamProcessor} to process the decoded
+     * messages.
      * <p/>
      * Each partition will be consumed using a separate thread.
      *
@@ -79,8 +74,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
             final String topic = e.getKey();
             final List<KafkaMessageStream<T>> messageStreams = e.getValue();
 
-            LOG.info("Consuming from topic '{}' with {} threads",
-                    topic, messageStreams.size());
+            LOG.info("Consuming from topic '{}' with {} threads", topic, messageStreams.size());
 
             for (final KafkaMessageStream<T> stream : messageStreams) {
                 executor.execute(new StreamProcessorRunnable(topic, stream));
@@ -101,12 +95,11 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     /**
      * Determines if this {@link KafkaConsumer} is currently consuming.
      *
-     * @return true if this {@link KafkaConsumer} is currently consuming from
-     *         at least one partition; otherwise, false
+     * @return true if this {@link KafkaConsumer} is currently consuming from at least one
+     *         partition; otherwise, false.
      */
     public boolean isRunning() {
-        return !executor.isShutdown() &&
-                !executor.isTerminated();
+        return !executor.isShutdown() && !executor.isTerminated();
     }
 
     /**
@@ -120,14 +113,12 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         private final String topic;
 
         /**
-         * Creates a {@link StreamProcessorRunnable} for the given topic and
-         * stream.
+         * Creates a {@link StreamProcessorRunnable} for the given topic and stream.
          *
-         * @param topic  the topic the {@link KafkaMessageStream} belongs to
-         * @param stream a stream of {@link kafka.message.Message}s in the topic
+         * @param topic the topic the {@link KafkaMessageStream} belongs to.
+         * @param stream a stream of {@link kafka.message.Message}s in the topic.
          */
-        public StreamProcessorRunnable(final String topic,
-                                       final KafkaMessageStream<T> stream) {
+        public StreamProcessorRunnable(final String topic, final KafkaMessageStream<T> stream) {
             this.topic = topic;
             this.stream = stream;
         }
@@ -135,11 +126,10 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         /**
          * Process the stream using the configured {@link StreamProcessor}.
          * <p/>
-         * If an {@link Exception} is thrown during processing, if it is deemed
-         * <i>recoverable</i>, the stream will continue to be consumed.
+         * If an {@link Exception} is thrown during processing, if it is deemed <i>recoverable</i>,
+         * the stream will continue to be consumed.
          * <p/>
-         * Unrecoverable {@link Exception}s will cause the consumer to shut
-         * down completely.
+         * Unrecoverable {@link Exception}s will cause the consumer to shut down completely.
          */
         @Override
         public void run() {

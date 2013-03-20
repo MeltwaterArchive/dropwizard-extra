@@ -1,6 +1,8 @@
 package com.datasift.dropwizard.config;
 
+import com.datasift.dropwizard.bundles.GraphiteReportingBundle;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableSet;
 import com.yammer.dropwizard.util.Duration;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
  * Configuration for a Graphite metrics reporter.
  *
  * @see com.yammer.metrics.reporting.GraphiteReporter
+ * @see GraphiteReportingBundle
  */
 public class GraphiteConfiguration {
 
@@ -50,6 +53,16 @@ public class GraphiteConfiguration {
     protected Duration frequency = Duration.minutes(1);
 
     /**
+     * The set of metrics to exclude from being reported to Graphite.
+     * <p/>
+     * The metric is specified as its fully-qualified path in Graphite, excluding the {@link
+     * #prefix}: <code>package.class[.scope].name</code>
+     */
+    @JsonProperty
+    @NotNull
+    protected ImmutableSet<String> excludes = ImmutableSet.of();
+
+    /**
      * @see GraphiteConfiguration#enabled
      */
     public boolean getEnabled() {
@@ -82,5 +95,12 @@ public class GraphiteConfiguration {
      */
     public Duration getFrequency() {
         return frequency;
+    }
+
+    /**
+     * @see GraphiteConfiguration#excludes
+     */
+    public ImmutableSet<String> getExcludes() {
+        return excludes;
     }
 }
