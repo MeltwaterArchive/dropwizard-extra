@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.inject.scala
+package com.datasift.dropwizard.jersey.inject.scala
 
 import com.sun.jersey.spi.inject.InjectableProvider
 import javax.ws.rs.QueryParam

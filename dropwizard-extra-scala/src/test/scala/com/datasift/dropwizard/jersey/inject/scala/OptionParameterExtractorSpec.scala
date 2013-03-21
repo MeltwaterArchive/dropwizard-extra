@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.inject.scala
+package com.datasift.dropwizard.jersey.inject.scala
 
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
