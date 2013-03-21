@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.inject.scala
+package com.datasift.dropwizard.jersey.inject.scala
 
 import org.specs2.mutable._
 import org.specs2.mock.Mockito

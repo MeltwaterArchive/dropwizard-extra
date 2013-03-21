@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.bundles;
 
-import com.datasift.dropwizard.inject.scala.CollectionsQueryParamInjectableProvider;
+import com.datasift.dropwizard.jersey.inject.scala.CollectionsQueryParamInjectableProvider;
 import com.yammer.dropwizard.Bundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;

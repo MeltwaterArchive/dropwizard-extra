@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.inject.scala
+package com.datasift.dropwizard.jersey.inject.scala
 
 import collection.generic.CanBuildFrom
 import com.sun.jersey.server.impl.model.parameter.multivalued.MultivaluedParameterExtractor

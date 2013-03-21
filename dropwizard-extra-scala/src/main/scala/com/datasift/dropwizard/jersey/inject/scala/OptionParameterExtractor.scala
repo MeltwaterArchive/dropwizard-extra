@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.inject.scala
+package com.datasift.dropwizard.jersey.inject.scala
 
 import com.sun.jersey.server.impl.model.parameter.multivalued.MultivaluedParameterExtractor
 import javax.ws.rs.core.MultivaluedMap
