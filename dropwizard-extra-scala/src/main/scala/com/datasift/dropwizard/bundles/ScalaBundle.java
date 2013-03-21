@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.bundles;
 
+import com.datasift.dropwizard.inject.scala.CollectionsQueryParamInjectableProvider;
 import com.yammer.dropwizard.Bundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -17,6 +18,6 @@ public class ScalaBundle implements Bundle {
 
     @Override
     public void run(final Environment environment) {
-
+        environment.addProvider(new CollectionsQueryParamInjectableProvider());
     }
 }
