@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.jersey.param
+package com.datasift.dropwizard.jersey.param.scala
 
 import org.junit.runner.RunWith
 import org.specs2.mutable._

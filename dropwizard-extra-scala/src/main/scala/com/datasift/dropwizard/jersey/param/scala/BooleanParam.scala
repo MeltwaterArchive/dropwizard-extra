@@ -1,4 +1,5 @@
-package com.datasift.dropwizard.jersey.param
+package com.datasift.dropwizard.jersey.param.scala
+
 
 object BooleanParam {
   def apply(value: Boolean): BooleanParam = BooleanParam(value.toString)

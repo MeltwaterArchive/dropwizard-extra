@@ -1,4 +1,5 @@
-package com.datasift.dropwizard.jersey.param
+package com.datasift.dropwizard.jersey.param.scala
+
 
 object LongParam {
   def apply(value: Long): LongParam = LongParam(value.toString)
