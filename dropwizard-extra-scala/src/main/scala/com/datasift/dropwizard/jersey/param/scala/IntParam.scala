@@ -1,4 +1,5 @@
-package com.datasift.dropwizard.jersey.param
+package com.datasift.dropwizard.jersey.param.scala
+
 
 object IntParam {
   def apply(value: Int): IntParam = IntParam(value.toString)
