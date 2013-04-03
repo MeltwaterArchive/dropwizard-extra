@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.bundles;
 
+import com.datasift.dropwizard.jersey.dispatch.OptionResourceMethodDispatchAdapter;
 import com.datasift.dropwizard.jersey.inject.scala.CollectionsQueryParamInjectableProvider;
 import com.yammer.dropwizard.Bundle;
 import com.yammer.dropwizard.config.Bootstrap;
@@ -19,5 +20,6 @@ public class ScalaBundle implements Bundle {
     @Override
     public void run(final Environment environment) {
         environment.addProvider(new CollectionsQueryParamInjectableProvider());
+        environment.addProvider(new OptionResourceMethodDispatchAdapter());
     }
 }
