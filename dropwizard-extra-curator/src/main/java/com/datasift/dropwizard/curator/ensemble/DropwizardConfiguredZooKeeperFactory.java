@@ -56,8 +56,8 @@ public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
             final int hostLength = idx == -1 ? connectString.length() : idx;
             final String authority = connectString.substring(0, hostLength);
             final Matcher matcher = PORT_PATTERN.matcher(authority);
+            this.port = matcher.find() ? Integer.parseInt(matcher.group(1)) : port;
             this.hosts = matcher.replaceAll("").split(",");
-            this.port = Integer.parseInt(matcher.reset().group(1));
             this.namespace = idx == -1 ? "/" : connectString.substring(idx);
             this.sessionTimeout = Duration.milliseconds(sessionTimeout);
             this.readOnly = canBeReadOnly;
