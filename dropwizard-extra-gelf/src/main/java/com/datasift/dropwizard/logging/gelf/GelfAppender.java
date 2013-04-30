@@ -2,6 +2,7 @@ package com.datasift.dropwizard.logging.gelf;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,14 +23,14 @@ import java.util.zip.GZIPOutputStream;
 public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
 
     private MessageDigest MD5;
-    private GelfLayout layout;
+    private Layout<E> layout;
     private SocketAddress target;
     private DatagramSocket socket;
     private String hostname = "localhost";
     private int port = 12201;
     private int chunkSize = 1024;
 
-    public GelfAppender<E> setLayout(final GelfLayout layout) {
+    public GelfAppender<E> setLayout(final Layout<E> layout) {
         this.layout = layout;
         return this;
     }

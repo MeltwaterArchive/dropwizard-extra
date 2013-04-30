@@ -3,9 +3,11 @@ package com.datasift.dropwizard.logging.gelf;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Layout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -27,8 +29,6 @@ import java.util.Set;
 
 /**
  * A {@link LoggingOutput} for writing log messages to a graylog2 server.
- *
- * TODO: write our own Appender to avoid the dependency on Gson.
  */
 @JsonTypeName("gelf")
 public class GelfLoggingOutput implements LoggingOutput {
@@ -38,14 +38,14 @@ public class GelfLoggingOutput implements LoggingOutput {
      */
     @JsonProperty
     @NotEmpty
-    private String host;
+    private String host = "localhost";
 
     /**
      * The port of the Graylog2 server to send log messages to.
      */
     @JsonProperty
     @Range(min = 1024, max = 65535)
-    private int port;
+    private int port = 12201;
 
     /**
      * The maximum size of each GELF chunk to send to the server.
@@ -58,7 +58,7 @@ public class GelfLoggingOutput implements LoggingOutput {
      * The format of the log message as a Logback log pattern.
      */
     @JsonProperty
-    private String logFormat;
+    private Optional<String> logFormat = Optional.absent();
 
     /**
      * SLF4J MDC fields to include in the messages sent via GELF.
@@ -85,29 +85,34 @@ public class GelfLoggingOutput implements LoggingOutput {
      *
      * @param context the context of the Logger to build the Appender for.
      * @param serviceName the name of the service to build the Appender for.
+     * @param layout an optional {@link Layout} for overriding the layout of log messages.
      *
      * @return an Appender for writing log messages to a graylog2 server.
      */
     @Override
     public Appender<ILoggingEvent> build(final LoggerContext context,
-                                         final String serviceName) {
-
-        final GelfLayout layout = new GelfLayout(new ObjectMapper()); // todo: find a way to provide this from the Environment?
-
-        // use service name for GELF facility
-        layout.setFacility(serviceName);
-        layout.setHostname(getLocalHost());
-        layout.setContext(context);
-        layout.setAdditionalFields(includes);
-
-        // configure log format only when defined
-        if (!Strings.isNullOrEmpty(logFormat)) {
-            layout.setPattern(logFormat);
-        }
-
+                                         final String serviceName,
+                                         final Layout<ILoggingEvent> layout) {
         final GelfAppender<ILoggingEvent> appender = new GelfAppender<ILoggingEvent>();
 
+        // todo: find a way to provide ObjectMapper from the Environment?
+        final GelfLayout formatter = new GelfLayout(new ObjectMapper());
+
+        // use service name for GELF facility
+        formatter.setFacility(serviceName);
+        formatter.setHostname(getLocalHost());
+        formatter.setContext(context);
+        formatter.setAdditionalFields(includes);
+
+        // configure log format only when defined
+        if (logFormat.isPresent()) {
+            formatter.setPattern(logFormat.get());
+        }
+
+        // use the custom layout, if provided
         appender.setLayout(layout);
+
+        appender.setLayout(formatter);
         appender.setContext(context);
         appender.setHostname(host);
         appender.setPort(port);

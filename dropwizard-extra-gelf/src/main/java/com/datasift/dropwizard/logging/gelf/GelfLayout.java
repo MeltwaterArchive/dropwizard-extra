@@ -3,6 +3,7 @@ package com.datasift.dropwizard.logging.gelf;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.LayoutBase;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,10 +24,10 @@ public class GelfLayout extends LayoutBase<ILoggingEvent> {
     private static final int MAX_SHORT_LENGTH = 255;
 
     private final ObjectMapper mapper;
+    private Layout<ILoggingEvent> layout = null;
 
     private String hostname = "localhost";
     private String facility = "GELF";
-    private PatternLayout pattern = new PatternLayout();
     private String[] additionalFields = new String[0];
 
     public GelfLayout() {
@@ -35,11 +36,21 @@ public class GelfLayout extends LayoutBase<ILoggingEvent> {
 
     public GelfLayout(final ObjectMapper mapper) {
         this.mapper = mapper;
-        pattern.setPattern("%m%rEx");
+        setLayout(null);
+    }
+
+    public void setLayout(final Layout<ILoggingEvent> layout) {
+        if (layout == null) {
+            setPattern("%m%rEx");
+        } else {
+            this.layout = layout;
+        }
     }
 
     public void setPattern(final String pattern) {
-        this.pattern.setPattern(pattern);
+        final PatternLayout layout = new PatternLayout();
+        layout.setPattern(pattern);
+        setLayout(layout);
     }
 
     public void setHostname(final String hostname) {
@@ -126,8 +137,7 @@ public class GelfLayout extends LayoutBase<ILoggingEvent> {
         private final Integer line;
 
         GelfEvent(final ILoggingEvent event) {
-            final String message = pattern.doLayout(event);
-
+            final String message = layout.doLayout(event);
 
             this.shortMessage = message.length() > MAX_SHORT_LENGTH
                             ? message.substring(0, MAX_SHORT_LENGTH)
