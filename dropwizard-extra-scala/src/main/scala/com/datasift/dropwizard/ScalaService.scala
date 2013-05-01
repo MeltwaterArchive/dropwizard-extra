@@ -7,11 +7,7 @@ import com.yammer.dropwizard.config.{Bootstrap, Configuration}
 /**
  * Base class for Dropwizard Services built in Scala.
  */
-abstract class ScalaService[A <: Configuration](name: String) extends Service[A] {
-
-  def this() {
-    this(getClass.getSimpleName)
-  }
+abstract class ScalaService[A <: Configuration] extends Service[A] {
 
   final def main(args: Array[String]) {
     run(args)
@@ -23,7 +19,6 @@ abstract class ScalaService[A <: Configuration](name: String) extends Service[A]
    * @param bootstrap the Service Bootstrap environment
    */
   override final def initialize(bootstrap: Bootstrap[A]) {
-    bootstrap.setName(name)
     bootstrap.addBundle(new ScalaBundle)
     init(bootstrap)
   }
