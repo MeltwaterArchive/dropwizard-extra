@@ -19,11 +19,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.yammer.dropwizard</groupId>
+      <groupId>com.codahale.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.yammer.metrics</groupId>
+      <groupId>com.codahale.metrics</groupId>
       <artifactId>metrics-graphite</artifactId>
       <version>${metrics.version}</version>
       <optional>true</optional>

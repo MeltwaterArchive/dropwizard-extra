@@ -28,8 +28,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <metrics.version>2.1.2</metrics.version>
-    <jersey.version>1.12</jersey.version>
+    <metrics.version>3.0.0-BETA2</metrics.version>
     <dropwizard.version>0.7.0-SNAPSHOT</dropwizard.version>
     <scala.version>2.9.1</scala.version>
   </properties>
@@ -111,7 +110,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.yammer.dropwizard</groupId>
+        <groupId>com.codahale.dropwizard</groupId>
         <artifactId>dropwizard-core</artifactId>
         <version>${dropwizard.version}</version>
       </dependency>
