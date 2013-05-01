@@ -81,8 +81,8 @@ public class CuratorFactory {
 
         final CuratorFramework framework = builder.build();
 
-        environment.addHealthCheck(new CuratorHealthCheck(framework, name));
-        environment.manage(new ManagedCuratorFramework(framework));
+        environment.getAdminEnvironment().addHealthCheck(new CuratorHealthCheck(framework, name));
+        environment.getLifecycleEnvironment().manage(new ManagedCuratorFramework(framework));
 
         return framework;
     }

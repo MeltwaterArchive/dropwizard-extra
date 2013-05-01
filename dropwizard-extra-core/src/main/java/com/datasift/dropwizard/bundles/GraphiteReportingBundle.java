@@ -112,7 +112,7 @@ public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReporti
                     }
             );
 
-            environment.addHealthCheck(new GraphiteHealthCheck(
+            environment.getAdminEnvironment().addHealthCheck(new GraphiteHealthCheck(
                     graphiteConfiguration.getHost(),
                     graphiteConfiguration.getPort(),
                     "graphite"));

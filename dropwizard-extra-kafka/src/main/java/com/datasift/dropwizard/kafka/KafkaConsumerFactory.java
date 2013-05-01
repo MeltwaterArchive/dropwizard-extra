@@ -119,7 +119,7 @@ public class KafkaConsumerFactory {
                 threads = threads + p;
             }
 
-            final ExecutorService executor = environment.managedExecutorService(
+            final ExecutorService executor = environment.getLifecycleEnvironment().managedExecutorService(
                     String.format("kafka-consumer-%s-%%d", name),
                     threads, threads, 0, TimeUnit.SECONDS);
 
@@ -152,10 +152,10 @@ public class KafkaConsumerFactory {
                     executor);
 
             // manage the consumer
-            environment.manage(consumer);
+            environment.getLifecycleEnvironment().manage(consumer);
 
             // add health checks
-            environment.addHealthCheck(new KafkaConsumerHealthCheck(consumer, name));
+            environment.getAdminEnvironment().addHealthCheck(new KafkaConsumerHealthCheck(consumer, name));
 
             return consumer;
         }

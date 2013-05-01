@@ -68,11 +68,11 @@ public class HBaseClientFactory {
         client.setIncrementBufferSize(configuration.getIncrementBufferSize());
 
         // add healthchecks for META and ROOT tables
-        environment.addHealthCheck(new HBaseHealthCheck(client, name, ".META."));
-        environment.addHealthCheck(new HBaseHealthCheck(client, name, "-ROOT-"));
+        environment.getAdminEnvironment().addHealthCheck(new HBaseHealthCheck(client, name, ".META."));
+        environment.getAdminEnvironment().addHealthCheck(new HBaseHealthCheck(client, name, "-ROOT-"));
 
         // manage client
-        environment.manage(new ManagedHBaseClient(
+        environment.getLifecycleEnvironment().manage(new ManagedHBaseClient(
                 client, configuration.getConnectionTimeout()));
 
         return client;
