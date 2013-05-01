@@ -1,13 +1,15 @@
 package com.datasift.dropwizard.hbase.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import com.yammer.dropwizard.config.ConfigurationFactory;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.util.Size;
-import com.yammer.dropwizard.validation.Validator;
+import com.codahale.dropwizard.configuration.ConfigurationFactory;
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Size;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.File;
 
 import static org.hamcrest.Matchers.*;
@@ -22,8 +24,8 @@ public class HBaseClientConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        conf = ConfigurationFactory
-                .forClass(HBaseClientConfiguration.class, new Validator())
+        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        conf = new ConfigurationFactory<>(HBaseClientConfiguration.class, validator, new ObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/hbase.yml").getFile()));
     }
 

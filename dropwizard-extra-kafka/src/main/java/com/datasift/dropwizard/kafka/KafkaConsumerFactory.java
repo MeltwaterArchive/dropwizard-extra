@@ -6,7 +6,8 @@ import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
-import com.yammer.dropwizard.config.Environment;
+import com.codahale.dropwizard.setup.Environment;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.message.Message;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * it.
  * <p/>
  * The resultant {@link KafkaConsumer} will have its lifecycle managed by the {@link Environment}
- * and will have {@link com.yammer.metrics.core.HealthCheck}s installed to monitor its status.
+ * and will have {@link com.codahale.metrics.health.HealthCheck}s installed to monitor its status.
  */
 public class KafkaConsumerFactory {
 
@@ -64,7 +65,7 @@ public class KafkaConsumerFactory {
      */
     public <T> KafkaConsumerBuilder<T> processWith(final Decoder<T> decoder,
                                                    final StreamProcessor<T> processor) {
-        return new KafkaConsumerBuilder<T>(decoder, processor);
+        return new KafkaConsumerBuilder<>(decoder, processor);
     }
 
     /**
@@ -76,6 +77,7 @@ public class KafkaConsumerFactory {
 
         private final Decoder<T> decoder;
         private final StreamProcessor<T> processor;
+        private static final String DEFAULT_NAME = "kafka-consumer-default";
 
         private KafkaConsumerBuilder(final Decoder<T> decoder, final StreamProcessor<T> processor) {
             this.decoder = decoder;
@@ -91,7 +93,7 @@ public class KafkaConsumerFactory {
          * @return a managed and configured {@link KafkaConsumer}.
          */
         public KafkaConsumer build(final KafkaConsumerConfiguration configuration) {
-            return build(configuration, "default");
+            return build(configuration, DEFAULT_NAME);
         }
 
         /**
@@ -99,7 +101,7 @@ public class KafkaConsumerFactory {
          * KafkaConsumerConfiguration}, {@link ExecutorService} and name.
          * <p/>
          * The name is used to identify the returned {@link KafkaConsumer} instance, for example, as
-         * the name of its {@link com.yammer.metrics.core.HealthCheck}s, thread pool, etc.
+         * the name of its {@link com.codahale.metrics.health.HealthCheck}s, thread pool, etc.
          * <p/>
          * This implementation creates a new {@link ExecutorService} with a fixed-size thread-pool,
          * configured for one thread per-partition the {@link KafkaConsumer} is being configured to
@@ -119,9 +121,12 @@ public class KafkaConsumerFactory {
                 threads = threads + p;
             }
 
-            final ExecutorService executor = environment.getLifecycleEnvironment().managedExecutorService(
-                    String.format("kafka-consumer-%s-%%d", name),
-                    threads, threads, 0, TimeUnit.SECONDS);
+            final ExecutorService executor = environment.lifecycle()
+                    .executorService(name + "-%d")
+                        .minThreads(threads)
+                        .maxThreads(threads)
+                        .keepAliveTime(0, TimeUnit.SECONDS)
+                        .build();
 
             return build(configuration, executor, name);
         }
@@ -131,7 +136,7 @@ public class KafkaConsumerFactory {
          * KafkaConsumerConfiguration}, {@link ExecutorService} and name.
          * <p/>
          * The name is used to identify the returned {@link KafkaConsumer} instance, for example, as
-         * the name of its {@link com.yammer.metrics.core.HealthCheck}s, etc.
+         * the name of its {@link com.codahale.metrics.health.HealthCheck}s, etc.
          *
          * @param configuration the {@link KafkaConsumerConfiguration} to configure the {@link
          *                      KafkaConsumer} with.
@@ -144,7 +149,7 @@ public class KafkaConsumerFactory {
                                    final ExecutorService executor,
                                    final String name) {
 
-            final SynchronousConsumer consumer = new SynchronousConsumer<T>(
+            final SynchronousConsumer consumer = new SynchronousConsumer<>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(configuration)),
                     configuration.getPartitions(),
                     decoder,
@@ -152,10 +157,10 @@ public class KafkaConsumerFactory {
                     executor);
 
             // manage the consumer
-            environment.getLifecycleEnvironment().manage(consumer);
+            environment.lifecycle().manage(consumer);
 
             // add health checks
-            environment.getAdminEnvironment().addHealthCheck(new KafkaConsumerHealthCheck(consumer, name));
+            environment.admin().addHealthCheck(name, new KafkaConsumerHealthCheck(consumer));
 
             return consumer;
         }

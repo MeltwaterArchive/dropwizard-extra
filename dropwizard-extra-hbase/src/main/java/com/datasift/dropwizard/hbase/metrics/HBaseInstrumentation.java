@@ -2,9 +2,9 @@ package com.datasift.dropwizard.hbase.metrics;
 
 import com.datasift.dropwizard.hbase.HBaseClient;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
-import com.yammer.metrics.core.Gauge;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 
 /**
  * A container for {@link Timer}s used to time {@link HBaseClient} requests.
@@ -26,7 +26,7 @@ public class HBaseInstrumentation {
     private final Timer unlocks;
 
     private final String name;
-    private final MetricsRegistry registry;
+    private final MetricRegistry registry;
 
     /**
      * Initialises instrumentation for the given {@link HBaseClient} using the given {@link
@@ -37,181 +37,194 @@ public class HBaseInstrumentation {
      * @param name     the name of the client/scanner to register metrics under.
      */
     public HBaseInstrumentation(final HBaseClient client,
-                                final MetricsRegistry registry,
+                                final MetricRegistry registry,
                                 final String name) {
-        final Class<? extends HBaseClient> clazz = client.getClass();
-
         this.name = name;
         this.registry = registry;
-
+        
         // timers
-        creates        = registry.newTimer(clazz, "create",        name);
-        increments     = registry.newTimer(clazz, "increment",     name);
-        compareAndSets = registry.newTimer(clazz, "compareAndSet", name);
-        deletes        = registry.newTimer(clazz, "delete",        name);
-        assertions     = registry.newTimer(clazz, "assertion",     name);
-        flushes        = registry.newTimer(clazz, "flush",         name);
-        gets           = registry.newTimer(clazz, "get",           name);
-        locks          = registry.newTimer(clazz, "lock",          name);
-        puts           = registry.newTimer(clazz, "put",           name);
-        unlocks        = registry.newTimer(clazz, "unlock",        name);
+        creates        = registry.timer(MetricRegistry.name(name, "create"));
+        increments     = registry.timer(MetricRegistry.name(name, "increment"));
+        compareAndSets = registry.timer(MetricRegistry.name(name, "compareAndSet"));
+        deletes        = registry.timer(MetricRegistry.name(name, "delete"));
+        assertions     = registry.timer(MetricRegistry.name(name, "assertion"));
+        flushes        = registry.timer(MetricRegistry.name(name, "flush"));
+        gets           = registry.timer(MetricRegistry.name(name, "get"));
+        locks          = registry.timer(MetricRegistry.name(name, "lock"));
+        puts           = registry.timer(MetricRegistry.name(name, "put"));
+        unlocks        = registry.timer(MetricRegistry.name(name, "unlock"));
 
         // client stats
-        registry.newGauge(clazz, "atomicIncrements", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().atomicIncrements();
-            }
-        });
-        registry.newGauge(clazz, "connectionsCreated", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().connectionsCreated();
-            }
-        });
-        registry.newGauge(clazz, "contendedMetaLookups", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().contendedMetaLookups();
-            }
-        });
-        registry.newGauge(clazz, "deletes", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().deletes();
-            }
-        });
-        registry.newGauge(clazz, "flushes", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().flushes();
-            }
-        });
-        registry.newGauge(clazz, "gets", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().gets();
-            }
-        });
-        registry.newGauge(clazz, "noSuchRegionExceptions", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().noSuchRegionExceptions();
-            }
-        });
-        registry.newGauge(clazz, "numBatchedRpcSent", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().numBatchedRpcSent();
-            }
-        });
-        registry.newGauge(clazz, "numRpcDelayedDueToNSRE", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().numRpcDelayedDueToNSRE();
-            }
-        });
-        registry.newGauge(clazz, "puts", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().puts();
-            }
-        });
-        registry.newGauge(clazz, "rootLookups", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().rootLookups();
-            }
-        });
-        registry.newGauge(clazz, "rowLocks", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().rowLocks();
-            }
-        });
-        registry.newGauge(clazz, "scannersOpened", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().scannersOpened();
-            }
-        });
-        registry.newGauge(clazz, "scans", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().scans();
-            }
-        });
-        registry.newGauge(clazz, "uncontendedMetaLookups", "totals", new Gauge<Long>() {
-            @Override public Long value() {
-                return client.stats().uncontendedMetaLookups();
-            }
-        });
+        registry.register(MetricRegistry.name(name, "totals", "atomicIncrements"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().atomicIncrements();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "connectionsCreated"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().connectionsCreated();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "contendedMetaLookups"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().contendedMetaLookups();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "deletes"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().deletes();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "flushes"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().flushes();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "gets"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().gets();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "noSuchRegionExceptions"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().noSuchRegionExceptions();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "numBatchedRpcSent"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().numBatchedRpcSent();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "numRpcDelayedDueToNSRE"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().numRpcDelayedDueToNSRE();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "puts"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().puts();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "rootLookups"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().rootLookups();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "rowLocks"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().rowLocks();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "scannersOpened"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().scannersOpened();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "scans"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().scans();
+                    }
+                });
+        registry.register(MetricRegistry.name(name, "totals", "uncontendedMetaLookups"),
+                new Gauge<Long>() {
+                    @Override public Long getValue() {
+                        return client.stats().uncontendedMetaLookups();
+                    }
+                });
 
         // increment buffer stats
-        registry.newGauge(clazz, "averageLoadPenalty", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "averageLoadPenalty"),
                 new Gauge<Double>() {
-                    @Override public Double value() {
+                    @Override public Double getValue() {
                         return client.stats().incrementBufferStats()
                                 .averageLoadPenalty();
                     }
                 });
-        registry.newGauge(clazz, "evictionCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "evictionCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .evictionCount();
                     }
                 });
-        registry.newGauge(clazz, "hitCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "hitCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats().hitCount();
                     }
                 });
-        registry.newGauge(clazz, "hitRate", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "hitRate"),
                 new Gauge<Double>() {
-                    @Override public Double value() {
+                    @Override public Double getValue() {
                         return client.stats().incrementBufferStats().hitRate();
                     }
                 });
-        registry.newGauge(clazz, "loadCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "loadCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .loadCount();
                     }
                 });
-        registry.newGauge(clazz, "loadExceptionCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "loadExceptionCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .loadExceptionCount();
                     }
                 });
-        registry.newGauge(clazz, "loadExceptionRate", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "loadExceptionRate"),
                 new Gauge<Double>() {
-                    @Override public Double value() {
+                    @Override public Double getValue() {
                         return client.stats().incrementBufferStats()
                                 .loadExceptionRate();
                     }
                 });
-        registry.newGauge(clazz, "loadSuccessCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "loadSuccessCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .loadSuccessCount();
                     }
                 });
-        registry.newGauge(clazz, "missCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "missCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .missCount();
                     }
                 });
-        registry.newGauge(clazz, "missRate", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "missRate"),
                 new Gauge<Double>() {
-                    @Override public Double value() {
+                    @Override public Double getValue() {
                         return client.stats().incrementBufferStats()
                                 .missRate();
                     }
                 });
-        registry.newGauge(clazz, "requestCount", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "requestCount"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .requestCount();
                     }
                 });
-        registry.newGauge(clazz, "totalLoadTime", "incrementBuffer",
+        registry.register(MetricRegistry.name(name, "incrementBuffer", "totalLoadTime"),
                 new Gauge<Long>() {
-                    @Override public Long value() {
+                    @Override public Long getValue() {
                         return client.stats().incrementBufferStats()
                                 .totalLoadTime();
                     }

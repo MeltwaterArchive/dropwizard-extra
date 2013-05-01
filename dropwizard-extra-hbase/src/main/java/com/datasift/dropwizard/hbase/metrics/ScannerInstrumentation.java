@@ -1,8 +1,8 @@
 package com.datasift.dropwizard.hbase.metrics;
 
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 
 /**
  * A container for {@link Timer}s used to time {@link RowScanner} requests.
@@ -24,12 +24,12 @@ public class ScannerInstrumentation {
      */
 
     ScannerInstrumentation(final RowScanner scanner,
-                           final MetricsRegistry registry,
+                           final MetricRegistry registry,
                            final String name) {
         final Class<? extends RowScanner> clazz = scanner.getClass();
 
-        scans = registry.newTimer(clazz, "scans", name);
-        closes = registry.newTimer(clazz, "closes", name);
+        scans = registry.timer(MetricRegistry.name(name, "scans"));
+        closes = registry.timer(MetricRegistry.name(name, "closes"));
     }
 
     /**

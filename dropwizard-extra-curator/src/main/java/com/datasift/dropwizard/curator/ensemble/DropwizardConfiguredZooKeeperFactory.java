@@ -3,7 +3,7 @@ package com.datasift.dropwizard.curator.ensemble;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.netflix.curator.utils.ZookeeperFactory;
-import com.yammer.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Duration;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 

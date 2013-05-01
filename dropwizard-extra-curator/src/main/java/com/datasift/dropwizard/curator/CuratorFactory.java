@@ -9,7 +9,7 @@ import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
-import com.yammer.dropwizard.config.Environment;
+import com.codahale.dropwizard.setup.Environment;
 
 /**
  * A factory for creating and managing {@link CuratorFramework} instances.
@@ -23,6 +23,7 @@ import com.yammer.dropwizard.config.Environment;
 public class CuratorFactory {
 
     private final Environment environment;
+    private static final String DEFAULT_NAME = "curator-default";
 
     /**
      * Creates a new {@link CuratorFactory} instance for the given {@link Environment}.
@@ -45,7 +46,7 @@ public class CuratorFactory {
      *         configuration}.
      */
     public CuratorFramework build(final CuratorConfiguration configuration) {
-        return build(configuration, "default");
+        return build(configuration, DEFAULT_NAME);
     }
 
     /**
@@ -81,8 +82,8 @@ public class CuratorFactory {
 
         final CuratorFramework framework = builder.build();
 
-        environment.getAdminEnvironment().addHealthCheck(new CuratorHealthCheck(framework, name));
-        environment.getLifecycleEnvironment().manage(new ManagedCuratorFramework(framework));
+        environment.admin().addHealthCheck(name, new CuratorHealthCheck(framework));
+        environment.lifecycle().manage(new ManagedCuratorFramework(framework));
 
         return framework;
     }

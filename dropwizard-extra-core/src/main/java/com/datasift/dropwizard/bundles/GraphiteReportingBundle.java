@@ -1,22 +1,22 @@
 package com.datasift.dropwizard.bundles;
 
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.metrics.MetricFilter;
+import com.codahale.metrics.graphite.Graphite;
 import com.datasift.dropwizard.config.GraphiteConfiguration;
 import com.datasift.dropwizard.config.GraphiteReportingConfiguration;
 import com.datasift.dropwizard.health.GraphiteHealthCheck;
-import com.yammer.dropwizard.ConfiguredBundle;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Configuration;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricPredicate;
-import com.yammer.metrics.reporting.GraphiteReporter;
+import com.codahale.dropwizard.ConfiguredBundle;
+import com.codahale.dropwizard.Service;
+import com.codahale.dropwizard.setup.Bootstrap;
+import com.codahale.dropwizard.Configuration;
+import com.codahale.dropwizard.setup.Environment;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.graphite.GraphiteReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
+import java.net.InetSocketAddress;
 
 /**
  * A {@link ConfiguredBundle} for reporting metrics to a remote Graphite server.
@@ -36,11 +36,11 @@ import java.util.concurrent.TimeUnit;
  *         // service specific config
  *         // ...
  *
- *         @JsonProperty
- *         @NotNull
+ *         \@JsonProperty
+ *         \@NotNull
  *         private GraphiteConfiguration graphite;
  *
- *         @Override
+ *         \@Override
  *         public GraphiteConfiguration getGraphite() {
  *             return graphite;
  *         }
@@ -78,44 +78,28 @@ public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReporti
                     final Environment environment) {
 
         final GraphiteConfiguration graphiteConfiguration = configuration.getGraphite();
+        final String host = graphiteConfiguration.getHost();
+        final int port = graphiteConfiguration.getPort();
+        final Duration frequency = graphiteConfiguration.getFrequency();
+        final String prefix = graphiteConfiguration.getPrefix();
 
         if (graphiteConfiguration.getEnabled()) {
-            log.info("Reporting metrics to Graphite at {}:{}, every {}",
-                    graphiteConfiguration.getHost(),
-                    graphiteConfiguration.getPort(),
-                    graphiteConfiguration.getFrequency());
+            log.info("Reporting metrics to Graphite at {}:{}, every {}", host, port, frequency);
 
-            GraphiteReporter.enable(
-                    Metrics.defaultRegistry(),
-                    graphiteConfiguration.getFrequency().toNanoseconds(),
-                    TimeUnit.NANOSECONDS,
-                    graphiteConfiguration.getHost(),
-                    graphiteConfiguration.getPort(),
-                    graphiteConfiguration.getPrefix(),
-                    new MetricPredicate() {
+            final GraphiteReporter reporter = GraphiteReporter
+                    .forRegistry(environment.metrics())
+                    .prefixedWith(prefix)
+                    .filter(new MetricFilter() {
                         @Override
-                        public boolean matches(final MetricName name, final Metric metric) {
-                            return !graphiteConfiguration.getExcludes().contains(pathFor(name));
+                        public boolean matches(final String name, final Metric metric) {
+                            return !graphiteConfiguration.getExcludes().contains(name);
                         }
+                    })
+                    .build(new Graphite(new InetSocketAddress(host, port)));
 
-                        private String pathFor(final MetricName name) {
-                            final StringBuilder sb = new StringBuilder(name.getGroup())
-                                    .append('.')
-                                    .append(name.getType())
-                                    .append('.');
-                            if (name.hasScope()) {
-                                sb.append(name.getScope()).append('.');
-                            }
+            reporter.start(frequency.getQuantity(), frequency.getUnit());
 
-                            return sb.append(name.getName()).toString();
-                        }
-                    }
-            );
-
-            environment.getAdminEnvironment().addHealthCheck(new GraphiteHealthCheck(
-                    graphiteConfiguration.getHost(),
-                    graphiteConfiguration.getPort(),
-                    "graphite"));
+            environment.admin().addHealthCheck("graphite", new GraphiteHealthCheck(host, port));
         }
     }
 

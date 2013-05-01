@@ -3,8 +3,8 @@ package com.datasift.dropwizard.hbase.config;
 import com.datasift.dropwizard.hbase.HBaseClient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.util.Size;
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Size;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -70,8 +70,7 @@ public class HBaseClientConfiguration {
     protected Duration connectionTimeout = Duration.seconds(5);
 
     /**
-     * Whether the {@link HBaseClient} should be instrumented with {@link
-     * com.yammer.metrics.core.Metric}s.
+     * Whether the {@link HBaseClient} should be instrumented with metrics.
      */
     @JsonProperty
     protected boolean instrumented = true;
