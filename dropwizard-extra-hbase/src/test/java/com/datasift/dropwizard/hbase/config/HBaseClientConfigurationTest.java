@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.hbase.config;
 
+import com.codahale.dropwizard.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
@@ -25,7 +26,7 @@ public class HBaseClientConfigurationTest {
     @Before
     public void setUp() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        conf = new ConfigurationFactory<>(HBaseClientConfiguration.class, validator, new ObjectMapper(), "dw")
+        conf = new ConfigurationFactory<>(HBaseClientConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/hbase.yml").getFile()));
     }
 

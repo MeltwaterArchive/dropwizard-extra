@@ -1,6 +1,7 @@
 package com.datasift.dropwizard.curator.config;
 
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
+import com.codahale.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
@@ -23,7 +24,7 @@ public class CuratorConfigurationTest {
     @Before
     public void setup() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        config = new ConfigurationFactory<>(CuratorConfiguration.class, validator, new ObjectMapper(), "dw")
+        config = new ConfigurationFactory<>(CuratorConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/curator.yaml").toURI()));
     }
 

@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.zookeeper.config;
 
+import com.codahale.dropwizard.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
@@ -25,7 +26,7 @@ public class ZooKeeperConfigurationTest {
     @Before
     public void setup() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        config = new ConfigurationFactory<>(ZooKeeperConfiguration.class, validator, new ObjectMapper(), "dw")
+        config = new ConfigurationFactory<>(ZooKeeperConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/zookeeper.yaml").toURI()));
     }
 
