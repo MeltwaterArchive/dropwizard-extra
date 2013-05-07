@@ -1,8 +1,8 @@
 package com.datasift.dropwizard
 
 import bundles.ScalaBundle
-import com.yammer.dropwizard.Service
-import com.yammer.dropwizard.config.{Bootstrap, Configuration}
+import com.codahale.dropwizard.{Service, Configuration}
+import com.codahale.dropwizard.setup.Bootstrap
 
 /**
  * Base class for Dropwizard Services built in Scala.

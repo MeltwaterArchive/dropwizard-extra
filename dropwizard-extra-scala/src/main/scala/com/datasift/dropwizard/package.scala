@@ -1,6 +1,6 @@
 package com.datasift
 
-import com.yammer.dropwizard.util.{Size, Duration}
+import com.codahale.dropwizard.util.{Size, Duration}
 
 
 /** Scala integrations for Dropwizard */

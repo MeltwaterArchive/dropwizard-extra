@@ -4,7 +4,6 @@ import com.codahale.dropwizard.setup.Environment
 import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration
 import com.datasift.dropwizard.kafka.KafkaConsumerFactory
 import kafka.serializer.Decoder
-import kafka.message.Message
 
 /**
  * Factory object for a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
