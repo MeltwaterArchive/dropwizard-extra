@@ -1,12 +1,15 @@
 package com.datasift.dropwizard.kafka.config;
 
+import com.codahale.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import com.yammer.dropwizard.config.ConfigurationFactory;
-import com.yammer.dropwizard.validation.Validator;
+import com.codahale.dropwizard.configuration.ConfigurationFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.File;
 
 import static org.hamcrest.Matchers.*;
@@ -19,8 +22,8 @@ public class KafkaConsumerConfigurationTest {
 
     @Before
     public void setup() throws Exception {
-        config = ConfigurationFactory
-                .forClass(KafkaConsumerConfiguration.class, new Validator())
+        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        config = new ConfigurationFactory<>(KafkaConsumerConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/consumer.yaml").toURI()));
     }
 

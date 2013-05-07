@@ -3,7 +3,7 @@ package com.datasift.dropwizard.curator.ensemble;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.netflix.curator.utils.ZookeeperFactory;
-import com.yammer.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Duration;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -56,8 +56,8 @@ public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
             final int hostLength = idx == -1 ? connectString.length() : idx;
             final String authority = connectString.substring(0, hostLength);
             final Matcher matcher = PORT_PATTERN.matcher(authority);
+            this.port = matcher.find() ? Integer.parseInt(matcher.group(1)) : port;
             this.hosts = matcher.replaceAll("").split(",");
-            this.port = Integer.parseInt(matcher.reset().group(1));
             this.namespace = idx == -1 ? "/" : connectString.substring(idx);
             this.sessionTimeout = Duration.milliseconds(sessionTimeout);
             this.readOnly = canBeReadOnly;

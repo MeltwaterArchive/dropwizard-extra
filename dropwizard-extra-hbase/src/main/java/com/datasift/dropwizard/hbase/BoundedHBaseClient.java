@@ -4,8 +4,8 @@ import com.datasift.dropwizard.hbase.scanner.BoundedRowScanner;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.datasift.dropwizard.hbase.util.*;
 import com.stumbleupon.async.Deferred;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.util.Size;
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Size;
 import org.hbase.async.*;
 import org.jboss.netty.util.Timer;
 
@@ -171,7 +171,7 @@ public class BoundedHBaseClient implements HBaseClient {
      * @see HBaseClient#increment(AtomicIncrementRequest, Boolean)
      */
     public Deferred<Long> increment(final AtomicIncrementRequest request,
-                                    Boolean durable) {
+                                    final Boolean durable) {
         semaphore.acquireUninterruptibly();
         return client.increment(request, durable)
                 .addBoth(new PermitReleasingCallback<Long>(semaphore));
@@ -222,7 +222,7 @@ public class BoundedHBaseClient implements HBaseClient {
      */
     public Deferred<Object> delete(final DeleteRequest request) {
         semaphore.acquireUninterruptibly();
-        return client.delete(request).addBoth(new PermitReleasingCallback<Object>(semaphore));
+        return client.delete(request).addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -239,7 +239,7 @@ public class BoundedHBaseClient implements HBaseClient {
     public Deferred<Object> ensureTableExists(final byte[] table) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableExists(table)
-                .addBoth(new PermitReleasingCallback<Object>(semaphore));
+                .addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -256,7 +256,7 @@ public class BoundedHBaseClient implements HBaseClient {
     public Deferred<Object> ensureTableExists(final String table) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableExists(table)
-                .addBoth(new PermitReleasingCallback<Object>(semaphore));
+                .addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -275,7 +275,7 @@ public class BoundedHBaseClient implements HBaseClient {
                                                     final byte[] family) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableFamilyExists(table, family)
-                .addBoth(new PermitReleasingCallback<Object>(semaphore));
+                .addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -294,7 +294,7 @@ public class BoundedHBaseClient implements HBaseClient {
                                                     final String family) {
         semaphore.acquireUninterruptibly();
         return client.ensureTableFamilyExists(table, family)
-                .addBoth(new PermitReleasingCallback<Object>(semaphore));
+                .addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -306,7 +306,7 @@ public class BoundedHBaseClient implements HBaseClient {
      */
     public Deferred<Object> flush() {
         semaphore.acquireUninterruptibly();
-        return client.flush().addBoth(new PermitReleasingCallback<Object>(semaphore));
+        return client.flush().addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -375,7 +375,7 @@ public class BoundedHBaseClient implements HBaseClient {
      */
     public Deferred<Object> put(final PutRequest request) {
         semaphore.acquireUninterruptibly();
-        return client.put(request).addBoth(new PermitReleasingCallback<Object>(semaphore));
+        return client.put(request).addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**
@@ -422,6 +422,6 @@ public class BoundedHBaseClient implements HBaseClient {
      */
     public Deferred<Object> unlockRow(final RowLock lock) {
         semaphore.acquireUninterruptibly();
-        return client.unlockRow(lock).addBoth(new PermitReleasingCallback<Object>(semaphore));
+        return client.unlockRow(lock).addBoth(new PermitReleasingCallback<>(semaphore));
     }
 }

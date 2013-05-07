@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.curator;
 
 import com.netflix.curator.framework.CuratorFramework;
-import com.yammer.dropwizard.lifecycle.Managed;
+import com.codahale.dropwizard.lifecycle.Managed;
 
 /**
  * Manages the lifecycle of a {@link CuratorFramework} instance.

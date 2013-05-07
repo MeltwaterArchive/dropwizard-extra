@@ -2,7 +2,7 @@ package com.datasift.dropwizard.zookeeper;
 
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.zookeeper.health.ZooKeeperHealthCheck;
-import com.yammer.dropwizard.config.Environment;
+import com.codahale.dropwizard.setup.Environment;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public class ZooKeeperFactory {
 
-    private static final String DEFAULT_NAME = "default";
+    private static final String DEFAULT_NAME = "zookeeper-default";
 
     private final Environment environment;
 
@@ -124,8 +124,8 @@ public class ZooKeeperFactory {
             client.addAuthInfo(auth.getScheme(), auth.getId());
         }
 
-        environment.addHealthCheck(new ZooKeeperHealthCheck(client, quorumSpec, namespace, name));
-        environment.manage(new ManagedZooKeeper(client));
+        environment.admin().addHealthCheck(name, new ZooKeeperHealthCheck(client, namespace));
+        environment.lifecycle().manage(new ManagedZooKeeper(client));
 
         return client;
     }

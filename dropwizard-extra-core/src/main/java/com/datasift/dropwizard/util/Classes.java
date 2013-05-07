@@ -39,8 +39,7 @@ public class Classes {
     public static <T> T newInstance(final Class<T> clazz, final Object... args)
         throws NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
-            return Classes.getApplicableConstructor(clazz, Classes.of(args))
-                    .newInstance(args);
+            return getApplicableConstructor(clazz, Classes.of(args)).newInstance(args);
     }
 
     /**
@@ -75,7 +74,7 @@ public class Classes {
     public static <T> T newInstanceFrom(final T template, final Object... args)
             throws NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
-        return Classes.newInstance(((Class<? extends T>) template.getClass()), args);
+        return newInstance(((Class<? extends T>) template.getClass()), args);
     }
 
     /**
@@ -111,8 +110,7 @@ public class Classes {
      */
     public static <T> T unsafeNewInstance(final Class<T> clazz, final Object... args)
             throws NoSuchMethodException, InstantiationException, InvocationTargetException {
-        final Constructor<T> constructor =
-                Classes.getApplicableConstructor(clazz, Classes.of(args));
+        final Constructor<T> constructor = getApplicableConstructor(clazz, Classes.of(args));
         constructor.setAccessible(true);
         try {
             return constructor.newInstance(args);
@@ -244,7 +242,7 @@ public class Classes {
             throws NoSuchMethodException {
         final Constructor[] constructors = clazz.getDeclaredConstructors();
         for (final Constructor<T> constructor : constructors) {
-            if (Classes.isAssignableFrom(constructor.getParameterTypes(), args)) {
+            if (isAssignableFrom(constructor.getParameterTypes(), args)) {
                 return constructor;
             }
         }
@@ -280,10 +278,9 @@ public class Classes {
                                              final String name,
                                              final Class... args) throws NoSuchMethodException {
         final Method[] methods = clazz.getDeclaredMethods();
-        for (final Method method : methods) {
-            if (method.getName().equals(name) &&
-                    Classes.isAssignableFrom(method.getParameterTypes(), args)) {
-                return method;
+        for (final Method m : methods) {
+            if (m.getName().equals(name) && isAssignableFrom(m.getParameterTypes(), args)) {
+                return m;
             }
         }
         throw new NoSuchMethodException(String.format(
@@ -316,7 +313,7 @@ public class Classes {
 
         // check if each source type can be assigned to each target type
         for (int i = 0; i < targets.length; i++) {
-            if (!Classes.isAssignableFrom(targets[i], sources[i])) {
+            if (!isAssignableFrom(targets[i], sources[i])) {
                 return false;
             }
         }

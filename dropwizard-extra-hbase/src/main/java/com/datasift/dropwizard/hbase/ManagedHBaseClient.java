@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.hbase;
 
-import com.yammer.dropwizard.lifecycle.Managed;
-import com.yammer.dropwizard.util.Duration;
+import com.codahale.dropwizard.lifecycle.Managed;
+import com.codahale.dropwizard.util.Duration;
 
 /**
  * Manages the lifecycle of an {@link HBaseClient}.

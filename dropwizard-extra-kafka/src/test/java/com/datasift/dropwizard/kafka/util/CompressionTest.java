@@ -32,7 +32,7 @@ public class CompressionTest {
         assertCompression(GZIPCompressionCodec$.MODULE$, null);
     }
 
-    private void assertCompression(CompressionCodec expected, String value) {
+    private void assertCompression(final CompressionCodec expected, final String value) {
         assertThat(String.format("'%s' parses as %s", value, expected.getClass().getSimpleName()),
                 Compression.parse(value).getCodec(),
                 is(expected));

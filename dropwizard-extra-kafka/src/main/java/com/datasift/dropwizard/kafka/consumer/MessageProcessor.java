@@ -1,10 +1,8 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
-import com.yammer.metrics.core.TimerContext;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 
 /**
  * Processes messages of type {@code T} from a Kafka message stream.
@@ -15,28 +13,21 @@ import com.yammer.metrics.core.TimerContext;
  * @param <T> the decoded type of the message to process
  */
 public abstract class MessageProcessor<T> implements StreamProcessor<T> {
-
-    /**
-     * {@link Timer} for the processing of each message in the stream.
-     */
-    private final Timer processed;
-
-    /**
-     * Creates a MessageProcessor; registers {@link Metric}s with the {@link
-     * Metrics#defaultRegistry() default registry}.
-     */
-    public MessageProcessor() {
-        this(Metrics.defaultRegistry());
-    }
-
-    /**
-     * Creates a MessageProcessor; registers {@link Metric}s with the given {@link MetricsRegistry}.
-     *
-     * @param registry the {@link MetricsRegistry} to register metrics with.
-     */
-    public MessageProcessor(final MetricsRegistry registry) {
-        processed = registry.newTimer(getClass(), "processed");
-    }
+//
+//    /**
+//     * {@link Timer} for the processing of each message in the stream.
+//     */
+//    private final Timer processed;
+//
+//    /**
+//     * Creates a MessageProcessor; registers {@link Metric}s with the given {@link MetricRegistry}.
+//     *
+//     * @param registry the {@link MetricRegistry} to register metrics with.
+//     * @param name the name to use for metrics of this processor.
+//     */
+//    public MessageProcessor(final MetricRegistry registry, final String name) {
+//        processed = registry.timer(MetricRegistry.name(name, "processed"));
+//    }
 
     /**
      * Processes a {@code message} of type {@code T}.
@@ -56,9 +47,9 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
      */
     public void process(final Iterable<T> stream, final String topic) {
         for (final T message : stream) {
-            final TimerContext context = processed.time();
+//            final Timer.Context context = processed.time();
             process(message, topic);
-            context.stop();
+//            context.stop();
         }
     }
 }

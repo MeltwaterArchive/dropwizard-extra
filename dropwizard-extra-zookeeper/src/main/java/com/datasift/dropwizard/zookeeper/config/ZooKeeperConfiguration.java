@@ -2,8 +2,8 @@ package com.datasift.dropwizard.zookeeper.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.validation.ValidationMethod;
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.validation.ValidationMethod;
 import org.apache.zookeeper.common.PathUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;

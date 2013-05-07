@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.yammer.metrics.core.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 
 /**
  * A {@link HealthCheck} to monitor the health of a {@link KafkaConsumer}.
@@ -13,10 +13,8 @@ public class KafkaConsumerHealthCheck extends HealthCheck {
      * Create a new {@link HealthCheck} instance with the given name.
      *
      * @param consumer the {@link KafkaConsumer} to monitor the health of.
-     * @param name the name of the {@link KafkaConsumer}.
      */
-    public KafkaConsumerHealthCheck(final KafkaConsumer consumer, final String name) {
-        super(name);
+    public KafkaConsumerHealthCheck(final KafkaConsumer consumer) {
         this.consumer = consumer;
     }
 
