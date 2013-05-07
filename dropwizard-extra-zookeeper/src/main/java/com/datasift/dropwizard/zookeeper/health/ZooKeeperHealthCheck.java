@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.zookeeper.health;
 
-import com.yammer.metrics.core.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 import org.apache.zookeeper.ZooKeeper;
 
 /**
@@ -26,11 +26,7 @@ public class ZooKeeperHealthCheck extends HealthCheck {
      * @param namespace the namespace to check for within the ZooKeeper ensemble.
      * @param name the name of this {@link HealthCheck}.
      */
-    public ZooKeeperHealthCheck(final ZooKeeper client,
-                                final String quorumSpec,
-                                final String namespace,
-                                final String name) {
-        super(String.format("%s-zookeeper-%s-%s", name, quorumSpec, namespace));
+    public ZooKeeperHealthCheck(final ZooKeeper client, final String namespace) {
         this.client = client;
         this.namespace = namespace;
     }

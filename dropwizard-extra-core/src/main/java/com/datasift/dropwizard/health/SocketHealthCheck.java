@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.health;
 
-import com.yammer.metrics.core.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -42,8 +42,7 @@ public abstract class SocketHealthCheck extends HealthCheck {
      * @param port the port of the remote socket to check.
      * @param name the name of this {@link HealthCheck}.
      */
-    public SocketHealthCheck(final String hostname, final int port, final String name) {
-        super(String.format("%s-%s:%d", name, hostname, port));
+    public SocketHealthCheck(final String hostname, final int port) {
         this.hostname = hostname;
         this.port = port;
     }

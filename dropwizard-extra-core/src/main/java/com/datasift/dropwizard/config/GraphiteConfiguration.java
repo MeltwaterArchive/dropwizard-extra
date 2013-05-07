@@ -3,7 +3,7 @@ package com.datasift.dropwizard.config;
 import com.datasift.dropwizard.bundles.GraphiteReportingBundle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
-import com.yammer.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Duration;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Configuration for a Graphite metrics reporter.
  *
- * @see com.yammer.metrics.reporting.GraphiteReporter
+ * @see com.codahale.metrics.graphite.GraphiteReporter
  * @see GraphiteReportingBundle
  */
 public class GraphiteConfiguration {

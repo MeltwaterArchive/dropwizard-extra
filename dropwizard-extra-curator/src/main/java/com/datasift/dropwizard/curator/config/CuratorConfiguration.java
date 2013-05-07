@@ -7,7 +7,7 @@ import com.netflix.curator.RetryPolicy;
 import com.netflix.curator.framework.api.CompressionProvider;
 import com.netflix.curator.framework.imps.GzipCompressionProvider;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
-import com.yammer.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Duration;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

@@ -32,7 +32,7 @@
 
     <!-- Core dependencies (for core Scala support) -->
     <dependency>
-      <groupId>com.yammer.dropwizard</groupId>
+      <groupId>com.codahale.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
       <version>${dropwizard.version}</version>
     </dependency>
@@ -62,13 +62,13 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.yammer.dropwizard</groupId>
+      <groupId>com.codahale.dropwizard</groupId>
       <artifactId>dropwizard-db</artifactId>
       <version>${dropwizard.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.yammer.dropwizard</groupId>
+      <groupId>com.codahale.dropwizard</groupId>
       <artifactId>dropwizard-jdbi</artifactId>
       <version>${dropwizard.version}</version>
       <optional>true</optional>
@@ -85,6 +85,12 @@
       <groupId>org.specs2</groupId>
       <artifactId>specs2_${scala.version}</artifactId>
       <version>1.12.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.codahale.dropwizard</groupId>
+      <artifactId>dropwizard-testing</artifactId>
+      <version>${dropwizard.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

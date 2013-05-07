@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.config;
 
-import com.yammer.dropwizard.config.Configuration;
+import com.codahale.dropwizard.Configuration;
 
 /**
  * Interface for {@link Configuration}s that include Graphite metrics reporting capability.

@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.hbase.util;
 
 import com.stumbleupon.async.Callback;
-import com.yammer.metrics.core.TimerContext;
+import com.codahale.metrics.Timer;
 
 /**
  * A {@link Callback} for stopping a {@link TimerContext} on completion.
@@ -11,7 +11,7 @@ public class TimerStoppingCallback<T> implements Callback<T, T> {
     /**
      * The context of the active {@link com.yammer.metrics.core.Timer} to stop.
      */
-    private final TimerContext timer;
+    private final Timer.Context timer;
 
     /**
      * Creates a new {@link Callback} that stops the given active timer on completion.
@@ -19,7 +19,7 @@ public class TimerStoppingCallback<T> implements Callback<T, T> {
      * @param timer the active {@link com.yammer.metrics.core.Timer} to stop on completion of the
      *              {@link Callback}.
      */
-    public TimerStoppingCallback(final TimerContext timer) {
+    public TimerStoppingCallback(final Timer.Context timer) {
         this.timer = timer;
     }
 

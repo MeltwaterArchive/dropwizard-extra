@@ -5,8 +5,8 @@ import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
 import com.datasift.dropwizard.hbase.metrics.ScannerInstrumentation;
 import com.datasift.dropwizard.hbase.util.TimerStoppingCallback;
 import com.stumbleupon.async.Deferred;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.TimerContext;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.Timer;
 import org.hbase.async.KeyValue;
 
 import java.nio.charset.Charset;
@@ -301,7 +301,7 @@ public class InstrumentedRowScanner implements RowScanner {
      * @see RowScanner#close()
      */
     public Deferred<Object> close() {
-        final TimerContext ctx = metrics.getCloses().time();
+        final Timer.Context ctx = metrics.getCloses().time();
         return scanner.close().addBoth(new TimerStoppingCallback<Object>(ctx));
     }
 
@@ -313,7 +313,7 @@ public class InstrumentedRowScanner implements RowScanner {
      * @see RowScanner#nextRows()
      */
     public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows() {
-        final TimerContext ctx = metrics.getScans().time();
+        final Timer.Context ctx = metrics.getScans().time();
         return scanner.nextRows()
                 .addBoth(new TimerStoppingCallback<ArrayList<ArrayList<KeyValue>>>(ctx));
     }
@@ -328,7 +328,7 @@ public class InstrumentedRowScanner implements RowScanner {
      * @see RowScanner#nextRows(int)
      */
     public Deferred<ArrayList<ArrayList<KeyValue>>> nextRows(final int rows) {
-        final TimerContext ctx = metrics.getScans().time();
+        final Timer.Context ctx = metrics.getScans().time();
         return scanner.nextRows(rows)
                 .addBoth(new TimerStoppingCallback<ArrayList<ArrayList<KeyValue>>>(ctx));
     }
