@@ -8,56 +8,44 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.yammer.dropwizard.logging.LoggingOutput;
-import com.yammer.dropwizard.util.Size;
+import com.codahale.dropwizard.logging.AppenderFactory;
+import com.codahale.dropwizard.util.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link LoggingOutput} for writing log messages to a graylog2 server.
  */
 @JsonTypeName("gelf")
-public class GelfLoggingOutput implements LoggingOutput {
+public class GelfAppenderFactory implements AppenderFactory {
 
     /**
      * The hostname of the Graylog2 server to send log messages to.
      */
-    @JsonProperty
     @NotEmpty
     private String host = "localhost";
 
     /**
      * The port of the Graylog2 server to send log messages to.
      */
-    @JsonProperty
     @Range(min = 1024, max = 65535)
     private int port = 12201;
 
     /**
      * The maximum size of each GELF chunk to send to the server.
      */
-    @JsonProperty
     @NotNull
     private Size chunkSize = Size.kilobytes(1);
 
     /**
      * The format of the log message as a Logback log pattern.
      */
-    @JsonProperty
     private Optional<String> logFormat = Optional.absent();
 
     /**
@@ -79,6 +67,56 @@ public class GelfLoggingOutput implements LoggingOutput {
      */
     @JsonProperty
     private String[] includes = new String[0];
+
+    @JsonProperty
+    public String getHost() {
+        return host;
+    }
+
+    @JsonProperty
+    public void setHost(final String host) {
+        this.host = host;
+    }
+
+    @JsonProperty
+    public int getPort() {
+        return port;
+    }
+
+    @JsonProperty
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    @JsonProperty
+    public Size getChunkSize() {
+        return chunkSize;
+    }
+
+    @JsonProperty
+    public void setChunkSize(final Size chunkSize) {
+        this.chunkSize = chunkSize;
+    }
+
+    @JsonProperty
+    public Optional<String> getLogFormat() {
+        return logFormat;
+    }
+
+    @JsonProperty
+    public void setLogFormat(final String logFormat) {
+        this.logFormat = Optional.fromNullable(logFormat);
+    }
+
+    @JsonProperty
+    public String[] getIncludes() {
+        return includes;
+    }
+
+    @JsonProperty
+    public void setIncludes(final String[] includes) {
+        this.includes = includes;
+    }
 
     /**
      * Builds an {@link Appender} for writing log messages to a graylog2 server.
@@ -102,11 +140,11 @@ public class GelfLoggingOutput implements LoggingOutput {
         formatter.setFacility(serviceName);
         formatter.setHostname(getLocalHost());
         formatter.setContext(context);
-        formatter.setAdditionalFields(includes);
+        formatter.setAdditionalFields(getIncludes());
 
         // configure log format only when defined
-        if (logFormat.isPresent()) {
-            formatter.setPattern(logFormat.get());
+        if (getLogFormat().isPresent()) {
+            formatter.setPattern(getLogFormat().get());
         }
 
         // use the custom layout, if provided
@@ -114,9 +152,9 @@ public class GelfLoggingOutput implements LoggingOutput {
 
         appender.setLayout(formatter);
         appender.setContext(context);
-        appender.setHostname(host);
-        appender.setPort(port);
-        appender.setChunkSize((int) chunkSize.toBytes());
+        appender.setHostname(getHost());
+        appender.setPort(getPort());
+        appender.setChunkSize((int) getChunkSize().toBytes());
 
         appender.start();
 
