@@ -5,9 +5,11 @@ import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable
 import com.sun.jersey.api.core.HttpContext
 import com.sun.jersey.api.ParamException
 
-/**
- * TODO: Document
- */
+/** A query parameter extractor for Scala collections.
+  *
+  * @param extractor the extractor for the collection type to extract.
+  * @param decode whether to decode sequences of escaped octets in the parameter value.
+  */
 class CollectionQueryParamInjectable(extractor: MultivaluedParameterExtractor, decode: Boolean)
   extends AbstractHttpContextInjectable[Object] {
 

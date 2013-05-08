@@ -6,9 +6,7 @@ import org.junit.runner.RunWith
 import org.specs2.mock.Mockito
 import com.sun.jersey.core.util.MultivaluedMapImpl
 
-/**
- * TODO: Document
- */
+/** Tests for [[com.datasift.dropwizard.jersey.inject.scala.CollectionParameterExtractor]]. */
 @RunWith(classOf[JUnitRunner])
 class CollectionParameterExtractorSpec extends Specification with Mockito {
 

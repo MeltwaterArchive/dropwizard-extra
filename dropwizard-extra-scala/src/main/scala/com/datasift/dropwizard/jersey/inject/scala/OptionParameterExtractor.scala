@@ -3,9 +3,11 @@ package com.datasift.dropwizard.jersey.inject.scala
 import com.sun.jersey.server.impl.model.parameter.multivalued.MultivaluedParameterExtractor
 import javax.ws.rs.core.MultivaluedMap
 
-/**
- * TODO: Document
- */
+/** A parameter extractor for a String [[scala.Option]].
+  *
+  * @param parameter the name of the optional String parameter.
+  * @param defaultValue the default value if the parameter did not exist.
+  */
 class OptionParameterExtractor(parameter: String, defaultValue: String)
   extends MultivaluedParameterExtractor {
 
