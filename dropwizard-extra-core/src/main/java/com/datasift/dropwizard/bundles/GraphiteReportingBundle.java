@@ -7,7 +7,6 @@ import com.datasift.dropwizard.config.GraphiteConfiguration;
 import com.datasift.dropwizard.config.GraphiteReportingConfiguration;
 import com.datasift.dropwizard.health.GraphiteHealthCheck;
 import com.codahale.dropwizard.ConfiguredBundle;
-import com.codahale.dropwizard.Service;
 import com.codahale.dropwizard.setup.Bootstrap;
 import com.codahale.dropwizard.Configuration;
 import com.codahale.dropwizard.setup.Environment;
@@ -71,8 +70,8 @@ public class GraphiteReportingBundle implements ConfiguredBundle<GraphiteReporti
      * Initializes the Graphite reporter, if enabled.
      *
      * @param configuration the {@link GraphiteReportingConfiguration} to configure the
-     *                      {@link GraphiteReporter} with
-     * @param environment the {@link Service} environment
+     *                      {@link GraphiteReporter} with.
+     * @param environment the environment to report metrics from.
      */
     public void run(final GraphiteReportingConfiguration configuration,
                     final Environment environment) {
