@@ -1,13 +1,13 @@
 package com.datasift.dropwizard
 
 import bundles.ScalaBundle
-import com.codahale.dropwizard.{Service, Configuration}
+import com.codahale.dropwizard.{Application, Configuration}
 import com.codahale.dropwizard.setup.Bootstrap
 
 /** Base class for Dropwizard Services built in Scala. */
-abstract class ScalaService[A <: Configuration] extends Service[A] {
+abstract class ScalaService[A <: Configuration] extends Application[A] {
 
-  /** Entry point for this Dropwizard [[com.codahale.dropwizard.Service]].
+  /** Entry point for this Dropwizard [[com.codahale.dropwizard.Application]].
     *
     * @param args the command-line arguments the program was invoked with.
     */
