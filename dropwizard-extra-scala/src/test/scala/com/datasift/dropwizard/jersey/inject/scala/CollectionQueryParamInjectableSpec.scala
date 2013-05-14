@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 
 /**
- * Tests [[com.datasift.dropwizard.inject.scala.CollectionQueryParamInjectable]]
+ * Tests [[com.datasift.dropwizard.jersey.inject.scala.CollectionQueryParamInjectable]]
  */
 @RunWith(classOf[JUnitRunner])
 class CollectionQueryParamInjectableSpec extends Specification with Mockito {

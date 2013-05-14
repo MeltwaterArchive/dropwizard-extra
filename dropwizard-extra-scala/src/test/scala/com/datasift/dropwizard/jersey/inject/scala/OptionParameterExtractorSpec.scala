@@ -6,9 +6,7 @@ import org.specs2.mutable._
 import org.specs2.mock.Mockito
 import com.sun.jersey.core.util.MultivaluedMapImpl
 
-/**
- * TODO: Document
- */
+/** Tests for [[com.datasift.dropwizard.jersey.inject.scala.OptionParameterExtractor]]. */
 @RunWith(classOf[JUnitRunner])
 class OptionParameterExtractorSpec extends Specification with Mockito {
 

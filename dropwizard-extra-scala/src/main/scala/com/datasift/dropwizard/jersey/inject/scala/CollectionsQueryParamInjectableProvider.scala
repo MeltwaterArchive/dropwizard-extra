@@ -6,9 +6,12 @@ import com.sun.jersey.api.model.Parameter
 import com.sun.jersey.core.spi.component.{ComponentScope, ComponentContext}
 import javax.ws.rs.ext.Provider
 
-/**
- * TODO: Document
- */
+/** Provides query parameter extractors for each type of Scala collection.
+  *
+  * @see [[com.datasift.dropwizard.jersey.inject.scala.CollectionQueryParamInjectable]]
+  * @see [[com.datasift.dropwizard.jersey.inject.scala.CollectionParameterExtractor]]
+  * @see [[com.datasift.dropwizard.jersey.inject.scala.OptionParameterExtractor]]
+  */
 @Provider
 class CollectionsQueryParamInjectableProvider
   extends InjectableProvider[QueryParam, Parameter] {

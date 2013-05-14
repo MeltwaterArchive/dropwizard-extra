@@ -5,9 +5,7 @@ import org.specs2.mutable._
 import org.specs2.runner.JUnitRunner
 import javax.ws.rs.WebApplicationException
 
-/**
- * TODO: Document
- */
+/** Tests for [[com.datasift.dropwizard.jersey.param.scala.BooleanParam]]. */
 @RunWith(classOf[JUnitRunner])
 class BooleanParamSpec extends Specification {
 

@@ -1,16 +1,9 @@
 package com.datasift.dropwizard.curator.ensemble;
 
-import com.yammer.dropwizard.config.ConfigurationFactory;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.validation.Validator;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration}.

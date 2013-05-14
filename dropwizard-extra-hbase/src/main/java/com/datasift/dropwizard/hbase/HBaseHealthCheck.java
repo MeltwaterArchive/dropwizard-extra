@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.hbase;
 
 import com.stumbleupon.async.TimeoutException;
-import com.yammer.metrics.core.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 import org.hbase.async.TableNotFoundException;
 
 /**
@@ -17,12 +17,9 @@ public class HBaseHealthCheck extends HealthCheck {
      * {@code table}.
      *
      * @param client the client to check the health of.
-     * @param name the name of this {@link HealthCheck}.
      * @param table the name of the table to look for.
      */
-    public HBaseHealthCheck(final HBaseClient client, final String name, final String table) {
-        super(String.format("%s-hbase-%s", name, table));
-
+    public HBaseHealthCheck(final HBaseClient client, final String table) {
         this.client = client;
         this.table = table;
     }

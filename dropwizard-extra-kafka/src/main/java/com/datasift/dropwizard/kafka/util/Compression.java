@@ -2,16 +2,19 @@ package com.datasift.dropwizard.kafka.util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import kafka.message.*;
+import kafka.message.DefaultCompressionCodec;
+import kafka.message.GZIPCompressionCodec;
+import kafka.message.NoCompressionCodec;
 
 /**
  * A utility for parsing {@link CompressionCodec}s from a {@link
- * com.yammer.dropwizard.config.Configuration}.
+ * com.codahale.dropwizard.Configuration}.
  * <p/>
  * To create {@link Compression} instances, use {@link Compression#parse(String)} to parse an
  * instance from a {@link String}.
  * <p/>
  * This is provided to parse textual specifications of a {@link CompressionCodec}, for example in a
- * {@link com.yammer.dropwizard.config.Configuration}.
+ * {@link com.codahale.dropwizard.Configuration}.
  */
 public class Compression {
 

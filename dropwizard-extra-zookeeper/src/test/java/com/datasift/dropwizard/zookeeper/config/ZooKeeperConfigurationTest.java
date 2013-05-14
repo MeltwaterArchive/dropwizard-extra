@@ -1,12 +1,15 @@
 package com.datasift.dropwizard.zookeeper.config;
 
+import com.codahale.dropwizard.jackson.Jackson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import com.yammer.dropwizard.config.ConfigurationFactory;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.validation.Validator;
+import com.codahale.dropwizard.configuration.ConfigurationFactory;
+import com.codahale.dropwizard.util.Duration;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.File;
 
 import static org.junit.Assert.*;
@@ -22,8 +25,8 @@ public class ZooKeeperConfigurationTest {
 
     @Before
     public void setup() throws Exception {
-        config = ConfigurationFactory
-                .forClass(ZooKeeperConfiguration.class, new Validator())
+        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        config = new ConfigurationFactory<>(ZooKeeperConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/zookeeper.yaml").toURI()));
     }
 

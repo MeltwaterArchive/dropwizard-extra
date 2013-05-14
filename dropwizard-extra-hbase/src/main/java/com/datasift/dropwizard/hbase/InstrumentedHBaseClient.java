@@ -1,18 +1,15 @@
 package com.datasift.dropwizard.hbase;
 
 import com.datasift.dropwizard.hbase.metrics.HBaseInstrumentation;
-import com.datasift.dropwizard.hbase.metrics.ScannerInstrumentation;
 import com.datasift.dropwizard.hbase.scanner.InstrumentedRowScanner;
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.datasift.dropwizard.hbase.util.TimerStoppingCallback;
 import com.stumbleupon.async.Deferred;
-import com.yammer.dropwizard.util.Duration;
-import com.yammer.dropwizard.util.Size;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
-import com.yammer.metrics.core.TimerContext;
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Size;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import org.hbase.async.*;
 
 import java.util.ArrayList;
@@ -22,9 +19,8 @@ import java.util.ArrayList;
  * <p/>
  * For each asynchronous request method, a {@link Timer} tracks the time taken for the request.
  * <p/>
- * This implementation proxies all requests through an underlying {@link HBaseClient}, provided to
- * the {@link this#InstrumentedHBaseClient(HBaseClient) constructor}; it merely layers
- * instrumentation on top of the underlying {@link HBaseClient}.
+ * This implementation proxies all requests through an underlying {@link HBaseClient}; it merely
+ * layers instrumentation on top of the underlying {@link HBaseClient}.
  *
  * @see HBaseInstrumentation
  */
@@ -43,29 +39,17 @@ public class InstrumentedHBaseClient implements HBaseClient {
     /**
      * Creates a new {@link InstrumentedHBaseClient} for the given underlying client.
      * <p/>
-     * The {@link Metrics#defaultRegistry() default} {@link MetricsRegistry} will be used to
-     * register the {@link Metric}s.
-     *
-     * @param client the underlying {@link HBaseClient} implementation to dispatch requests.
-     */
-    public InstrumentedHBaseClient(final HBaseClient client, final String name) {
-        this(client, Metrics.defaultRegistry(), name);
-    }
-
-    /**
-     * Creates a new {@link InstrumentedHBaseClient} for the given underlying client.
-     * <p/>
-     * Instrumentation will be registered with the given {@link MetricsRegistry}.
+     * Instrumentation will be registered with the given {@link MetricRegistry}.
      * <p/>
      * A new {@link HBaseInstrumentation} container will be created for this {@link HBaseClient}
-     * with the given {@link MetricsRegistry}.
+     * with the given {@link MetricRegistry}.
      *
      * @param client   the underlying {@link HBaseClient} implementation to dispatch requests.
-     * @param registry the {@link MetricsRegistry} to register {@link Metric}s with.
+     * @param registry the {@link MetricRegistry} to register {@link Metric}s with.
      * @param name     the name of the client to register metrics under.
      */
     public InstrumentedHBaseClient(final HBaseClient client,
-                                   final MetricsRegistry registry,
+                                   final MetricRegistry registry,
                                    final String name) {
         this(client, new HBaseInstrumentation(client, registry, name));
     }
@@ -145,7 +129,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#create(PutRequest)
      */
     public Deferred<Boolean> create(final PutRequest edit) {
-        final TimerContext ctx = metrics.getCreates().time();
+        final Timer.Context ctx = metrics.getCreates().time();
         return client.create(edit).addBoth(new TimerStoppingCallback<Boolean>(ctx));
     }
 
@@ -159,7 +143,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#bufferIncrement(AtomicIncrementRequest) 
      */
     public Deferred<Long> bufferIncrement(final AtomicIncrementRequest request) {
-        final TimerContext ctx = metrics.getIncrements().time();
+        final Timer.Context ctx = metrics.getIncrements().time();
         return client.bufferIncrement(request).addBoth(new TimerStoppingCallback<Long>(ctx));
     }
 
@@ -173,7 +157,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#increment(AtomicIncrementRequest)
      */
     public Deferred<Long> increment(final AtomicIncrementRequest request) {
-        final TimerContext ctx = metrics.getIncrements().time();
+        final Timer.Context ctx = metrics.getIncrements().time();
         return client.increment(request).addBoth(new TimerStoppingCallback<Long>(ctx));
     }
 
@@ -188,7 +172,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#increment(AtomicIncrementRequest, Boolean)
      */
     public Deferred<Long> increment(final AtomicIncrementRequest request, final Boolean durable) {
-        final TimerContext ctx = metrics.getIncrements().time();
+        final Timer.Context ctx = metrics.getIncrements().time();
         return client.increment(request, durable).addBoth(new TimerStoppingCallback<Long>(ctx));
     }
 
@@ -203,7 +187,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#compareAndSet(PutRequest, byte[])
      */
     public Deferred<Boolean> compareAndSet(final PutRequest edit, final byte[] expected) {
-        final TimerContext ctx = metrics.getCompareAndSets().time();
+        final Timer.Context ctx = metrics.getCompareAndSets().time();
         return client.compareAndSet(edit, expected)
                 .addBoth(new TimerStoppingCallback<Boolean>(ctx));
     }
@@ -219,7 +203,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#compareAndSet(PutRequest, String)
      */
     public Deferred<Boolean> compareAndSet(final PutRequest edit, final String expected) {
-        final TimerContext ctx = metrics.getCompareAndSets().time();
+        final Timer.Context ctx = metrics.getCompareAndSets().time();
         return client.compareAndSet(edit, expected)
                 .addBoth(new TimerStoppingCallback<Boolean>(ctx));
     }
@@ -234,8 +218,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#delete(DeleteRequest)
      */
     public Deferred<Object> delete(final DeleteRequest request) {
-        final TimerContext ctx = metrics.getDeletes().time();
-        return client.delete(request).addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getDeletes().time();
+        return client.delete(request).addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -250,8 +234,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#ensureTableExists(byte[])
      */
     public Deferred<Object> ensureTableExists(final byte[] table) {
-        final TimerContext ctx = metrics.getAssertions().time();
-        return client.ensureTableExists(table).addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getAssertions().time();
+        return client.ensureTableExists(table).addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -266,8 +250,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#ensureTableExists(String)
      */
     public Deferred<Object> ensureTableExists(final String table) {
-        final TimerContext ctx = metrics.getAssertions().time();
-        return client.ensureTableExists(table).addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getAssertions().time();
+        return client.ensureTableExists(table).addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -283,9 +267,9 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#ensureTableFamilyExists(byte[], byte[])
      */
     public Deferred<Object> ensureTableFamilyExists(final byte[] table, final byte[] family) {
-        final TimerContext ctx = metrics.getAssertions().time();
+        final Timer.Context ctx = metrics.getAssertions().time();
         return client.ensureTableFamilyExists(table, family)
-                .addBoth(new TimerStoppingCallback<Object>(ctx));
+                .addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -301,9 +285,9 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#ensureTableFamilyExists(String, String)
      */
     public Deferred<Object> ensureTableFamilyExists(final String table, final String family) {
-        final TimerContext ctx = metrics.getAssertions().time();
+        final Timer.Context ctx = metrics.getAssertions().time();
         return client.ensureTableFamilyExists(table, family)
-                .addBoth(new TimerStoppingCallback<Object>(ctx));
+                .addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -314,8 +298,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#flush()
      */
     public Deferred<Object> flush() {
-        final TimerContext ctx = metrics.getFlushes().time();
-        return client.flush().addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getFlushes().time();
+        return client.flush().addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -328,7 +312,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#get(GetRequest)
      */
     public Deferred<ArrayList<KeyValue>> get(final GetRequest request) {
-        final TimerContext ctx = metrics.getGets().time();
+        final Timer.Context ctx = metrics.getGets().time();
         return client.get(request).addBoth(new TimerStoppingCallback<ArrayList<KeyValue>>(ctx));
     }
 
@@ -342,7 +326,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#lockRow(RowLockRequest)
      */
     public Deferred<RowLock> lockRow(final RowLockRequest request) {
-        final TimerContext ctx = metrics.getLocks().time();
+        final Timer.Context ctx = metrics.getLocks().time();
         return client.lockRow(request).addBoth(new TimerStoppingCallback<RowLock>(ctx));
     }
 
@@ -384,8 +368,8 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#put(PutRequest)
      */
     public Deferred<Object> put(final PutRequest request) {
-        final TimerContext ctx = metrics.getPuts().time();
-        return client.put(request).addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getPuts().time();
+        return client.put(request).addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**
@@ -431,7 +415,7 @@ public class InstrumentedHBaseClient implements HBaseClient {
      * @see HBaseClient#unlockRow(RowLock)
      */
     public Deferred<Object> unlockRow(final RowLock lock) {
-        final TimerContext ctx = metrics.getUnlocks().time();
-        return client.unlockRow(lock).addBoth(new TimerStoppingCallback<Object>(ctx));
+        final Timer.Context ctx = metrics.getUnlocks().time();
+        return client.unlockRow(lock).addBoth(new TimerStoppingCallback<>(ctx));
     }
 }

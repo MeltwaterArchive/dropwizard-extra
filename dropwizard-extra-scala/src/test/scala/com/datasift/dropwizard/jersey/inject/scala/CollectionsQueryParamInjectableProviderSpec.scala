@@ -10,9 +10,9 @@ import com.sun.jersey.core.spi.component.{ComponentScope, ComponentContext}
 import javax.ws.rs.QueryParam
 import com.sun.jersey.api.model.Parameter
 
-/**
- * TODO: Document
- */
+/** Tests for
+  * [[com.datasift.dropwizard.jersey.inject.scala.CollectionsQueryParamInjectableProvider]].
+  */
 @RunWith(classOf[JUnitRunner])
 class CollectionsQueryParamInjectableProviderSpec extends Specification with Mockito {
 

@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.yammer.dropwizard.lifecycle.Managed;
+import com.codahale.dropwizard.lifecycle.Managed;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;

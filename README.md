@@ -8,7 +8,7 @@ This is a bunch of additional abstractions and utilities that extend Dropwizard.
 To keep the nightmare of transitive dependencies at bay, there are several 
 modules:
 
-  * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
+  * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-core)
   contains several simple but useful abstractions with no real external dependencies.
   * [dropwizard-extra-curator](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-curator)
   integrates [NetFlix's Curator](http://github.com/netflix/curator) high-level [ZooKeeper](http://zookeeper.apache.org)

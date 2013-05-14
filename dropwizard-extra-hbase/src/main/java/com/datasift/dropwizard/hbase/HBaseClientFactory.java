@@ -1,10 +1,9 @@
 package com.datasift.dropwizard.hbase;
 
+import com.codahale.metrics.MetricRegistry;
 import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.datasift.dropwizard.zookeeper.health.ZooKeeperHealthCheck;
-import com.yammer.dropwizard.config.Environment;
-import org.apache.zookeeper.ZooKeeper;
+import com.codahale.dropwizard.setup.Environment;
 
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
@@ -13,7 +12,7 @@ import org.apache.zookeeper.ZooKeeper;
  * HBaseClientConfiguration}.
  * <p/>
  * The resulting {@link HBaseClient} will have its lifecycle managed by the {@link Environment} and
- * will have {@link com.yammer.metrics.core.HealthCheck}s installed for the {@code .META.} and
+ * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code .META.} and
  * {@code -ROOT-} tables.
  *
  * @see HBaseClient
@@ -21,6 +20,7 @@ import org.apache.zookeeper.ZooKeeper;
 public class HBaseClientFactory {
 
     private final Environment environment;
+    private static final String DEFAULT_NAME = "hbase-default";
 
     /**
      * Creates a new {@link HBaseClientFactory} instance for the specified {@link Environment}.
@@ -39,7 +39,7 @@ public class HBaseClientFactory {
      * @return an {@link HBaseClient}, managed and configured according to the {@code configuration}
      */
     public HBaseClient build(final HBaseClientConfiguration configuration) {
-        return build(configuration, "default");
+        return build(configuration, DEFAULT_NAME);
     }
 
     /**
@@ -58,21 +58,25 @@ public class HBaseClientFactory {
         final HBaseClient proxy = new HBaseClientProxy(
                 new org.hbase.async.HBaseClient(
                         zkConfiguration.getQuorumSpec(),
-                        zkConfiguration.getNamespace().toString()));
+                        zkConfiguration.getNamespace()));
 
         // optionally instrument and bound requests for the client
-        final HBaseClient client = instrument(configuration, boundRequests(configuration, proxy), name);
+        final HBaseClient client = instrument(
+                configuration,
+                boundRequests(configuration, proxy),
+                environment.metrics(),
+                name);
 
         // configure client
         client.setFlushInterval(configuration.getFlushInterval());
         client.setIncrementBufferSize(configuration.getIncrementBufferSize());
 
         // add healthchecks for META and ROOT tables
-        environment.getAdminEnvironment().addHealthCheck(new HBaseHealthCheck(client, name, ".META."));
-        environment.getAdminEnvironment().addHealthCheck(new HBaseHealthCheck(client, name, "-ROOT-"));
+        environment.admin().addHealthCheck(name + "-meta", new HBaseHealthCheck(client, ".META."));
+        environment.admin().addHealthCheck(name + "-root", new HBaseHealthCheck(client, "-ROOT-"));
 
         // manage client
-        environment.getLifecycleEnvironment().manage(new ManagedHBaseClient(
+        environment.lifecycle().manage(new ManagedHBaseClient(
                 client, configuration.getConnectionTimeout()));
 
         return client;
@@ -90,13 +94,16 @@ public class HBaseClientFactory {
      * @param configuration an {@link HBaseClientConfiguration} defining the {@link HBaseClient}s
      *                      parameters.
      * @param client an underlying {@link HBaseClient} implementation.
+     * @param registry the {@link MetricRegistry} to register metrics with.
+     * @param name the name of the client that is being instrumented.
      * @return an {@link HBaseClient} that satisfies the configuration of instrumentation.
      */
     private HBaseClient instrument(final HBaseClientConfiguration configuration,
                                    final HBaseClient client,
+                                   final MetricRegistry registry,
                                    final String name) {
         return configuration.isInstrumented()
-                ? new InstrumentedHBaseClient(client, name)
+                ? new InstrumentedHBaseClient(client, registry, name)
                 : client;
     }
 
