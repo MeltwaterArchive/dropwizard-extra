@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.kafka;
 
+import com.codahale.dropwizard.util.Duration;
 import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
 import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
@@ -124,7 +125,7 @@ public class KafkaConsumerFactory {
                     .executorService(name + "-%d")
                         .minThreads(threads)
                         .maxThreads(threads)
-                        .keepAliveTime(0, TimeUnit.SECONDS)
+                        .keepAliveTime(Duration.seconds(0))
                         .build();
 
             return build(configuration, executor, name);
