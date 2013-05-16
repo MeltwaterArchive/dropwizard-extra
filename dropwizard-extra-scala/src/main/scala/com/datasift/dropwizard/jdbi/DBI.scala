@@ -4,6 +4,7 @@ import com.codahale.dropwizard.db.DatabaseConfiguration
 import com.codahale.dropwizard.setup.Environment
 import com.codahale.dropwizard.jdbi.DBIFactory
 import org.skife.jdbi.v2.{TransactionIsolationLevel, TransactionCallback, TransactionStatus, Handle}
+import org.skife.jdbi.v2.tweak.HandleCallback
 
 /** Factory object for [[org.skife.jdbi.v2.DBI]] instances. */
 object DBI {
@@ -91,6 +92,19 @@ class DBIWrapper(db: org.skife.jdbi.v2.DBI) {
                       (f: Handle => A): A = {
     db.inTransaction(isolation, new TransactionCallback[A] {
       def inTransaction(handle: Handle, status: TransactionStatus): A = f(handle)
+    })
+  }
+
+  /** Applies the given function with a DBI [[org.skife.jdbi.v2.Handle]].
+    *
+    * @tparam A the return type of the function to apply.
+    * @param f the function to apply the handle to.
+    * @return the result of applying the function.
+    * @throws Exception if an Exception is thrown by the function.
+    */
+  def withHandle[A](f: Handle => A): A = {
+    db.withHandle(new HandleCallback[A] {
+      def withHandle(handle: Handle): A = f(handle)
     })
   }
 }
