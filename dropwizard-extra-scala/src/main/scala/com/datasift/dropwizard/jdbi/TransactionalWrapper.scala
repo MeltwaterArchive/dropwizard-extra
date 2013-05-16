@@ -6,7 +6,7 @@ import org.skife.jdbi.v2.{TransactionIsolationLevel, Transaction, TransactionSta
   *
   * @param transactionl the [[org.skife.jdbi.v2.sqlobject.mixins.Transactional]] object to wrap.
   */
-class Transactional[A <: org.skife.jdbi.v2.sqlobject.mixins.Transactional[A]](transactionl: A) {
+class TransactionalWrapper[A <: org.skife.jdbi.v2.sqlobject.mixins.Transactional[A]](transactionl: A) {
 
   /** Executes the given function within a transaction of the given isolation level.
     *

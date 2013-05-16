@@ -23,7 +23,7 @@ object DBI {
   *
   * @param db the [[org.skife.jdbi.v2.DBI]] instance to wrap.
   */
-class DBI(db: org.skife.jdbi.v2.DBI) {
+class DBIWrapper(db: org.skife.jdbi.v2.DBI) {
 
   /** Creates a typed DAO instance.
     *
