@@ -1,22 +1,44 @@
 package com.datasift.dropwizard.jdbi
 
-import com.codahale.dropwizard.db.DatabaseConfiguration
+import com.codahale.dropwizard.db.DataSourceFactory
 import com.codahale.dropwizard.setup.Environment
 import com.codahale.dropwizard.jdbi.DBIFactory
 import org.skife.jdbi.v2.{TransactionIsolationLevel, TransactionCallback, TransactionStatus, Handle}
 import org.skife.jdbi.v2.tweak.HandleCallback
+import scala.{IterableContainerFactory, OptionArgumentFactory, OptionContainerFactory}
 
 /** Factory object for [[org.skife.jdbi.v2.DBI]] instances. */
 object DBI {
 
   /** Creates a [[org.skife.jdbi.v2.DBI]] from the given configuration.
     *
+    * The name of this instance will be the JDBC URL of the database.
+    *
     * @param conf configuration for the database connection.
     * @param env environment to manage the database connection lifecycle.
     * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
     */
-  def apply(conf: DatabaseConfiguration, env: Environment): org.skife.jdbi.v2.DBI = {
-    new DBIFactory().build(env, conf, conf.getUrl)
+  def apply(conf: DataSourceFactory, env: Environment): org.skife.jdbi.v2.DBI = {
+    apply(conf, env, conf.getUrl)
+  }
+
+  /** Creates a [[org.skife.jdbi.v2.DBI]] from the given configuration.
+    *
+    * @param conf configuration for the database connection.
+    * @param env environment to manage the database connection lifecycle.
+    * @param name the name of this DBI instance.
+    * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
+    */
+  def apply(conf: DataSourceFactory, env: Environment, name: String): org.skife.jdbi.v2.DBI = {
+    val dbi = new DBIFactory().build(env, conf, name)
+
+    // register scala type factories
+    dbi.registerArgumentFactory(new OptionArgumentFactory(conf.getDriverClass))
+    dbi.registerContainerFactory(new OptionContainerFactory)
+    dbi.registerContainerFactory(new IterableContainerFactory[Seq])
+    dbi.registerContainerFactory(new IterableContainerFactory[Set])
+
+    dbi
   }
 }
 
