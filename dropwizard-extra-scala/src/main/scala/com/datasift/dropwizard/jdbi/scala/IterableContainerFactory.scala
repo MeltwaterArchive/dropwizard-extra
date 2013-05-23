@@ -6,7 +6,9 @@ import scala.collection.generic.CanBuildFrom
 
 /** A [[org.skife.jdbi.v2.tweak.ContainerFactory]] for Scala collections.
   *
-  * Excludes Scala Maps.
+  * @tparam CC the collection type to build.
+  * @param m type manifest for collection for reification of generic type.
+  * @param cbf functional dependency for collection builder.
   */
 class IterableContainerFactory[CC[_] <: Iterable[_]]
     (implicit m: Manifest[CC[_]], cbf: CanBuildFrom[CC[_], Any, CC[Any]])
@@ -28,4 +30,3 @@ class IterableContainerFactory[CC[_] <: Iterable[_]]
     }
   }
 }
-
