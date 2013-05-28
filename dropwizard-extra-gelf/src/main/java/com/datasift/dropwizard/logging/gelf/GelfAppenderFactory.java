@@ -131,7 +131,7 @@ public class GelfAppenderFactory implements AppenderFactory {
     public Appender<ILoggingEvent> build(final LoggerContext context,
                                          final String serviceName,
                                          final Layout<ILoggingEvent> layout) {
-        final GelfAppender<ILoggingEvent> appender = new GelfAppender<ILoggingEvent>();
+        final GelfAppender<ILoggingEvent> appender = new GelfAppender<>();
 
         // todo: find a way to provide ObjectMapper from the Environment?
         final GelfLayout formatter = new GelfLayout(new ObjectMapper());
