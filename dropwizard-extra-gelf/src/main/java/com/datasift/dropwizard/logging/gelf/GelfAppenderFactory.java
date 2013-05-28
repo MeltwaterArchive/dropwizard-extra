@@ -20,7 +20,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 /**
- * A {@link LoggingOutput} for writing log messages to a graylog2 server.
+ * An {@link AppenderFactory} for writing log messages to a graylog2 server.
  */
 @JsonTypeName("gelf")
 public class GelfAppenderFactory implements AppenderFactory {
