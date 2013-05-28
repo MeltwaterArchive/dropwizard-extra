@@ -16,8 +16,7 @@ import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * TODO (21/03/13): Document
- * TODO: verify lifecycle makes sense/won't cause unexpected problems
+ * An {@link ch.qos.logback.core.Appender} for sending to a remote GELF server.
  */
 public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
 
@@ -89,7 +88,7 @@ public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
         }
 
         if (socket == null) {
-            // todo: we already mentioned that the socket can't be bound, right?
+            error("Appender not running (socket unavailable)");
             return;
         }
 
