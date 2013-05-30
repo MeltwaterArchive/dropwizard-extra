@@ -5,7 +5,7 @@ import com.codahale.dropwizard.{Application, Configuration}
 import com.codahale.dropwizard.setup.Bootstrap
 
 /** Base class for Dropwizard Services built in Scala. */
-abstract class ScalaApplication[A <: Configuration] extends Application[A] {
+trait ScalaApplication[A <: Configuration] extends Application[A] {
 
   /** Entry point for this Dropwizard [[com.codahale.dropwizard.Application]].
     *
