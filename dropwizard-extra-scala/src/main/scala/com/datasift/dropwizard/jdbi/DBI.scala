@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.jdbi
 
-import com.codahale.dropwizard.db.DatabaseConfiguration
+import com.codahale.dropwizard.db.DataSourceFactory
 import com.codahale.dropwizard.setup.Environment
 import com.codahale.dropwizard.jdbi.DBIFactory
 
@@ -10,13 +10,13 @@ import com.codahale.dropwizard.jdbi.DBIFactory
 object DBI {
 
   /**
-   * Creates a [[org.skife.jdbi.v2.DBI]] for a given [[com.codahale.dropwizard.db.DatabaseConfiguration]].
+   * Creates a [[org.skife.jdbi.v2.DBI]] for a given [[com.codahale.dropwizard.db.DataSourceFactory]].
    *
    * @param conf configuration to configure the [[org.skife.jdbi.v2.DBI]] with
    * @param env [[com.codahale.dropwizard.setup.Environment]] to manage the [[org.skife.jdbi.v2.DBI]] lifecycle.
    * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
    */
-  def apply(conf: DatabaseConfiguration, env: Environment): org.skife.jdbi.v2.DBI = {
+  def apply(conf: DataSourceFactory, env: Environment): org.skife.jdbi.v2.DBI = {
     new DBIFactory().build(env, conf, conf.getUrl)
   }
 }
