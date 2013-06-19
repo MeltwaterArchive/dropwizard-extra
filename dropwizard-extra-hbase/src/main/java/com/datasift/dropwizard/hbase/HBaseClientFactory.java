@@ -3,7 +3,6 @@ package com.datasift.dropwizard.hbase;
 import com.codahale.dropwizard.util.Duration;
 import com.codahale.dropwizard.util.Size;
 import com.codahale.metrics.MetricRegistry;
-import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.codahale.dropwizard.setup.Environment;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,10 +14,7 @@ import javax.validation.constraints.NotNull;
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
  * <p/>
- * The implementation of the {@link HBaseClient} is determined by the {@link
- * HBaseClientConfiguration}.
- * <p/>
- * The resulting {@link HBaseClient} will have its lifecycle managed by the {@link Environment} and
+ * The resulting {@link HBaseClient} will have its lifecycle managed by an {@link Environment} and
  * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code .META.} and
  * {@code -ROOT-} tables.
  *
@@ -28,38 +24,102 @@ public class HBaseClientFactory {
 
     private static final String DEFAULT_NAME = "hbase-default";
 
-    /**
-     * The ZooKeeper quorum co-ordinating the HBase cluster.
-     */
-    @JsonProperty
     @NotNull
     @Valid
     protected ZooKeeperFactory zookeeper = new ZooKeeperFactory();
 
+    @NotNull
+    protected Duration flushInterval = Duration.seconds(1);
+
+    @NotNull
+    protected Size incrementBufferSize = Size.kilobytes(64);
+
+    @Min(0)
+    protected int maxConcurrentRequests = 0;
+
+    @NotNull
+    protected Duration connectionTimeout = Duration.seconds(5);
+
+    protected boolean instrumented = true;
+
     /**
-     * The maximum amount of time requests may be buffered client-side before sending them to the
-     * server.
+     * Returns the ZooKeeper quorum co-ordinating the HBase cluster.
+     *
+     * @return the factory for connecting to the ZooKeeper quorum co-ordinating the HBase cluster.
+     */
+    @JsonProperty
+    public ZooKeeperFactory getZookeeper() {
+        return zookeeper;
+    }
+
+    /**
+     * Sets the ZooKeeper quorum co-ordinating the HBase cluster.
+     *
+     * @param factory a factory for the ZooKeeper quorum co-ordinating the HBase cluster.
+     */
+    @JsonProperty
+    public void setZookeeper(final ZooKeeperFactory factory) {
+        this.zookeeper = factory;
+    }
+
+    /**
+     * Returns the maximum amount of time requests may be buffered client-side before sending them
+     * to the server.
+     *
+     * @return the maximum amount of time requests may be buffered.
+     *
+     * @see org.hbase.async.HBaseClient#getFlushInterval()
+     */
+    @JsonProperty
+    public Duration getFlushInterval() {
+        return flushInterval;
+    }
+
+    /**
+     * Sets the maximum amount of time requests may be buffered client-side before sending them
+     * to the server.
+     *
+     * @param flushInterval the maximum amount of time requests may be buffered.
      *
      * @see org.hbase.async.HBaseClient#setFlushInterval(short)
      */
     @JsonProperty
-    @NotNull
-    protected Duration flushInterval = Duration.seconds(1);
+    public void setFlushInterval(final Duration flushInterval) {
+        this.flushInterval = flushInterval;
+    }
 
     /**
-     * The maximum size of the buffer for increment operations.
+     * Returns the maximum size of the buffer for increment operations.
      * <p/>
-     * Once this buffer is full, a flush is forced irrespective of the {@link
-     * HBaseClientConfiguration#flushInterval flushInterval}.
+     * Once this buffer is full, a flush is forced irrespective of the {@link #getFlushInterval()
+     * flushInterval}.
+     *
+     * @return the maximum number of increments to buffer.
+     *
+     * @see org.hbase.async.HBaseClient#getIncrementBufferSize()
+     */
+    @JsonProperty
+    public Size getIncrementBufferSize() {
+        return incrementBufferSize;
+    }
+
+    /**
+     * Sets the maximum size of the buffer for increment operations.
+     * <p/>
+     * Once this buffer is full, a flush is forced irrespective of the {@link #getFlushInterval()
+     * flushInterval}.
+     *
+     * @param incrementBufferSize the maximum number of increments to buffer.
      *
      * @see org.hbase.async.HBaseClient#setIncrementBufferSize(int)
      */
     @JsonProperty
-    @NotNull
-    protected Size incrementBufferSize = Size.kilobytes(64);
+    public void setIncrementBufferSize(final Size incrementBufferSize) {
+        this.incrementBufferSize = incrementBufferSize;
+    }
 
     /**
-     * The maximum number of concurrent asynchronous requests for the client.
+     * Returns maximum number of concurrent asynchronous requests for the client.
      * <p/>
      * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
      * the client running out of memory.
@@ -67,65 +127,71 @@ public class HBaseClientFactory {
      * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
      * requests.
      *
-     * @see com.datasift.dropwizard.hbase.BoundedHBaseClient
+     * @return the maximum number of requests that may be executing concurrently.
+     *
+     * @see BoundedHBaseClient
      */
     @JsonProperty
-    @Min(0)
-    protected int maxConcurrentRequests = 0;
-
-    /**
-     * The maximum time to wait for a connection to a region server before failing.
-     */
-    @JsonProperty
-    @NotNull
-    protected Duration connectionTimeout = Duration.seconds(5);
-
-    /**
-     * Whether the {@link HBaseClient} should be instrumented with metrics.
-     */
-    @JsonProperty
-    protected boolean instrumented = true;
-
-    /**
-     * @see HBaseClientConfiguration#zookeeper
-     */
-    public ZooKeeperFactory getZookeeper() {
-        return zookeeper;
-    }
-
-    /**
-     * @see HBaseClientConfiguration#flushInterval
-     */
-    public Duration getFlushInterval() {
-        return flushInterval;
-    }
-
-    /**
-     * @see HBaseClientConfiguration#incrementBufferSize
-     */
-    public Size getIncrementBufferSize() {
-        return incrementBufferSize;
-    }
-
-    /**
-     * @see HBaseClientConfiguration#maxConcurrentRequests
-     */
     public int getMaxConcurrentRequests() {
         return maxConcurrentRequests;
     }
 
     /**
-     * @see HBaseClientConfiguration#connectionTimeout
+     * Sets the maximum number of concurrent asynchronous requests for the client.
+     * <p/>
+     * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
+     * the client running out of memory.
+     * <p/>
+     * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
+     * requests.
+     *
+     * @param maxConcurrentRequests the maximum number of requests that may execute concurrently.
+     *
+     * @see BoundedHBaseClient
      */
+    @JsonProperty
+    public void setMaxConcurrentRequests(final int maxConcurrentRequests) {
+        this.maxConcurrentRequests = maxConcurrentRequests;
+    }
+
+    /**
+     * Returns the maximum time to wait for a connection to a region server before failing.
+     *
+     * @return the maximum time to spend connecting to a server before failing.
+     */
+    @JsonProperty
     public Duration getConnectionTimeout() {
         return connectionTimeout;
     }
 
     /**
-     * @see HBaseClientConfiguration#instrumented
+     * Returns the maximum time to wait for a connection to a region server before failing.
+     *
+     * @param connectionTimeout the maximum time to spend connecting to a server before failing.
      */
+    @JsonProperty
+    public void setConnectionTimeout(final Duration connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    /**
+     * Returns whether the {@link HBaseClient} should be instrumented with metrics.
+     *
+     * @return whether the {@link HBaseClient} should be instrumented with metrics.
+     */
+    @JsonProperty
     public boolean isInstrumented() {
         return instrumented;
+    }
+
+    /**
+     * Sets whether the {@link HBaseClient} should be instrumented with metrics.
+     *
+     * @param isInstrumented whether the {@link HBaseClient} should be instrumented with metrics.
+     */
+    @JsonProperty
+    public void setInstrumented(final boolean isInstrumented) {
+        this.instrumented = isInstrumented;
     }
 
     /**

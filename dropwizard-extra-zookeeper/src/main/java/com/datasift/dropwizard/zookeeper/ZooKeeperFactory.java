@@ -35,184 +35,232 @@ public class ZooKeeperFactory {
      */
     public static class Auth {
 
-        /**
-         * The authorization scheme to use (e.g. "host").
-         */
         @NotEmpty
         protected String scheme;
 
-        /**
-         * The authorization id to use (e.g. "foo.example.com").
-         * <p/>
-         * This is dependent on the authorization {@link #scheme} being used.
-         */
         @NotEmpty
         protected String id;
 
         /**
-         * @see #scheme
+         * Returns the authorization scheme to use (e.g. "host").
+         *
+         * @return the authorization scheme to use.
          */
         @JsonProperty
         public String getScheme() {
             return scheme;
         }
 
+        /**
+         * Sets the authorization scheme to use (e.g. "host").
+         *
+         * @param scheme the authorization scheme to use.
+         */
         @JsonProperty
         public void setScheme(final String scheme) {
             this.scheme = scheme;
         }
 
         /**
-         * @see #id
+         * Returns the authorization id to use.
+         * <p/>
+         * This is dependent on the authorization {@link #getScheme() scheme} being used.
+         *
+         * @return the scheme-specific authorization id.
+         *
+         * @see #getScheme()
          */
         @JsonProperty
         public String getId() {
             return id;
         }
 
+        /**
+         * Sets the authorization id to use.
+         * <p/>
+         * This is dependent on the authorization {@link #getScheme() scheme} being used.
+         *
+         * @param id the scheme-specific authorization id.
+         *
+         * @see #setScheme(String)
+         */
         @JsonProperty
         public void setId(final String id) {
             this.id = id;
         }
     }
 
-    /**
-     * Hostnames of every node in the ZooKeeper quorum.
-     */
     @NotEmpty
     protected String[] hosts = new String[]{ "localhost" };
 
-    /**
-     * Port to connect to every ZooKeeper node in the quorum on.
-     */
     @Range(min = 0, max = 49151)
     protected int port = 2181;
 
-    /**
-     * Authorization details to provide to this ZooKeeper connection.
-     *
-     * @see Auth
-     */
     @Valid
     protected Auth auth = null;
 
-    /**
-     * Namespace to to prepend to all paths accessed by the ZooKeeper client.
-     * <p/>
-     * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
-     */
     @NotEmpty
     @Pattern(regexp = "^\\/\\S*$")
     protected String namespace = "/";
 
-    /**
-     * Maximum time to wait for a successful connection to a node in the quorum.
-     */
     @NotNull
     protected Duration connectionTimeout = Duration.seconds(6);
 
-    /**
-     * Maximum time to allow a ZooKeeper session to remain idle before ending it.
-     */
     @NotNull
     protected Duration sessionTimeout = Duration.seconds(6);
 
-    /**
-     * Whether or not this client can connect to read-only ZooKeeper instances.
-     * <p/>
-     * During a network partition, some or all nodes in the quorum may be in a read-only state. This
-     * controls whether the client may enter read-only mode during a network partition.
-     */
     protected boolean readOnly = false;
 
+
     /**
-     * @see #hosts
+     * Returns the hostnames of every node in the ZooKeeper quorum.
+     *
+     * @return the hostanmes of every node in the ZooKeeper quorum.
      */
     @JsonProperty
     public String[] getHosts() {
         return hosts;
     }
 
+    /**
+     * Sets the hostnames of every node in the ZooKeeper quorum.
+     *
+     * @param hosts the hostnames of every node in the ZooKeeper quorum.
+     */
     @JsonProperty
     public void setHosts(final String[] hosts) {
         this.hosts = hosts;
     }
 
     /**
-     * @see #port
+     * Returns the port to connect to every ZooKeeper node in the quorum on.
+     *
+     * @return the port to connect to every ZooKeeper node in the quorum on.
      */
     @JsonProperty
     public int getPort() {
         return port;
     }
 
+    /**
+     * Sets the port to connect to every ZooKeeper node in the quorum on.
+     *
+     * @param port the port to connect to every ZooKeeper node in the quorum on.
+     */
     @JsonProperty
     public void setPort(final int port) {
         this.port = port;
     }
 
     /**
-     * @see Auth#auth
+     * Returns authorization details to provide to this ZooKeeper connection.
+     *
+     * @return any authorization details to provide to ZooKeeper, or null.
+     *
+     * @see Auth
      */
     @JsonProperty
     public Auth getAuth() {
         return auth;
     }
 
+    /**
+     * Sets authorization details to provide to this ZooKeeper connection.
+     *
+     * @param auth any authorization details to provide to ZooKeeper, or null.
+     *
+     * @see Auth
+     */
     @JsonProperty
     public void setAuth(final Auth auth) {
         this.auth = auth;
     }
 
     /**
-     * @see #connectionTimeout
+     * Returns the maximum time to wait for a successful connection to a node in the quorum.
+     *
+     * @return the maximum time to wait for a successful connection to a node in the quorum.
      */
     @JsonProperty
     public Duration getConnectionTimeout() {
         return connectionTimeout;
     }
 
+    /**
+     * Sets the maximum time to wait for a successful connection to a node in the quorum.
+     *
+     * @param timeout the maximum time to wait for a successful connection to a node in the quorum.
+     */
     @JsonProperty
     public void setConnectionTimeout(final Duration timeout) {
         this.connectionTimeout = timeout;
     }
 
     /**
-     * @see #sessionTimeout
+     * Returns the maximum time to allow a ZooKeeper session to remain idle before ending it.
+     *
+     * @return the maximum time to allow a ZooKeeper session to remain idle before ending it.
      */
     @JsonProperty
     public Duration getSessionTimeout() {
         return sessionTimeout;
     }
 
+    /**
+     * Sets the maximum time to allow a ZooKeeper session to remain idle before ending it.
+     *
+     * @param timeout the maximum time to allow a ZooKeeper session to remain idle before ending it.
+     */
     @JsonProperty
     public void setSessionTimeout(final Duration timeout) {
         this.sessionTimeout = timeout;
     }
 
     /**
-     * @see #namespace
+     * Returns the namespace to prepend to all paths accessed by the ZooKeeper client.
+     * <p/>
+     * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
+     *
+     * @return the namespace to prepend to all paths accessed by the ZooKeeper client.
      */
     @JsonProperty
     public String getNamespace() {
         return namespace;
     }
 
+    /**
+     * Sets the namespace to prepend to all paths accessed by the ZooKeeper client.
+     * <p/>
+     * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
+     *
+     * @param namespace the namespace to prepend to all paths accessed by the ZooKeeper client.
+     */
     @JsonProperty
     public void setNamespace(final String namespace) {
         this.namespace = namespace;
     }
 
     /**
-     * Whether the ZooKeeper client may enter read-only mode during a network partition.
+     * Returns whether or not this client can connect to read-only ZooKeeper instances.
+     * <p/>
+     * During a network partition, some or all nodes in the quorum may be in a read-only state. This
+     * controls whether the client may enter read-only mode during a network partition.
      *
-     * @return true if the client may enter read-only mode; false otherwise.
+     * @return true if the client may connect to read-only quorums, false if not.
      */
     @JsonProperty
     public boolean isReadOnly() {
         return readOnly;
     }
 
+    /**
+     * Sets whether or not this client can connect to read-only ZooKeeper instances.
+     * <p/>
+     * During a network partition, some or all nodes in the quorum may be in a read-only state. This
+     * controls whether the client may enter read-only mode during a network partition.
+     *
+     * @param readOnly true if the client may connect to read-only quorums, false if not.
+     */
     @JsonProperty
     public void isReadOnly(final boolean readOnly) {
         this.readOnly = readOnly;

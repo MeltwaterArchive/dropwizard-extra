@@ -30,7 +30,7 @@ public class CuratorFactoryTest {
     @Test
     public void testZooKeeper() {
         assertThat("has ZooKeeperConfiguration",
-                factory.getEnsemble(),
+                factory.getZooKeeperFactory(),
                 instanceOf(ZooKeeperFactory.class));
     }
 

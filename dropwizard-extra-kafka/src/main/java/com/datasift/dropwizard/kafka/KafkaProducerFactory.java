@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.kafka.KafkaClientFactory;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.codahale.dropwizard.util.Duration;
 import com.codahale.dropwizard.util.Size;
@@ -20,114 +19,151 @@ import javax.validation.constraints.NotNull;
  */
 public class KafkaProducerFactory extends KafkaClientFactory {
 
-    /**
-     * Size of the client-side send buffer.
-     */
-    @JsonProperty
     @NotNull
     protected Size sendBufferSize = Size.kilobytes(10);
 
-    /**
-     * Maximum time to wait on connection to a broker.
-     */
-    @JsonProperty
     @NotNull
     protected Duration connectionTimeout = Duration.milliseconds(5000);
 
-    /**
-     * Number of produce requests to a broker after which to reset the connection.
-     */
-    @JsonProperty
     @Min(0)
     protected long reconnectInterval = 30000;
 
-    /**
-     * Maximum size of a message payload.
-     * <p/>
-     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
-     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
-     */
-    @JsonProperty
     @NotNull
     protected Size maxMessageSize = Size.megabytes(1);
 
-    /**
-     * Compression codec for compressing all messages.
-     *
-     * @see KafkaProducerFactory#getCompression()
-     */
-    @JsonProperty
     protected Compression compression = Compression.parse("none");
 
-    /**
-     * Optional list of the topics to compress.
-     * <p/>
-     * If {@link KafkaProducerFactory#compression} is enabled, this filters the topics
-     * compression is enabled for. Leaving this empty and enabling compression will cause all topics
-     * to be compressed.
-     */
-    @JsonProperty
     protected String[] compressedTopics = new String[0];
 
-    /**
-     * Number of retries for refreshing the partition cache after a cache miss.
-     */
-    @JsonProperty
     @Min(0)
     protected int partitionMissRetries = 3;
 
-    /**
-     * Configuration for the asynchronous producer, defaults to synchronous.
-     * <p/>
-     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
-     *
-     * @see KafkaAsyncProducerFactory
-     */
-    @JsonProperty
     protected KafkaAsyncProducerFactory async = null;
 
     /**
-     * @see KafkaProducerFactory#sendBufferSize
+     * Returns the size of the client-side send buffer.
+     *
+     * @return the size of the client-side send buffer.
      */
+    @JsonProperty
     public Size getSendBufferSize() {
         return sendBufferSize;
     }
 
     /**
-     * @see KafkaProducerFactory#connectionTimeout
+     * Sets the size of the client-side send buffer.
+     *
+     * @param size the size of the client-side send buffer.
      */
+    @JsonProperty
+    public void setSendBufferSize(final Size size) {
+        this.sendBufferSize = size;
+    }
+
+    /**
+     * Returns the maximum time to wait on connection to a broker.
+     *
+     * @return the maximum time to wait on connection to a broker.
+     */
+    @JsonProperty
     public Duration getConnectionTimeout() {
         return connectionTimeout;
     }
 
     /**
-     * @see KafkaProducerFactory#reconnectInterval
+     * Sets the maximum time to wait on connection to a broker.
+     *
+     * @param timeout the maximum time to wait on connection to a broker.
      */
+    @JsonProperty
+    public void getConnectionTimeout(final Duration timeout) {
+        this.connectionTimeout = timeout;
+    }
+
+    /**
+     * Returns the number of produce requests to a broker after which to reset the connection.
+     *
+     * @return the number of produce requests to a broker after which the connection will be reset.
+     */
+    @JsonProperty
     public long getReconnectInterval() {
         return reconnectInterval;
     }
 
     /**
-     * @see KafkaProducerFactory#maxMessageSize
+     * Sets the number of produce requests to a broker after which to reset the connection.
+     *
+     * @param interval the number of produce requests after which the connection will be reset.
      */
+    @JsonProperty
+    public void getReconnectInterval(final long interval) {
+        this.reconnectInterval = interval;
+    }
+
+    /**
+     * Returns the maximum size of a message payload.
+     * <p/>
+     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
+     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
+     *
+     * @return the maximum size of a message payload.
+     */
+    @JsonProperty
     public Size getMaxMessageSize() {
         return maxMessageSize;
     }
 
     /**
-     * @throws IllegalArgumentException if the compression codec is invalid or
-     *                                  unsupported
-     * @see KafkaProducerFactory#compression
+     * Sets the maximum size of a message payload.
+     * <p/>
+     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
+     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
+     *
+     * @param size the maximum size of a message payload.
      */
+    @JsonProperty
+    public void getMaxMessageSize(final Size size) {
+        this.maxMessageSize = size;
+    }
+
+    /**
+     * Returns the compression codec for compressing all messages of compressed topics.
+     *
+     * @return the compression codec for compressing messages with.
+     * @throws IllegalArgumentException if the compression codec is invalid or unsupported.
+     *
+     * @see KafkaProducerFactory#getCompression()
+     */
+    @JsonProperty
     public Compression getCompression() {
         return compression == null
                 ? Compression.parse("default")
                 : compression;
     }
+    /**
+     * Sets the compression codec for compressing all messages of compressed topics.
+     *
+     * @param compression the compression codec for compressing messages with.
+     * @throws IllegalArgumentException if the compression codec is invalid or unsupported.
+     *
+     * @see KafkaProducerFactory#getCompression()
+     */
+    @JsonProperty
+    public void setCompression(final String compression) {
+        this.compression = Compression.parse(compression);
+    }
 
     /**
-     * @see KafkaProducerFactory#compressedTopics
+     * Returns an optional list of the topics to compress.
+     * <p/>
+     * If {@link #getCompression() compression} is enabled, this filters the topics compression is
+     * enabled for. Leaving this empty and enabling compression will cause all topics to be
+     * compressed.
+     *
+     * @return the list of topics compression is enabled for, or an empty list when compression is
+     *         enabled for all topics.
      */
+    @JsonProperty
     public String[] getCompressedTopics() {
         return compressedTopics == null
                 ? new String[0]
@@ -135,17 +171,67 @@ public class KafkaProducerFactory extends KafkaClientFactory {
     }
 
     /**
-     * @see KafkaProducerFactory#partitionMissRetries
+     * Returns an optional list of the topics to compress.
+     * <p/>
+     * If {@link #getCompression() compression} is enabled, this filters the topics compression is
+     * enabled for. Leaving this empty and enabling compression will cause all topics to be
+     * compressed.
+     *
+     * @param compressedTopics the list of topics compression is enabled for, or an empty list when
+     *                         compression is enabled for all topics.
      */
+    @JsonProperty
+    public void setCompressedTopics(final String[] compressedTopics) {
+        this.compressedTopics = compressedTopics;
+    }
+
+    /**
+     * Returns the number of retries for refreshing the partition cache after a cache miss.
+     *
+     * @return the number of retries for refreshing the partition cache after a cache miss.
+     */
+    @JsonProperty
     public int getPartitionMissRetries() {
         return partitionMissRetries;
     }
 
     /**
-     * @see KafkaProducerFactory#async
+     * Sets the number of retries for refreshing the partition cache after a cache miss.
+     *
+     * @param retries the number of retries for refreshing the partition cache after a cache miss.
      */
+    @JsonProperty
+    public void getPartitionMissRetries(final int retries) {
+        this.partitionMissRetries = retries;
+    }
+
+    /**
+     * Returns a factory for the asynchronous producer, defaults to synchronous.
+     * <p/>
+     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
+     *
+     * @return a factory for asynchronous producers or null, if the producer is to be synchronous.
+     *
+     * @see KafkaAsyncProducerFactory
+     */
+    @JsonProperty
     public KafkaAsyncProducerFactory getAsync() {
         return async;
+    }
+
+    /**
+     * Sets a factory for the asynchronous producer, defaults to synchronous.
+     * <p/>
+     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
+     *
+     * @param factory a factory for asynchronous producers or null, if the producer is to be
+     *                synchronous.
+     *
+     * @see KafkaAsyncProducerFactory
+     */
+    @JsonProperty
+    public void setAsync(final KafkaAsyncProducerFactory factory) {
+        this.async = factory;
     }
 
     /**

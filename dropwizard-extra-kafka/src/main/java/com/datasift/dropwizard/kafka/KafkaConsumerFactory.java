@@ -34,67 +34,196 @@ import java.util.concurrent.ExecutorService;
  */
 public class KafkaConsumerFactory extends KafkaClientFactory {
 
-    /**
-     * Consumer group the {@link KafkaConsumer} belongs to.
-     */
-    @JsonProperty
     @NotEmpty
     protected String group = "";
 
-    /**
-     * Mapping of the number of partitions to consume from each topic.
-     * <p/>
-     * Topics not referenced will not be consumed from.
-     */
-    @JsonProperty
     @NotNull
     protected Map<String, Integer> partitions = ImmutableMap.of();
 
+    protected Duration timeout = null;
+
+    @NotNull
+    protected Size receiveBufferSize = Size.kilobytes(64);
+
+    @NotNull
+    protected Size fetchSize = Size.kilobytes(300);
+
+    @NotNull
+    protected Duration backOffIncrement = Duration.seconds(1);
+
+    @Min(0)
+    protected int queuedChunks = 100;
+
+    protected boolean autoCommit = true;
+
+    @NotNull
+    protected Duration autoCommitInterval = Duration.seconds(10);
+
+    @Min(0)
+    protected int rebalanceRetries = 4;
+
     /**
-     * Time the {@link KafkaConsumer} should wait to receive messages before timing out the stream.
+     * Returns the consumer group the {@link KafkaConsumer} belongs to.
+     *
+     * @return the consumer group the {@link KafkaConsumer} belongs to.
+     */
+    @JsonProperty
+    public String getGroup() {
+        return group;
+    }
+
+    /**
+     * Sets the consumer group the {@link KafkaConsumer} belongs to.
+     *
+     * @param group the consumer group the {@link KafkaConsumer} belongs to.
+     */
+    @JsonProperty
+    public void setGroup(final String group) {
+        this.group = group;
+    }
+
+    /**
+     * Returns a mapping of the number of partitions to consume from each topic.
+     * <p/>
+     * Topics not referenced will not be consumed from.
+     *
+     * @return a Map of topics to the number of partitions to consume from them.
+     */
+    @JsonProperty
+    public Map<String, Integer> getPartitions() {
+        return partitions;
+    }
+
+    /**
+     * Sets a mapping of the number of partitions to consume from each topic.
+     * <p/>
+     * Topics not referenced will not be consumed from.
+     *
+     * @param partitions a Map of topics to the number of partitions to consume from them.
+     */
+    @JsonProperty
+    public void getPartitions(final Map<String, Integer> partitions) {
+        this.partitions = partitions;
+    }
+
+    /**
+     * Returns the time the {@link KafkaConsumer} should wait to receive messages before timing out
+     * the stream.
      * <p/>
      * When a {@link KafkaConsumer} times out a stream, a {@link
      * kafka.consumer.ConsumerTimeoutException} will be thrown by that streams' {@link
      * kafka.consumer.ConsumerIterator}.
      *
+     * @return the maximum time to wait when receiving messages from a broker before timing out.
+     *
      * @see kafka.consumer.ConsumerIterator#next()
      */
     @JsonProperty
-    protected Duration timeout = null;
+    public Duration getTimeout() {
+        return timeout == null
+                ? Duration.milliseconds(-1)
+                : timeout;
+    }
 
     /**
-     * Size of the client-side receive buffer.
+     * Sets the time the {@link KafkaConsumer} should wait to receive messages before timing out
+     * the stream.
+     * <p/>
+     * When a {@link KafkaConsumer} times out a stream, a {@link
+     * kafka.consumer.ConsumerTimeoutException} will be thrown by that streams' {@link
+     * kafka.consumer.ConsumerIterator}.
+     *
+     * @param timeout the maximum time to wait when receiving messages before timing out.
+     *
+     * @see kafka.consumer.ConsumerIterator#next()
      */
     @JsonProperty
-    @NotNull
-    protected Size receiveBufferSize = Size.kilobytes(64);
+    public void setTimeout(final Duration timeout) {
+        this.timeout = timeout;
+    }
 
     /**
-     * Maximum size of a batch of messages to fetch in a single request.
+     * Returns the size of the client-side receive buffer.
+     *
+     * @return the size of the client-side receive buffer.
+     */
+    @JsonProperty
+    public Size getReceiveBufferSize() {
+        return receiveBufferSize;
+    }
+
+    /**
+     * Sets the size of the client-side receive buffer.
+     *
+     * @param size the size of the client-side receive buffer.
+     */
+    @JsonProperty
+    public void getReceiveBufferSize(final Size size) {
+        this.receiveBufferSize = size;
+    }
+
+    /**
+     * Returns the maximum size of a batch of messages to fetch in a single request.
      * <p/>
      * This dictates the maximum size of a message that may be received by the {@link
      * KafkaConsumer}. Messages larger than this size will cause a {@link
      * kafka.common.InvalidMessageSizeException} to be thrown during iteration of the stream.
      *
+     * @return the maximum size of a batch of messages to receive in a single request.
+     *
      * @see kafka.javaapi.message.ByteBufferMessageSet#iterator()
      */
     @JsonProperty
-    @NotNull
-    protected Size fetchSize = Size.kilobytes(300);
+    public Size getFetchSize() {
+        return fetchSize;
+    }
 
     /**
-     * Cumulative delay before polling a broker again when no data is returned.
+     * Sets the maximum size of a batch of messages to fetch in a single request.
+     * <p/>
+     * This dictates the maximum size of a message that may be received by the {@link
+     * KafkaConsumer}. Messages larger than this size will cause a {@link
+     * kafka.common.InvalidMessageSizeException} to be thrown during iteration of the stream.
+     *
+     * @param size the maximum size of a batch of messages to receive in a single request.
+     *
+     * @see kafka.javaapi.message.ByteBufferMessageSet#iterator()
+     */
+    @JsonProperty
+    public void getFetchSize(final Size size) {
+        this.fetchSize = size;
+    }
+
+    /**
+     * Returns the cumulative delay before polling a broker again when no data is returned.
      * <p/>
      * When fetching data from a broker, if there is no new data, there will be a delay before
      * polling the broker again. This controls the duration of the delay by increasing it linearly,
      * on each poll attempt.
+     *
+     * @return the amount by which the retry timeout will be increased after each attempt.
      */
     @JsonProperty
-    @NotNull
-    protected Duration backOffIncrement = Duration.seconds(1);
+    public Duration getBackOffIncrement() {
+        return backOffIncrement;
+    }
 
     /**
-     * Maximum number of chunks to queue in internal buffers.
+     * Sets the cumulative delay before polling a broker again when no data is returned.
+     * <p/>
+     * When fetching data from a broker, if there is no new data, there will be a delay before
+     * polling the broker again. This controls the duration of the delay by increasing it linearly,
+     * on each poll attempt.
+     *
+     * @param increment the amount by which the retry timeout will be increased after each attempt.
+     */
+    @JsonProperty
+    public void getBackOffIncrement(final Duration increment) {
+        this.backOffIncrement = increment;
+    }
+
+    /**
+     * Returns the maximum number of chunks to queue in internal buffers.
      * <p/>
      * The consumer internally buffers fetched messages in a set of queues, which are used to
      * iterate the stream. This controls the size of these queues.
@@ -103,103 +232,92 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * has been iterated.
      */
     @JsonProperty
-    @Min(0)
-    protected int queuedChunks = 100;
-
-    /**
-     * Automatically commits the currently consumed offsets periodically.
-     *
-     * @see KafkaConsumerFactory#autoCommitInterval
-     */
-    @JsonProperty
-    protected boolean autoCommit = true;
-
-    /**
-     * Frequency to automatically commit currently consumed offsets, if enabled.
-     *
-     * @see KafkaConsumerFactory#autoCommitInterval
-     */
-    @JsonProperty
-    @NotNull
-    protected Duration autoCommitInterval = Duration.seconds(10);
-
-    /**
-     * Maximum number of retries during a re-balance.
-     */
-    @JsonProperty
-    @Min(0)
-    protected int rebalanceRetries = 4;
-
-    /**
-     * @see KafkaConsumerFactory#group
-     */
-    public String getGroup() {
-        return group;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#partitions
-     */
-    public Map<String, Integer> getPartitions() {
-        return partitions;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#timeout
-     */
-    public Duration getTimeout() {
-        return timeout == null
-                ? Duration.milliseconds(-1)
-                : timeout;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#receiveBufferSize
-     */
-    public Size getReceiveBufferSize() {
-        return receiveBufferSize;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#fetchSize
-     */
-    public Size getFetchSize() {
-        return fetchSize;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#backOffIncrement
-     */
-    public Duration getBackOffIncrement() {
-        return backOffIncrement;
-    }
-
-    /**
-     * @see KafkaConsumerFactory#queuedChunks
-     */
     public int getQueuedChunks() {
         return queuedChunks;
     }
 
     /**
-     * @see KafkaConsumerFactory#autoCommit
+     * Sets the maximum number of chunks to queue in internal buffers.
+     * <p/>
+     * The consumer internally buffers fetched messages in a set of queues, which are used to
+     * iterate the stream. This controls the size of these queues.
+     * <p/>
+     * Once a queue has been filled, it will block subsequent attempts to fill it until (some of) it
+     * has been iterated.
      */
+    @JsonProperty
+    public void getQueuedChunks(final int maxChunks) {
+        this.queuedChunks = maxChunks;
+    }
+
+    /**
+     * Returns whether to automatically commit the offsets that have been consumed.
+     *
+     * @return true to commit the last consumed offset periodically; false to never commit offsets.
+     *
+     * @see #getAutoCommitInterval
+     */
+    @JsonProperty
     public boolean getAutoCommit() {
         return autoCommit;
     }
 
     /**
-     * @see KafkaConsumerFactory#autoCommitInterval
+     * Sets whether to automatically commit the offsets that have been consumed.
+     *
+     * @param autoCommit true to commit the last consumed offset periodically;
+     *                   false to never commit offsets.
+     *
+     * @see #getAutoCommitInterval
      */
+    @JsonProperty
+    public void setAutoCommit(final boolean autoCommit) {
+        this.autoCommit = autoCommit;
+    }
+
+    /**
+     * Sets the frequency to automatically commit previously consumed offsets, if enabled.
+     *
+     * @return the frequency to automatically commit the previously consumed offsets, when enabled.
+     *
+     * @see #getAutoCommit
+     */
+    @JsonProperty
     public Duration getAutoCommitInterval() {
         return autoCommitInterval;
     }
 
+
     /**
-     * @see KafkaConsumerFactory#rebalanceRetries
+     * Returns the frequency to automatically commit previously consumed offsets, if enabled.
+     *
+     * @return the frequency to automatically commit the previously consumed offsets, when enabled.
+     *
+     * @see #getAutoCommit
      */
+    @JsonProperty
+    public void getAutoCommitInterval(final Duration autoCommitInterval) {
+        this.autoCommitInterval = autoCommitInterval;
+    }
+
+    /**
+     * Returns the maximum number of retries during a re-balance.
+     *
+     * @return the maximum number of times to retry a re-balance operation.
+     */
+    @JsonProperty
     public int getRebalanceRetries() {
         return rebalanceRetries;
+    }
+
+    /**
+     * Sets the maximum number of retries during a re-balance.
+     *
+     * @param rebalanceRetries the maximum number of times to retry a re-balance operation.
+     */
+    @JsonProperty
+    public void getRebalanceRetries(final int rebalanceRetries) {
+        this.rebalanceRetries = rebalanceRetries;
     }
 
     /**

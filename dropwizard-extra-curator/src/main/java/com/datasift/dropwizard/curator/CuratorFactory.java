@@ -36,11 +36,16 @@ public class CuratorFactory {
 
     /**
      * An enumeration of the available compression codecs available for compressed entries.
+     *
+     * @see #getCompressionProvider()
+     * @see CompressionProvider
      */
     enum CompressionCodec {
 
         /**
          * GZIP compression.
+         *
+         * @see GzipCompressionProvider
          */
         GZIP(new GzipCompressionProvider());
 
@@ -71,56 +76,120 @@ public class CuratorFactory {
         }
     }
 
-    /**
-     * The configuration of the ZooKeeper ensemble to use.
-     */
-    @JsonProperty
     @Valid
     @NotNull
     protected ZooKeeperFactory ensemble = new ZooKeeperFactory();
 
-    /**
-     * The maximum number of connection retries.
-     */
-    @JsonProperty
     @Min(0)
     protected int maxRetries = 1;
 
-    /**
-     * The initial delay between retries. After each retry, the delay will
-     * increase exponentially.
-     */
-    @JsonProperty
     @NotNull
     protected Duration backOffBaseTime = Duration.seconds(1);
 
-    /**
-     * The compression scheme to use for compressed values.
-     */
-    @JsonProperty
     @NotNull
     protected CompressionCodec compression = CompressionCodec.GZIP;
 
     /**
-     * @see #ensemble
+     * Returns a {@link ZooKeeperFactory} for the ZooKeeper ensemble to connect to.
+     *
+     * @return a factory for the ZooKeeper ensemble for the client.
      */
-    public ZooKeeperFactory getEnsemble() {
+    @JsonProperty("ensemble")
+    public ZooKeeperFactory getZooKeeperFactory() {
         return ensemble;
     }
 
     /**
-     * @see #backOffBaseTime
-     * @see #maxRetries
+     * Sets the {@link ZooKeeperFactory} for the ZooKeeper ensemble to connect to.
+     *
+     * @param factory the factory for the ZooKeeper ensemble for the client.
+     */
+    @JsonProperty("ensemble")
+    public void setZooKeeperFactory(final ZooKeeperFactory factory) {
+        this.ensemble = factory;
+    }
+
+    /**
+     * Returns the maximum number of retries to attempt to connect to the ensemble.
+     *
+     * @return the maximum number of connection attempts.
+     */
+    @JsonProperty
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    /**
+     * Sets the maximum number of retries to attempt to connect to the ensemble.
+     *
+     * @param maxRetries the maximum number of connection attempts.
+     */
+    @JsonProperty
+    public void setMaxRetries(final int maxRetries) {
+        this.maxRetries = maxRetries;
+    }
+
+    /**
+     * Returns the initial time to wait before retrying a failed connection.
+     * <p/>
+     * Subsequent retries will wait an exponential amount of time more than this.
+     *
+     * @return the initial time to wait before trying to connect again.
+     */
+    @JsonProperty
+    public Duration getBackOffBaseTime() {
+        return backOffBaseTime;
+    }
+
+    /**
+     * Sets the initial time to wait before retrying a failed connection.
+     * <p/>
+     * Subsequent retries will wait an exponential amount of time more than this.
+     *
+     * @param backOffBaseTime the initial time to wait before trying to connect again.
+     */
+    @JsonProperty
+    public void setBackOffBaseTime(final Duration backOffBaseTime) {
+        this.backOffBaseTime = backOffBaseTime;
+    }
+
+    /**
+     * Returns a {@link RetryPolicy} for handling failed connection attempts.
+     * <p/>
+     * Always configures an {@link ExponentialBackoffRetry} based on the {@link #getMaxRetries()
+     * maximum retries} and {@link #getBackOffBaseTime() initial back-off} configured.
+     *
+     * @return a {@link RetryPolicy} for handling failed connection attempts.
+     *
+     * @see #getMaxRetries()
+     * @see #getBackOffBaseTime()
      */
     public RetryPolicy getRetryPolicy() {
         return new ExponentialBackoffRetry((int) backOffBaseTime.toMilliseconds(), maxRetries);
     }
 
     /**
-     * @see #compression
+     * Returns a {@link CompressionProvider} to compress values with.
+     *
+     * @return the compression to compress values with.
+     *
+     * @see CompressionCodec
      */
+    @JsonProperty("compression")
     public CompressionProvider getCompressionProvider() {
         return compression.getProvider();
+    }
+
+    /**
+     * Sets a {@link Compression} to compress values with.
+     *
+     * @param codec the compression codec to compress values with.
+     *
+     * @see CompressionCodec
+     */
+    @JsonProperty("compression")
+    public void setCompressionProvider(final String codec) {
+        this.compression = CompressionCodec.parse(codec);
     }
 
     /**
@@ -144,7 +213,7 @@ public class CuratorFactory {
      * @return a {@link CuratorFramework} instance, managed and configured.
      */
     public CuratorFramework build(final Environment environment, final String name) {
-        final ZooKeeperFactory factory = getEnsemble();
+        final ZooKeeperFactory factory = getZooKeeperFactory();
         final CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
                 .zookeeperFactory(new DropwizardConfiguredZooKeeperFactory(environment, name))
                 .ensembleProvider(new DropwizardConfiguredEnsembleProvider(factory))
