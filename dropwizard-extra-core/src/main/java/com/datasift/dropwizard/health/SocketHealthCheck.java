@@ -40,7 +40,6 @@ public abstract class SocketHealthCheck extends HealthCheck {
      *
      * @param hostname the hostname of the remote socket to check.
      * @param port the port of the remote socket to check.
-     * @param name the name of this {@link HealthCheck}.
      */
     public SocketHealthCheck(final String hostname, final int port) {
         this.hostname = hostname;

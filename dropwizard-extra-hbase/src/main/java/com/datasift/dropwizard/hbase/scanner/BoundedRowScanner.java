@@ -167,7 +167,7 @@ public class BoundedRowScanner implements RowScanner {
      *
      * @see RowScanner#setKeyRegexp(String)
      */
-    public RowScanner setKeyRegexp(final String regexp, Charset charset) {
+    public RowScanner setKeyRegexp(final String regexp, final Charset charset) {
         scanner.setKeyRegexp(regexp, charset);
         return this;
     }
@@ -300,7 +300,7 @@ public class BoundedRowScanner implements RowScanner {
     public Deferred<Object> close() {
         semaphore.acquireUninterruptibly();
         return scanner.close()
-                .addBoth(new PermitReleasingCallback<Object>(semaphore));
+                .addBoth(new PermitReleasingCallback<>(semaphore));
     }
 
     /**

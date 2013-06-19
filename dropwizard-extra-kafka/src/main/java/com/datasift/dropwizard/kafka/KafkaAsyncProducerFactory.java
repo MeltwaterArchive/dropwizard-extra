@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.kafka.config;
+package com.datasift.dropwizard.kafka;
 
 import com.codahale.dropwizard.util.Duration;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Configuration for the asynchronous Kafka producer.
  */
-public class KafkaAsyncProducerConfiguration {
+public class KafkaAsyncProducerFactory extends KafkaProducerFactory {
 
     /**
      * Maximum time for buffering data in the producer queue.
@@ -33,21 +33,21 @@ public class KafkaAsyncProducerConfiguration {
     protected int batchSize = 200;
 
     /**
-     * @see KafkaAsyncProducerConfiguration#queueTime
+     * @see KafkaAsyncProducerFactory#queueTime
      */
     public Duration getQueueTime() {
         return queueTime;
     }
 
     /**
-     * @see KafkaAsyncProducerConfiguration#queueSize
+     * @see KafkaAsyncProducerFactory#queueSize
      */
     public int getQueueSize() {
         return queueSize;
     }
 
     /**
-     * @see KafkaAsyncProducerConfiguration#batchSize
+     * @see KafkaAsyncProducerFactory#batchSize
      */
     public int getBatchSize() {
         return batchSize;

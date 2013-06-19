@@ -1,9 +1,16 @@
 package com.datasift.dropwizard.hbase;
 
+import com.codahale.dropwizard.util.Duration;
+import com.codahale.dropwizard.util.Size;
 import com.codahale.metrics.MetricRegistry;
 import com.datasift.dropwizard.hbase.config.HBaseClientConfiguration;
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.codahale.dropwizard.setup.Environment;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
@@ -19,57 +26,141 @@ import com.codahale.dropwizard.setup.Environment;
  */
 public class HBaseClientFactory {
 
-    private final Environment environment;
     private static final String DEFAULT_NAME = "hbase-default";
 
     /**
-     * Creates a new {@link HBaseClientFactory} instance for the specified {@link Environment}.
-     *
-     * @param environment the {@link Environment} to build {@link HBaseClient} instances for
+     * The ZooKeeper quorum co-ordinating the HBase cluster.
      */
-    public HBaseClientFactory(final Environment environment) {
-        this.environment = environment;
+    @JsonProperty
+    @NotNull
+    @Valid
+    protected ZooKeeperFactory zookeeper = new ZooKeeperFactory();
+
+    /**
+     * The maximum amount of time requests may be buffered client-side before sending them to the
+     * server.
+     *
+     * @see org.hbase.async.HBaseClient#setFlushInterval(short)
+     */
+    @JsonProperty
+    @NotNull
+    protected Duration flushInterval = Duration.seconds(1);
+
+    /**
+     * The maximum size of the buffer for increment operations.
+     * <p/>
+     * Once this buffer is full, a flush is forced irrespective of the {@link
+     * HBaseClientConfiguration#flushInterval flushInterval}.
+     *
+     * @see org.hbase.async.HBaseClient#setIncrementBufferSize(int)
+     */
+    @JsonProperty
+    @NotNull
+    protected Size incrementBufferSize = Size.kilobytes(64);
+
+    /**
+     * The maximum number of concurrent asynchronous requests for the client.
+     * <p/>
+     * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
+     * the client running out of memory.
+     * <p/>
+     * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
+     * requests.
+     *
+     * @see com.datasift.dropwizard.hbase.BoundedHBaseClient
+     */
+    @JsonProperty
+    @Min(0)
+    protected int maxConcurrentRequests = 0;
+
+    /**
+     * The maximum time to wait for a connection to a region server before failing.
+     */
+    @JsonProperty
+    @NotNull
+    protected Duration connectionTimeout = Duration.seconds(5);
+
+    /**
+     * Whether the {@link HBaseClient} should be instrumented with metrics.
+     */
+    @JsonProperty
+    protected boolean instrumented = true;
+
+    /**
+     * @see HBaseClientConfiguration#zookeeper
+     */
+    public ZooKeeperFactory getZookeeper() {
+        return zookeeper;
+    }
+
+    /**
+     * @see HBaseClientConfiguration#flushInterval
+     */
+    public Duration getFlushInterval() {
+        return flushInterval;
+    }
+
+    /**
+     * @see HBaseClientConfiguration#incrementBufferSize
+     */
+    public Size getIncrementBufferSize() {
+        return incrementBufferSize;
+    }
+
+    /**
+     * @see HBaseClientConfiguration#maxConcurrentRequests
+     */
+    public int getMaxConcurrentRequests() {
+        return maxConcurrentRequests;
+    }
+
+    /**
+     * @see HBaseClientConfiguration#connectionTimeout
+     */
+    public Duration getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    /**
+     * @see HBaseClientConfiguration#instrumented
+     */
+    public boolean isInstrumented() {
+        return instrumented;
     }
 
     /**
      * Builds a default {@link HBaseClient} instance from the specified {@link
      * HBaseClientConfiguration}.
      *
-     * @param configuration the {@link HBaseClientConfiguration} to configure an {@link HBaseClient}
+     * @param environment the {@link Environment} to build {@link HBaseClient} instances for.
      * @return an {@link HBaseClient}, managed and configured according to the {@code configuration}
      */
-    public HBaseClient build(final HBaseClientConfiguration configuration) {
-        return build(configuration, DEFAULT_NAME);
+    public HBaseClient build(final Environment environment) {
+        return build(environment, DEFAULT_NAME);
     }
 
     /**
      * Builds an {@link HBaseClient} instance from the specified {@link HBaseClientConfiguration}
      * with the given {@code name}.
      *
-     * @param configuration the {@link HBaseClientConfiguration} for the {@link HBaseClient}.
+     * @param environment the {@link Environment} to build {@link HBaseClient} instances for.
      * @param name the name for the {@link HBaseClient}.
      *
      * @return an {@link HBaseClient}, managed and configured according to the {@code
      *         configuration}.
      */
-    public HBaseClient build(final HBaseClientConfiguration configuration, final String name) {
-        final ZooKeeperConfiguration zkConfiguration = configuration.getZookeeper();
+    public HBaseClient build(final Environment environment, final String name) {
+        final ZooKeeperFactory zkFactory = getZookeeper();
 
         final HBaseClient proxy = new HBaseClientProxy(
-                new org.hbase.async.HBaseClient(
-                        zkConfiguration.getQuorumSpec(),
-                        zkConfiguration.getNamespace()));
+                new org.hbase.async.HBaseClient(zkFactory.getQuorumSpec(), zkFactory.getNamespace()));
 
         // optionally instrument and bound requests for the client
-        final HBaseClient client = instrument(
-                configuration,
-                boundRequests(configuration, proxy),
-                environment.metrics(),
-                name);
+        final HBaseClient client = instrument(boundRequests(proxy), environment.metrics(), name);
 
         // configure client
-        client.setFlushInterval(configuration.getFlushInterval());
-        client.setIncrementBufferSize(configuration.getIncrementBufferSize());
+        client.setFlushInterval(getFlushInterval());
+        client.setIncrementBufferSize(getIncrementBufferSize());
 
         // add healthchecks for META and ROOT tables
         environment.admin().addHealthCheck(name + "-meta", new HBaseHealthCheck(client, ".META."));
@@ -77,7 +168,7 @@ public class HBaseClientFactory {
 
         // manage client
         environment.lifecycle().manage(new ManagedHBaseClient(
-                client, configuration.getConnectionTimeout()));
+                client, getConnectionTimeout()));
 
         return client;
     }
@@ -91,18 +182,15 @@ public class HBaseClientFactory {
      * <p/>
      * If instrumentation is not enabled, the given {@link HBaseClient} will be returned verbatim.
      *
-     * @param configuration an {@link HBaseClientConfiguration} defining the {@link HBaseClient}s
-     *                      parameters.
      * @param client an underlying {@link HBaseClient} implementation.
      * @param registry the {@link MetricRegistry} to register metrics with.
      * @param name the name of the client that is being instrumented.
      * @return an {@link HBaseClient} that satisfies the configuration of instrumentation.
      */
-    private HBaseClient instrument(final HBaseClientConfiguration configuration,
-                                   final HBaseClient client,
+    private HBaseClient instrument(final HBaseClient client,
                                    final MetricRegistry registry,
                                    final String name) {
-        return configuration.isInstrumented()
+        return isInstrumented()
                 ? new InstrumentedHBaseClient(client, registry, name)
                 : client;
     }
@@ -116,17 +204,14 @@ public class HBaseClientFactory {
      * If {@link HBaseClientConfiguration#maxConcurrentRequests} is zero, the given {@link
      * HBaseClient} will be returned verbatim.
      *
-     * @param configuration an {@link HBaseClientConfiguration} defining the {@link HBaseClient}s
-     *                      parameters.
      * @param client an underlying {@link HBaseClient} implementation.
      *
      * @return an {@link HBaseClient} that satisfies the configuration of the maximum concurrent
      *         requests.
      */
-    private HBaseClient boundRequests(final HBaseClientConfiguration configuration,
-                                      final HBaseClient client) {
-        return configuration.getMaxConcurrentRequests() > 0
-                ? new BoundedHBaseClient(client, configuration.getMaxConcurrentRequests())
+    private HBaseClient boundRequests(final HBaseClient client) {
+        return getMaxConcurrentRequests() > 0
+                ? new BoundedHBaseClient(client, getMaxConcurrentRequests())
                 : client;
     }
 }

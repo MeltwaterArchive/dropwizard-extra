@@ -1,5 +1,6 @@
-package com.datasift.dropwizard.kafka.config;
+package com.datasift.dropwizard.kafka;
 
+import com.datasift.dropwizard.kafka.KafkaClientFactory;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.codahale.dropwizard.util.Duration;
 import com.codahale.dropwizard.util.Size;
@@ -14,10 +15,10 @@ import javax.validation.constraints.NotNull;
  * By default, the producer will be synchronous, blocking the calling thread until the message has
  * been sent.
  * <p/>
- * To use an asynchronous producer, set {@link KafkaProducerConfiguration#async} with the desired
+ * To use an asynchronous producer, set {@link KafkaProducerFactory#async} with the desired
  * properties.
  */
-public class KafkaProducerConfiguration extends KafkaClientConfiguration {
+public class KafkaProducerFactory extends KafkaClientFactory {
 
     /**
      * Size of the client-side send buffer.
@@ -53,7 +54,7 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     /**
      * Compression codec for compressing all messages.
      *
-     * @see KafkaProducerConfiguration#getCompression()
+     * @see KafkaProducerFactory#getCompression()
      */
     @JsonProperty
     protected Compression compression = Compression.parse("none");
@@ -61,7 +62,7 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     /**
      * Optional list of the topics to compress.
      * <p/>
-     * If {@link KafkaProducerConfiguration#compression} is enabled, this filters the topics
+     * If {@link KafkaProducerFactory#compression} is enabled, this filters the topics
      * compression is enabled for. Leaving this empty and enabling compression will cause all topics
      * to be compressed.
      */
@@ -80,34 +81,34 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
      * <p/>
      * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
      *
-     * @see KafkaAsyncProducerConfiguration
+     * @see KafkaAsyncProducerFactory
      */
     @JsonProperty
-    protected KafkaAsyncProducerConfiguration async = null;
+    protected KafkaAsyncProducerFactory async = null;
 
     /**
-     * @see KafkaProducerConfiguration#sendBufferSize
+     * @see KafkaProducerFactory#sendBufferSize
      */
     public Size getSendBufferSize() {
         return sendBufferSize;
     }
 
     /**
-     * @see KafkaProducerConfiguration#connectionTimeout
+     * @see KafkaProducerFactory#connectionTimeout
      */
     public Duration getConnectionTimeout() {
         return connectionTimeout;
     }
 
     /**
-     * @see KafkaProducerConfiguration#reconnectInterval
+     * @see KafkaProducerFactory#reconnectInterval
      */
     public long getReconnectInterval() {
         return reconnectInterval;
     }
 
     /**
-     * @see KafkaProducerConfiguration#maxMessageSize
+     * @see KafkaProducerFactory#maxMessageSize
      */
     public Size getMaxMessageSize() {
         return maxMessageSize;
@@ -116,7 +117,7 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     /**
      * @throws IllegalArgumentException if the compression codec is invalid or
      *                                  unsupported
-     * @see KafkaProducerConfiguration#compression
+     * @see KafkaProducerFactory#compression
      */
     public Compression getCompression() {
         return compression == null
@@ -125,7 +126,7 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     }
 
     /**
-     * @see KafkaProducerConfiguration#compressedTopics
+     * @see KafkaProducerFactory#compressedTopics
      */
     public String[] getCompressedTopics() {
         return compressedTopics == null
@@ -134,16 +135,16 @@ public class KafkaProducerConfiguration extends KafkaClientConfiguration {
     }
 
     /**
-     * @see KafkaProducerConfiguration#partitionMissRetries
+     * @see KafkaProducerFactory#partitionMissRetries
      */
     public int getPartitionMissRetries() {
         return partitionMissRetries;
     }
 
     /**
-     * @see KafkaProducerConfiguration#async
+     * @see KafkaProducerFactory#async
      */
-    public KafkaAsyncProducerConfiguration getAsync() {
+    public KafkaAsyncProducerFactory getAsync() {
         return async;
     }
 

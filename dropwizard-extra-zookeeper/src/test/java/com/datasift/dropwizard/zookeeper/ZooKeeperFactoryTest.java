@@ -1,7 +1,6 @@
-package com.datasift.dropwizard.zookeeper.config;
+package com.datasift.dropwizard.zookeeper;
 
 import com.codahale.dropwizard.jackson.Jackson;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
 import com.codahale.dropwizard.util.Duration;
@@ -19,20 +18,20 @@ import static org.mockito.Mockito.*;
 /**
  * Tests {@link ZooKeeperConfiguration}.
  */
-public class ZooKeeperConfigurationTest {
+public class ZooKeeperFactoryTest {
 
-    ZooKeeperConfiguration config = null;
+    ZooKeeperFactory config = null;
 
     @Before
     public void setup() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        config = new ConfigurationFactory<>(ZooKeeperConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
+        config = new ConfigurationFactory<>(ZooKeeperFactory.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/zookeeper.yaml").toURI()));
     }
 
     @Test
     public void hasValidDefaults() {
-        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        final ZooKeeperFactory conf = new ZooKeeperFactory();
 
         assertThat("default hostname is localhost",
                 conf.getHosts(),
@@ -57,7 +56,7 @@ public class ZooKeeperConfigurationTest {
 
     @Test
     public void quorumSpecForOneHost() {
-        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        final ZooKeeperFactory conf = new ZooKeeperFactory();
         assertThat("quorum spec is correct for single host",
                 conf.getQuorumSpec(),
                 is("localhost:2181"));
@@ -65,7 +64,7 @@ public class ZooKeeperConfigurationTest {
 
     @Test
     public void quorumSpecForMultipleHosts() {
-        final ZooKeeperConfiguration conf = mock(ZooKeeperConfiguration.class);
+        final ZooKeeperFactory conf = mock(ZooKeeperFactory.class);
         when(conf.getHosts()).thenReturn(new String[] { "remote1", "remote2" });
         when(conf.getPort()).thenReturn(2181);
         when(conf.getQuorumSpec()).thenCallRealMethod();
@@ -77,7 +76,7 @@ public class ZooKeeperConfigurationTest {
 
     @Test
     public void namespacePath() {
-        final ZooKeeperConfiguration conf = new ZooKeeperConfiguration();
+        final ZooKeeperFactory conf = new ZooKeeperFactory();
         assertThat("namespace represents a valid path",
                 conf.getNamespace(),
                 is("/"));

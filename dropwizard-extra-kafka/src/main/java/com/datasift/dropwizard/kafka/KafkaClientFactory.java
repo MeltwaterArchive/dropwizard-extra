@@ -1,6 +1,6 @@
-package com.datasift.dropwizard.kafka.config;
+package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.codahale.dropwizard.util.Duration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 /**
  * Base configuration for Kafka clients.
  *
- * @see KafkaConsumerConfiguration
- * @see KafkaProducerConfiguration
+ * @see com.datasift.dropwizard.kafka.config.KafkaConsumerFactory
+ * @see KafkaProducerFactory
  */
-abstract public class KafkaClientConfiguration {
+abstract public class KafkaClientFactory {
 
     /**
      * The {@link ZooKeeperConfiguration} of the ZooKeeper quorum to use.
@@ -21,7 +21,7 @@ abstract public class KafkaClientConfiguration {
     @JsonProperty
     @Valid
     @NotNull
-    protected ZooKeeperConfiguration zookeeper = new ZooKeeperConfiguration();
+    protected ZooKeeperFactory zookeeper = new ZooKeeperFactory();
 
     /**
      * The time to wait on a network socket before timing out requests.
@@ -31,14 +31,14 @@ abstract public class KafkaClientConfiguration {
     protected Duration socketTimeout = Duration.seconds(30);
 
     /**
-     * @see KafkaClientConfiguration#zookeeper
+     * @see KafkaClientFactory#zookeeper
      */
-    public ZooKeeperConfiguration getZookeeper() {
+    public ZooKeeperFactory getZookeeper() {
         return zookeeper;
     }
 
     /**
-     * @see KafkaClientConfiguration#socketTimeout
+     * @see KafkaClientFactory#socketTimeout
      */
     public Duration getSocketTimeout() {
         return socketTimeout;
