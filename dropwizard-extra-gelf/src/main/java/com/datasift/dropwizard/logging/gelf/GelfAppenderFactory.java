@@ -14,42 +14,114 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Enumeration;
 
 /**
- * An {@link AppenderFactory} for writing log messages to a graylog2 server.
+ * An {@link AppenderFactory} for writing log messages to a remote GELF server.
+ *
+ * @see https://github.com/Graylog2/graylog2-docs/wiki/GELF
  */
 @JsonTypeName("gelf")
 public class GelfAppenderFactory implements AppenderFactory {
 
-    /**
-     * The hostname of the Graylog2 server to send log messages to.
-     */
     @NotEmpty
     private String host = "localhost";
 
-    /**
-     * The port of the Graylog2 server to send log messages to.
-     */
     @Range(min = 1024, max = 65535)
     private int port = 12201;
 
-    /**
-     * The maximum size of each GELF chunk to send to the server.
-     */
     @NotNull
     private Size chunkSize = Size.kilobytes(1);
 
-    /**
-     * The format of the log message as a Logback log pattern.
-     */
     private Optional<String> logFormat = Optional.absent();
 
+    @NotNull
+    private String[] includes = new String[0];
+
     /**
-     * SLF4J MDC fields to include in the messages sent via GELF.
+     * Returns the hostname of the GELF server to send log messages to.
+     *
+     * @return the hostname of the GELF server to send log messages to.
+     */
+    @JsonProperty
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Sets the hostname of the GELF server to send log messages to.
+     *
+     * @param host the hostname of the GELF server to send log messages to.
+     */
+    @JsonProperty
+    public void setHost(final String host) {
+        this.host = host;
+    }
+
+    /**
+     * Returns the port of the GELF server to send log messages to.
+     *
+     * @return the port of the GELF server to send log messages to.
+     */
+    @JsonProperty
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * Sets the port of the GELF server to send log messages to.
+     *
+     * @param port the port of the GELF server to send log messages to.
+     */
+    @JsonProperty
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    /**
+     * Returns the maximum size of each batch of messages sent to the server.
+     *
+     * @return the maximum size of each batch of messages sent to the server.
+     */
+    @JsonProperty
+    public Size getChunkSize() {
+        return chunkSize;
+    }
+
+    /**
+     * Sets the maximum size of each batch of messages sent to the server.
+     *
+     * @param size the maximum size of each batch of messages sent to the server.
+     */
+    @JsonProperty
+    public void setChunkSize(final Size size) {
+        this.chunkSize = size;
+    }
+
+    /**
+     * Returns the optional format of the log message, as a Logback log pattern.
+     *
+     * @return the format of the log message, as a Logback pattern, if present.
+     */
+    @JsonProperty
+    public Optional<String> getLogFormat() {
+        return logFormat;
+    }
+
+    /**
+     * Sets the optional format of the log message, as a Logback log pattern.
+     *
+     * @param format the format of the log message, as a Logback pattern, or {@link
+     *               Optional#absent()}. for the default log format.
+     */
+    @JsonProperty
+    public void setLogFormat(final String format) {
+        this.logFormat = Optional.fromNullable(format);
+    }
+
+    /**
+     * Returns the SLF4J MDC fields to include in the messages sent via GELF.
      *
      * <b>Example, adding an IP address for requests</b>
      * In application code:
@@ -64,55 +136,33 @@ public class GelfAppenderFactory implements AppenderFactory {
      *             ...
      *             - includes: [ "ipAddress" ]
      * </code>
+     *
+     * @return the SLF4J named MDC fields that will be included in messages logged via GELF.
      */
-    @JsonProperty
-    private String[] includes = new String[0];
-
-    @JsonProperty
-    public String getHost() {
-        return host;
-    }
-
-    @JsonProperty
-    public void setHost(final String host) {
-        this.host = host;
-    }
-
-    @JsonProperty
-    public int getPort() {
-        return port;
-    }
-
-    @JsonProperty
-    public void setPort(final int port) {
-        this.port = port;
-    }
-
-    @JsonProperty
-    public Size getChunkSize() {
-        return chunkSize;
-    }
-
-    @JsonProperty
-    public void setChunkSize(final Size chunkSize) {
-        this.chunkSize = chunkSize;
-    }
-
-    @JsonProperty
-    public Optional<String> getLogFormat() {
-        return logFormat;
-    }
-
-    @JsonProperty
-    public void setLogFormat(final String logFormat) {
-        this.logFormat = Optional.fromNullable(logFormat);
-    }
-
     @JsonProperty
     public String[] getIncludes() {
         return includes;
     }
 
+    /**
+     * Sets the SLF4J MDC fields to include in the messages sent via GELF.
+     *
+     * <b>Example, adding an IP address for requests</b>
+     * In application code:
+     * <code>
+     *     org.slf4j.MDC.put("ipAddress", getClientIpAddress());
+     * </code>
+     * In configuration (YAML):
+     * <code>
+     *     logging:
+     *         outputs:
+     *             - type: "gelf"
+     *             ...
+     *             - includes: [ "ipAddress" ]
+     * </code>
+     *
+     * @param includes the SLF4J named MDC fields that will be included in messages logged via GELF.
+     */
     @JsonProperty
     public void setIncludes(final String[] includes) {
         this.includes = includes;
