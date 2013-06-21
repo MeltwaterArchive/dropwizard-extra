@@ -5,7 +5,6 @@ import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredEnsembleProv
 import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFactory;
 import com.datasift.dropwizard.curator.health.CuratorHealthCheck;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.netflix.curator.RetryPolicy;

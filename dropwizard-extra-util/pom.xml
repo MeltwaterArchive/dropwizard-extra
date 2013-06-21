@@ -9,10 +9,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>dropwizard-extra-core</artifactId>
+  <artifactId>dropwizard-extra-util</artifactId>
 
-  <name>Dropwizard Extra Core</name>
-  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-core</url>
+  <name>Dropwizard Extra Utilities</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-util</url>
   <description>
     Some useful additions to Dropwizard that have no external dependencies.
   </description>

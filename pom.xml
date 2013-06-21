@@ -102,12 +102,12 @@
   </distributionManagement>
 
   <modules>
-    <module>dropwizard-extra-core</module>
     <module>dropwizard-extra-curator</module>
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
     <module>dropwizard-extra-scala</module>
     <module>dropwizard-extra-zookeeper</module>
+    <module>dropwizard-extra-util</module>
   </modules>
 
   <dependencyManagement>
@@ -145,6 +145,12 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito</artifactId>
         <version>1.4.12</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.codahale.dropwizard</groupId>
+        <artifactId>dropwizard-testing</artifactId>
+        <version>${dropwizard.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

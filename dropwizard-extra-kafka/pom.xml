@@ -28,9 +28,8 @@
       <version>${scala.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-core</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.codahale.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
