@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.curator;
 
-import com.netflix.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFramework;
 import com.codahale.dropwizard.lifecycle.Managed;
 
 /**

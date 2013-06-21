@@ -8,7 +8,7 @@ This is a bunch of additional abstractions and utilities that extend Dropwizard.
 To keep the nightmare of transitive dependencies at bay, there are several 
 modules:
 
-  * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-common)
+  * [dropwizard-extra-core](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-core)
   contains several simple but useful abstractions with no real external dependencies.
   * [dropwizard-extra-curator](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-curator)
   integrates [NetFlix's Curator](http://github.com/netflix/curator) high-level [ZooKeeper](http://zookeeper.apache.org)
@@ -19,7 +19,7 @@ modules:
   * [dropwizard-extra-kafka](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-kafka) for 
   working with [Apache Kafka](http://incubator.apache.org/kafka).
   * [dropwizard-extra-scala](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-scala) provides 
-  a more idiomatic Scala API to the other Dropwizard Extra modules.
+  Scala integrations for Dropwizard and a more idiomatic Scala API to the other Dropwizard Extra modules.
   * [dropwizard-extra-zookeeper](http://github.com/datasift/dropwizard-extra/tree/develop/dropwizard-extra-zookeeper)
   integrates the low-level [Apache ZooKeeper](http://zookeeper.apache.org/) client in to Dropwizards life-cycle. If 
   you're using ZooKeeper directly in your application, it's strongly recommended that you use the higher-level 

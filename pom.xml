@@ -28,7 +28,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <metrics.version>3.0.0-BETA2</metrics.version>
     <dropwizard.version>0.7.0-SNAPSHOT</dropwizard.version>
     <scala.version>2.9.1</scala.version>
   </properties>
@@ -69,6 +68,10 @@
       <name>David Morgantini</name>
       <url>https://github.com/dmorgantini</url>
     </contributor>
+    <contributor>
+      <name>Coda Hale</name>
+      <url>http://codahale.com</url>
+    </contributor>
   </contributors>
 
   <licenses>
@@ -99,13 +102,13 @@
   </distributionManagement>
 
   <modules>
-    <module>dropwizard-extra-core</module>
     <module>dropwizard-extra-curator</module>
     <module>dropwizard-extra-gelf</module>
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
     <module>dropwizard-extra-scala</module>
     <module>dropwizard-extra-zookeeper</module>
+    <module>dropwizard-extra-util</module>
   </modules>
 
   <dependencyManagement>
@@ -143,6 +146,12 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito</artifactId>
         <version>1.4.12</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.codahale.dropwizard</groupId>
+        <artifactId>dropwizard-testing</artifactId>
+        <version>${dropwizard.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

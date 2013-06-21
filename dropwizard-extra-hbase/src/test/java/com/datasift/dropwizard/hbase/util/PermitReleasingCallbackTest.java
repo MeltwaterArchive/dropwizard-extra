@@ -27,7 +27,7 @@ public class PermitReleasingCallbackTest {
         semaphore.acquire(1);
         assertThat("semaphore has no available permits",
                 semaphore.availablePermits(), is(0));
-        new PermitReleasingCallback<Object>(semaphore).call(new Object());
+        new PermitReleasingCallback<>(semaphore).call(new Object());
         assertThat("callback releases a permit",
                 semaphore.availablePermits(), is(1));
     }

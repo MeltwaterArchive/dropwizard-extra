@@ -19,14 +19,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-core</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.codahale.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
-      <version>3.4.4</version>
+      <version>3.4.5</version>
       <exclusions>
         <exclusion>
           <groupId>javax.mail</groupId>

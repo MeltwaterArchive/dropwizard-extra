@@ -1,25 +1,24 @@
 package com.datasift.dropwizard.curator.ensemble;
 
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.netflix.curator.ensemble.EnsembleProvider;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
+import org.apache.curator.ensemble.EnsembleProvider;
 
 import java.io.IOException;
 
 /**
- * An {@link EnsembleProvider} for a fixed ensemble, configured by a {@link ZooKeeperConfiguration}.
+ * An {@link EnsembleProvider} for a fixed ensemble, configured by a {@link ZooKeeperFactory}.
  */
 public class DropwizardConfiguredEnsembleProvider implements EnsembleProvider {
 
-    private final ZooKeeperConfiguration configuration;
+    private final ZooKeeperFactory factory;
 
     /**
      * Initializes this provider with the given {@code configuration}.
      *
-     * @param configuration the configuration of the ZooKeeper ensemble to provide to Curator
-     *                      instances.
+     * @param factory a factory for ZooKeeper client instances.
      */
-    public DropwizardConfiguredEnsembleProvider(final ZooKeeperConfiguration configuration) {
-        this.configuration = configuration;
+    public DropwizardConfiguredEnsembleProvider(final ZooKeeperFactory factory) {
+        this.factory = factory;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class DropwizardConfiguredEnsembleProvider implements EnsembleProvider {
 
     @Override
     public String getConnectionString() {
-        return configuration.getQuorumSpec();
+        return factory.getQuorumSpec();
     }
 
     @Override

@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests {@link com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration}.
+ * Tests {@link DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperFactory}.
  */
 public class DynamicZooKeeperConfigurationTest {
 
@@ -14,16 +14,16 @@ public class DynamicZooKeeperConfigurationTest {
     public void parsesFullConnectionString() {
         final String hostname = "zookeeper.lan";
         final int port = 2182;
-        final DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration conf
-                = new DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration(
+        final DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperFactory factory
+                = new DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperFactory(
                     hostname + ":" + port, 0, true);
 
         assertThat("parses hostname from connection string",
-                conf.getHosts(),
+                factory.getHosts(),
                 is(equalTo(new String[] { hostname })));
 
         assertThat("parses port from connection string",
-                conf.getPort(),
+                factory.getPort(),
                 is(port));
     }
 
@@ -31,8 +31,8 @@ public class DynamicZooKeeperConfigurationTest {
     public void parsesConnectionStringWithDefaultPort() {
         final String hostname = "zookeeper.lan";
         final int port = 2181;
-        final DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration conf
-                = new DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperConfiguration(
+        final DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperFactory conf
+                = new DropwizardConfiguredZooKeeperFactory.DynamicZooKeeperFactory(
                     hostname, 0, true);
 
         assertThat("parses hostname from connection string",

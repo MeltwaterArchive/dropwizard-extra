@@ -1,37 +1,38 @@
 package com.datasift.dropwizard.kafka.consumer
 
 import com.codahale.dropwizard.setup.Environment
-import com.datasift.dropwizard.kafka.config.KafkaConsumerConfiguration
 import com.datasift.dropwizard.kafka.KafkaConsumerFactory
 import kafka.serializer.Decoder
-import kafka.message.Message
 
-/**
- * Factory object for a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
- */
+/** Factory object for a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]. */
 object Consumer {
 
-  /**
-   * Creates a new [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] for the given `configuration`.
-   *
-   * @param conf the configuration to configure the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] with
-   * @param env the [[com.codahale.dropwizard.setup.Environment]] to manage the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
-   * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
-   */
-  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment)
+  /** Creates a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] for the given
+    * configuration and [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]].
+    *
+    * @tparam A type of the messages that are to be consumed.
+    * @param env environment to manage the consumer lifecycle.
+    * @param f a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] to process the decoded
+    *          messages.
+    * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]].
+    */
+  def apply[A : Decoder](env: Environment)
                         (f: StreamProcessor[A]): KafkaConsumer = {
-    new KafkaConsumerFactory(env).processWith(implicitly[Decoder[A]], f).build(conf)
+    new KafkaConsumerFactory().processWith(implicitly[Decoder[A]], f).build(env)
   }
 
-  /**
-   * Creates a new [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] for the given `configuration`.
-   *
-   * @param conf the configuration to configure the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] with
-   * @param env the [[com.codahale.dropwizard.setup.Environment]] to manage the [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
-   * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]]
-   */
-  def apply[A : Decoder](conf: KafkaConsumerConfiguration, env: Environment, name: String)
+  /** Creates a [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]] for the given
+    * configuration and [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]].
+    *
+    * @tparam A type of the messages that are to be consumed.
+    * @param env environment to manage the consumer lifecycle.
+    * @param name the name of the consumer being created.
+    * @param f a [[com.datasift.dropwizard.kafka.consumer.StreamProcessor]] to process the decoded
+    *          messages.
+    * @return a configured and managed [[com.datasift.dropwizard.kafka.consumer.KafkaConsumer]].
+    */
+  def apply[A : Decoder](env: Environment, name: String)
                         (f: StreamProcessor[A]): KafkaConsumer = {
-    new KafkaConsumerFactory(env).processWith(implicitly[Decoder[A]], f).build(conf, name)
+    new KafkaConsumerFactory().processWith(implicitly[Decoder[A]], f).build(env, name)
   }
 }

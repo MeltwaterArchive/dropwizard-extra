@@ -1,8 +1,8 @@
 package com.datasift.dropwizard.curator.ensemble;
 
+import com.codahale.dropwizard.setup.Environment;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.netflix.curator.utils.ZookeeperFactory;
+import org.apache.curator.utils.ZookeeperFactory;
 import com.codahale.dropwizard.util.Duration;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -20,18 +20,17 @@ public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
 
     private static final Pattern PORT_PATTERN = Pattern.compile(":(\\d+)");
 
-    private final ZooKeeperFactory factory;
     private final String name;
+    private final Environment environment;
 
     /**
      * Initializes this factory with the {@link ZooKeeperFactory} to create {@link ZooKeeper}
      * clients from.
      *
-     * @param factory the factory to create {@link ZooKeeper} instances from.
      * @param name the name of the Curator instance creating {@link ZooKeeper} clients.
      */
-    public DropwizardConfiguredZooKeeperFactory(final ZooKeeperFactory factory, final String name) {
-        this.factory = factory;
+    public DropwizardConfiguredZooKeeperFactory(final Environment environment, final String name) {
+        this.environment = environment;
         this.name = name;
     }
 
@@ -41,17 +40,15 @@ public class DropwizardConfiguredZooKeeperFactory implements ZookeeperFactory {
                                   final Watcher watcher,
                                   final boolean canBeReadOnly) throws Exception {
 
-        return factory.build(
-                new DynamicZooKeeperConfiguration(connectString, sessionTimeout, canBeReadOnly),
-                watcher,
-                String.format("curator-%s", name));
+        return new DynamicZooKeeperFactory(connectString, sessionTimeout, canBeReadOnly)
+                .build(environment, watcher, String.format("curator-%s", name));
     }
 
-    static class DynamicZooKeeperConfiguration extends ZooKeeperConfiguration {
+    static class DynamicZooKeeperFactory extends ZooKeeperFactory {
 
-        DynamicZooKeeperConfiguration(final String connectString,
-                                      final int sessionTimeout,
-                                      final boolean canBeReadOnly) {
+        DynamicZooKeeperFactory(final String connectString,
+                                final int sessionTimeout,
+                                final boolean canBeReadOnly) {
             final int idx = connectString.indexOf('/');
             final int hostLength = idx == -1 ? connectString.length() : idx;
             final String authority = connectString.substring(0, hostLength);

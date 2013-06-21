@@ -19,9 +19,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.datasift.dropwizard</groupId>
-      <artifactId>dropwizard-extra-core</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.codahale.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.datasift.dropwizard</groupId>
@@ -31,7 +30,7 @@
     <dependency>
       <groupId>org.hbase</groupId>
       <artifactId>asynchbase</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.1</version>
     </dependency>
   </dependencies>
 

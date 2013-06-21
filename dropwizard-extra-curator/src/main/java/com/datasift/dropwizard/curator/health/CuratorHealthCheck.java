@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.curator.health;
 
-import com.netflix.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFramework;
 import com.codahale.metrics.health.HealthCheck;
 
 /**

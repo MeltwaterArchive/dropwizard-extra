@@ -88,7 +88,7 @@ public class HBaseClientProxyTest {
     @Test
     public void createsCell() {
         final PutRequest req = mock(PutRequest.class);
-        final Deferred<Boolean> resp = new Deferred<Boolean>();
+        final Deferred<Boolean> resp = new Deferred<>();
         when(underlying.atomicCreate(req)).thenReturn(resp);
 
         assertThat("creates cell via proxy", client.create(req), is(resp));
@@ -97,7 +97,7 @@ public class HBaseClientProxyTest {
     @Test
     public void buffersIncrement() {
         final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        final Deferred<Long> resp = new Deferred<Long>();
+        final Deferred<Long> resp = new Deferred<>();
         when(underlying.bufferAtomicIncrement(req)).thenReturn(resp);
 
         assertThat("buffers increment for a cell via proxy",
@@ -107,7 +107,7 @@ public class HBaseClientProxyTest {
     @Test
     public void increments() {
         final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        final Deferred<Long> resp = new Deferred<Long>();
+        final Deferred<Long> resp = new Deferred<>();
         when(underlying.atomicIncrement(req)).thenReturn(resp);
 
         assertThat("increments cell via proxy",
@@ -117,7 +117,7 @@ public class HBaseClientProxyTest {
     @Test
     public void incrementsDurably() {
         final AtomicIncrementRequest req = mock(AtomicIncrementRequest.class);
-        final Deferred<Long> resp = new Deferred<Long>();
+        final Deferred<Long> resp = new Deferred<>();
         when(underlying.atomicIncrement(req, true)).thenReturn(resp);
 
         assertThat("durably increments cell via proxy",
@@ -128,7 +128,7 @@ public class HBaseClientProxyTest {
     public void comparesAndSets() {
         final PutRequest req = mock(PutRequest.class);
         final byte[] expected = new byte[] { 0x0 };
-        final Deferred<Boolean> resp = new Deferred<Boolean>();
+        final Deferred<Boolean> resp = new Deferred<>();
         when(underlying.compareAndSet(req, expected)).thenReturn(resp);
         when(underlying.compareAndSet(req, new String(expected))).thenReturn(resp);
 
@@ -142,7 +142,7 @@ public class HBaseClientProxyTest {
     @Test
     public void deletes() {
         final DeleteRequest req = mock(DeleteRequest.class);
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.delete(req)).thenReturn(resp);
 
         assertThat("deletes cell via proxy", client.delete(req), is(resp));
@@ -151,7 +151,7 @@ public class HBaseClientProxyTest {
     @Test
     public void ensuresTableExists() {
         final String table = "table";
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.ensureTableExists(table)).thenReturn(resp);
         when(underlying.ensureTableExists(table.getBytes())).thenReturn(resp);
 
@@ -165,7 +165,7 @@ public class HBaseClientProxyTest {
     public void ensuresTableAndFamilyExist() {
         final String table = "table";
         final String family = "family";
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.ensureTableFamilyExists(table, family)).thenReturn(resp);
         when(underlying.ensureTableFamilyExists(table.getBytes(), family.getBytes()))
                 .thenReturn(resp);
@@ -179,7 +179,7 @@ public class HBaseClientProxyTest {
 
     @Test
     public void flushes() {
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.flush()).thenReturn(resp);
 
         assertThat("flushes via proxy", client.flush(), is(resp));
@@ -188,7 +188,7 @@ public class HBaseClientProxyTest {
     @Test
     public void gets() {
         final GetRequest req = mock(GetRequest.class);
-        final Deferred<ArrayList<KeyValue>> resp = new Deferred<ArrayList<KeyValue>>();
+        final Deferred<ArrayList<KeyValue>> resp = new Deferred<>();
         when(underlying.get(req)).thenReturn(resp);
 
         assertThat("gets cell(s) via proxy", client.get(req), is(resp));
@@ -197,7 +197,7 @@ public class HBaseClientProxyTest {
     @Test
     public void locksRow() {
         final RowLockRequest req = mock(RowLockRequest.class);
-        final Deferred<RowLock> resp = new Deferred<RowLock>();
+        final Deferred<RowLock> resp = new Deferred<>();
         when(underlying.lockRow(req)).thenReturn(resp);
 
         assertThat("locks row via proxy", client.lockRow(req), is(resp));
@@ -206,7 +206,7 @@ public class HBaseClientProxyTest {
     @Test
     public void puts() {
         final PutRequest req = mock(PutRequest.class);
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.put(req)).thenReturn(resp);
 
         assertThat("puts row(s) via proxy", client.put(req), is(resp));
@@ -214,7 +214,7 @@ public class HBaseClientProxyTest {
 
     @Test
     public void shutsdown() {
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.shutdown()).thenReturn(resp);
 
         assertThat("shutsdown via proxy", client.shutdown(), is(resp));
@@ -240,7 +240,7 @@ public class HBaseClientProxyTest {
     @Test
     public void unlocksRow() {
         final RowLock lock = mock(RowLock.class);
-        final Deferred<Object> resp = new Deferred<Object>();
+        final Deferred<Object> resp = new Deferred<>();
         when(underlying.unlockRow(lock)).thenReturn(resp);
 
         assertThat("unlocks row(s) via proxy", client.unlockRow(lock), is(resp));
