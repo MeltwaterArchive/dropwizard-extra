@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.curator.ensemble;
 
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
-import com.netflix.curator.ensemble.EnsembleProvider;
+import org.apache.curator.ensemble.EnsembleProvider;
 
 import java.io.IOException;
 

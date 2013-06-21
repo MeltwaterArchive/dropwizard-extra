@@ -28,9 +28,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.netflix.curator</groupId>
+      <groupId>org.apache.curator</groupId>
       <artifactId>curator-framework</artifactId>
-      <version>1.2.4</version>
+      <version>2.0.1-incubating</version>
         <exclusions>
             <!-- use version from dropwizard-core -->
             <exclusion>

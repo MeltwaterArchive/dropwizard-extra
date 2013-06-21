@@ -4,8 +4,8 @@ import com.codahale.dropwizard.configuration.ConfigurationFactory;
 import com.codahale.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
-import com.netflix.curator.framework.api.CompressionProvider;
-import com.netflix.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.framework.api.CompressionProvider;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.junit.Before;
 import org.junit.Test;
 
