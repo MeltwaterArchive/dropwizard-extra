@@ -211,30 +211,19 @@ public class GelfAppenderFactory implements AppenderFactory {
         return appender;
     }
 
+    // Attempts to determine a valid local address for this application.
+    // This is done by opening a connection to the target machine to determine the hostname of the
+    // network interface that made the connection. If no connection can be made, 0.0.0.0 will be
+    // returned as the address.
     private String getLocalHost() {
         try {
-            final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-            NetworkInterface iface = null;
-            while (iface == null && ifaces != null && ifaces.hasMoreElements()) {
-                iface = ifaces.nextElement();
-            }
-
-            if (iface == null) {
-                // cannot find a network interface
-                return "0.0.0.0";
-            }
-
-            final Enumeration<InetAddress> addresses = iface.getInetAddresses();
-            InetAddress address = null;
-            while (address == null && addresses.hasMoreElements()) {
-                address = addresses.nextElement();
-            }
-
-            return address == null
-                    ? "0.0.0.0" // no network interface has a valid network address
-                    : address.getHostAddress();
-        } catch (final SocketException se) {
-            return "0.0.0.0"; // cannot inspect network interfaces
+            final DatagramSocket socket = new DatagramSocket();
+            socket.connect(new InetSocketAddress(getHost(), getPort()));
+            return socket.getLocalAddress() != null
+                    ? socket.getLocalAddress().getCanonicalHostName()
+                    : "0.0.0.0";
+        } catch (final SocketException e) {
+            return "0.0.0.0";
         }
     }
 }
