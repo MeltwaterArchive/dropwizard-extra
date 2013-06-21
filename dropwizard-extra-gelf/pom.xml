@@ -21,7 +21,6 @@
     <dependency>
       <groupId>com.codahale.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
-      <version>${dropwizard.version}</version>
     </dependency>
   </dependencies>
 </project>
