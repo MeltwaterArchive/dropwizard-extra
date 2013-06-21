@@ -302,7 +302,7 @@ public class InstrumentedRowScanner implements RowScanner {
      */
     public Deferred<Object> close() {
         final Timer.Context ctx = metrics.getCloses().time();
-        return scanner.close().addBoth(new TimerStoppingCallback<Object>(ctx));
+        return scanner.close().addBoth(new TimerStoppingCallback<>(ctx));
     }
 
     /**

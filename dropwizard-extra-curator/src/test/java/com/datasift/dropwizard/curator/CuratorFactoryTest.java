@@ -1,9 +1,8 @@
-package com.datasift.dropwizard.curator.config;
+package com.datasift.dropwizard.curator;
 
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
 import com.codahale.dropwizard.jackson.Jackson;
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import org.junit.Before;
@@ -17,28 +16,28 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /** Tests {@link CuratorConfiguration} */
-public class CuratorConfigurationTest {
+public class CuratorFactoryTest {
 
-    private CuratorConfiguration config = null;
+    private CuratorFactory factory = null;
 
     @Before
     public void setup() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        config = new ConfigurationFactory<>(CuratorConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
+        factory = new ConfigurationFactory<>(CuratorFactory.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/curator.yaml").toURI()));
     }
 
     @Test
     public void testZooKeeper() {
         assertThat("has ZooKeeperConfiguration",
-                config.getEnsembleConfiguration(),
-                instanceOf(ZooKeeperConfiguration.class));
+                factory.getZooKeeperFactory(),
+                instanceOf(ZooKeeperFactory.class));
     }
 
     @Test
     public void testRetryPolicy() {
         assertThat("has RetryPolicy",
-                config.getRetryPolicy(),
+                factory.getRetryPolicy(),
                 instanceOf(ExponentialBackoffRetry.class));
     }
 }

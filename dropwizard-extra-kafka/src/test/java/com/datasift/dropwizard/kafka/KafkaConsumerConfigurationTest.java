@@ -1,8 +1,7 @@
-package com.datasift.dropwizard.kafka.config;
+package com.datasift.dropwizard.kafka;
 
 import com.codahale.dropwizard.jackson.Jackson;
-import com.datasift.dropwizard.zookeeper.config.ZooKeeperConfiguration;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
 import com.codahale.dropwizard.configuration.ConfigurationFactory;
 import org.junit.Before;
@@ -15,41 +14,43 @@ import java.io.File;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-/** Tests {@link KafkaConsumerConfiguration} */
+/**
+ * Tests {@link KafkaConsumerFactory}.
+ */
 public class KafkaConsumerConfigurationTest {
 
-    private KafkaConsumerConfiguration config = null;
+    private KafkaConsumerFactory factory = null;
 
     @Before
     public void setup() throws Exception {
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        config = new ConfigurationFactory<>(KafkaConsumerConfiguration.class, validator, Jackson.newObjectMapper(), "dw")
+        factory = new ConfigurationFactory<>(KafkaConsumerFactory.class, validator, Jackson.newObjectMapper(), "dw")
                 .build(new File(Resources.getResource("yaml/consumer.yaml").toURI()));
     }
 
     @Test
     public void testZooKeeper() {
         assertThat("has ZooKeeperConfiguration",
-                config.getZookeeper(),
-                instanceOf(ZooKeeperConfiguration.class));
+                factory.getZookeeper(),
+                instanceOf(ZooKeeperFactory.class));
     }
 
     @Test
     public void testGroup() {
-        assertThat("group is correctly configured", config.getGroup(), is("test"));
+        assertThat("group is correctly configured", factory.getGroup(), is("test"));
     }
 
     @Test
     public void testPartitions() {
         assertThat("has correct partition configuration",
-                   config.getPartitions(),
+                   factory.getPartitions(),
                    allOf(hasEntry("foo", 1), hasEntry("bar", 2)));
     }
 
     @Test
     public void testRebalanceRetries() {
         assertThat("rebalanceRetries is overridden to 5",
-                   config.getRebalanceRetries(),
+                   factory.getRebalanceRetries(),
                    is(5));
     }
 }

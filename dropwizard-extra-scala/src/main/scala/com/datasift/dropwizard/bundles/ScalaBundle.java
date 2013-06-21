@@ -21,7 +21,7 @@ public class ScalaBundle implements Bundle {
     @Override
     public void run(final Environment environment) {
         final JerseyEnvironment jersey = environment.jersey();
-        jersey.addProvider(new CollectionsQueryParamInjectableProvider());
-        jersey.addProvider(new OptionResourceMethodDispatchAdapter());
+        jersey.register(new CollectionsQueryParamInjectableProvider());
+        jersey.register(new OptionResourceMethodDispatchAdapter());
     }
 }
