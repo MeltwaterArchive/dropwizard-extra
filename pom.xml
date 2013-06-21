@@ -28,7 +28,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <metrics.version>3.0.0-BETA2</metrics.version>
     <dropwizard.version>0.7.0-SNAPSHOT</dropwizard.version>
     <scala.version>2.9.1</scala.version>
   </properties>
