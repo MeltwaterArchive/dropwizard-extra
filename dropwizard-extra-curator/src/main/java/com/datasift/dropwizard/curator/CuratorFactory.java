@@ -19,7 +19,6 @@ import com.netflix.curator.retry.ExponentialBackoffRetry;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Locale;
 
 /**
  * A factory for creating and managing {@link CuratorFramework} instances.
@@ -62,17 +61,6 @@ public class CuratorFactory {
          */
         public CompressionProvider getProvider() {
             return provider;
-        }
-
-        /**
-         * Parses a {@link CompressionCodec} from the given String representation.
-         *
-         * @param codec the name of the codec.
-         * @return the named {@link CompressionCodec} or null, if the codec doesn't exist.
-         */
-        @JsonCreator
-        public static CompressionCodec parse(final String codec) {
-            return valueOf(codec.toUpperCase(Locale.ENGLISH).replace('+', '_'));
         }
     }
 
@@ -169,27 +157,38 @@ public class CuratorFactory {
     }
 
     /**
-     * Returns a {@link CompressionProvider} to compress values with.
+     * Returns the {@link CompressionCodec} to compress values with.
      *
-     * @return the compression to compress values with.
+     * @return the compression codec to compress values with.
      *
      * @see CompressionCodec
      */
     @JsonProperty("compression")
-    public CompressionProvider getCompressionProvider() {
-        return compression.getProvider();
+    public CompressionCodec getCompressionCodec() {
+        return compression;
     }
 
     /**
-     * Sets a {@link Compression} to compress values with.
+     * Sets a {@link CompressionCodec} to compress values with.
      *
      * @param codec the compression codec to compress values with.
      *
      * @see CompressionCodec
      */
     @JsonProperty("compression")
-    public void setCompressionProvider(final String codec) {
-        this.compression = CompressionCodec.parse(codec);
+    public void setCompressionCodec(final CompressionCodec codec) {
+        this.compression = codec;
+    }
+
+    /**
+     * Returns a {@link CompressionProvider} to compress values with.
+     *
+     * @return the compression provider used to compress values.
+     *
+     * @see CompressionCodec
+     */
+    public CompressionProvider getCompressionProvider() {
+        return getCompressionCodec().getProvider();
     }
 
     /**
