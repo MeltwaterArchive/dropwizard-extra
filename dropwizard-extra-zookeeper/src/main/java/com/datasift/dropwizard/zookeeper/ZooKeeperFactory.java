@@ -388,7 +388,7 @@ public class ZooKeeperFactory {
             client.addAuthInfo(auth.getScheme(), auth.getId().getBytes());
         }
 
-        environment.admin().addHealthCheck(name, new ZooKeeperHealthCheck(client, namespace));
+        environment.healthChecks().register(name, new ZooKeeperHealthCheck(client, namespace));
         environment.lifecycle().manage(new ManagedZooKeeper(client));
 
         return client;

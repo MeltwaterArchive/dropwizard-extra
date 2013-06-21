@@ -436,7 +436,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
             environment.lifecycle().manage(consumer);
 
             // add health checks
-            environment.admin().addHealthCheck(name, new KafkaConsumerHealthCheck(consumer));
+            environment.healthChecks().register(name, new KafkaConsumerHealthCheck(consumer));
 
             return consumer;
         }
