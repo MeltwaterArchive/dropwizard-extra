@@ -97,28 +97,27 @@ public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
 
         try {
             // compress event with zlib/gzip
-            final byte[] compressed = compress(data);
+            final byte[] compressed = compress(data.getBytes(Charsets.UTF_8));
 
             // generate message header
             // todo: test/verify this algorithm
-            final byte total = (byte) Math.ceil(compressed.length / (chunkSize - 12));
+            final int frameSize = chunkSize - 12;
+            final byte total = (byte) Math.ceil(compressed.length / frameSize);
             final byte[] header = new byte[] { 0x1e, 0x0f, 0, 0, 0, 0, 0, 0, 0, 0, 1, total };
-            final byte[] id = Arrays.copyOf(MD5.digest(compressed), 8);
-            System.arraycopy(id, 0, header, 2, 8);
-            final byte[][] chunks = new byte[total][];
+            System.arraycopy(MD5.digest(compressed), 0, header, 2, 8);
 
-            // generate message chunks
+            // send message chunks
             // todo: test/verify this algorithm
+            final byte[] chunk = new byte[chunkSize];
             for (byte i = 0; i < total; i++) {
-                chunks[i] = new byte[chunkSize];
-                System.arraycopy(header, 0, chunks[i], 0, 12);
-                chunks[i][10] = i;
-                System.arraycopy(compressed, i * (chunkSize - 12), chunks[i], 12, Math.min((chunkSize - 12), compressed.length - (i * (chunkSize - 12))));
-            }
+                final int offset = i * frameSize;
+                final int length = Math.min(frameSize, compressed.length - offset);
 
-            // send chunks over the wire
-            for (final byte[] chunk : chunks) {
-                socket.send(new DatagramPacket(chunk, chunk.length, target));
+                System.arraycopy(header, 0, chunk, 0, 12);
+                System.arraycopy(compressed, offset, chunk, 12, length);
+                chunk[10] = i;
+
+                socket.send(new DatagramPacket(chunk, 12 + length, target));
             }
 
         } catch (final IOException e) {
@@ -126,10 +125,10 @@ public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
         }
     }
 
-    private byte[] compress(final String data) throws IOException {
+    private byte[] compress(final byte[] data) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (GZIPOutputStream compressed = new GZIPOutputStream(out)) {
-                compressed.write(data.getBytes(Charsets.UTF_8));
+                compressed.write(data);
                 compressed.close();
                 out.close();
                 return out.toByteArray();
