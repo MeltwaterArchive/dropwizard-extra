@@ -4,6 +4,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Layout;
+import com.codahale.dropwizard.util.SizeUnit;
+import com.codahale.dropwizard.validation.MinSize;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +34,7 @@ public class GelfAppenderFactory implements AppenderFactory {
     private int port = 12201;
 
     @NotNull
+    @MinSize(value = 13, unit = SizeUnit.BYTES)
     private Size chunkSize = Size.kilobytes(1);
 
     private Optional<String> logFormat = Optional.absent();
