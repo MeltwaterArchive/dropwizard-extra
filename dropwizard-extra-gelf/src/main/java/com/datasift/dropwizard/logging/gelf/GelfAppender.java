@@ -127,19 +127,13 @@ public class GelfAppender<E extends ILoggingEvent> extends AppenderBase<E> {
     }
 
     private byte[] compress(final String data) throws IOException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            final GZIPOutputStream compressed = new GZIPOutputStream(out);
-            try {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            try (GZIPOutputStream compressed = new GZIPOutputStream(out)) {
                 compressed.write(data.getBytes(Charsets.UTF_8));
                 compressed.close();
                 out.close();
                 return out.toByteArray();
-            } finally {
-                compressed.close();
             }
-        } finally {
-            out.close();
         }
     }
 
