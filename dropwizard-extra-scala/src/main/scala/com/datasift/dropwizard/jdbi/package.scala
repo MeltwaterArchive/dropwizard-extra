@@ -1,13 +1,13 @@
 package com.datasift.dropwizard
 
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional
-import org.skife.jdbi.v2.Handle
+import org.skife.jdbi.v2.{DBI, Handle}
 
 /** Global definitions and implicits for JDBI. */
 package object jdbi {
 
   /** Implicit wrapper for a [[org.skife.jdbi.v2.DBI]]. */
-  implicit def enrich(db: org.skife.jdbi.v2.DBI): DBIWrapper = new DBIWrapper(db)
+  implicit def enrich(db: DBI): JDBIWrapper = new JDBIWrapper(db)
 
   /** Implicit wrapper for a [[org.skife.jdbi.v2.sqlobject.mixins.Transactional]]. */
   implicit def enrichTransactional[A <: Transactional[A]]

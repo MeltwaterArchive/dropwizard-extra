@@ -3,12 +3,12 @@ package com.datasift.dropwizard.jdbi
 import com.codahale.dropwizard.db.DataSourceFactory
 import com.codahale.dropwizard.setup.Environment
 import com.codahale.dropwizard.jdbi.DBIFactory
-import org.skife.jdbi.v2.{TransactionIsolationLevel, TransactionCallback, TransactionStatus, Handle}
+import org.skife.jdbi.v2._
 import org.skife.jdbi.v2.tweak.HandleCallback
 import scala.{IterableContainerFactory, OptionArgumentFactory, OptionContainerFactory}
 
 /** Factory object for [[org.skife.jdbi.v2.DBI]] instances. */
-object DBI {
+object JDBI {
 
   /** Creates a [[org.skife.jdbi.v2.DBI]] from the given configuration.
     *
@@ -29,7 +29,7 @@ object DBI {
     * @param name the name of this DBI instance.
     * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
     */
-  def apply(env: Environment, conf: DataSourceFactory, name: String): org.skife.jdbi.v2.DBI = {
+  def apply(env: Environment, conf: DataSourceFactory, name: String): DBI = {
     val dbi = new DBIFactory().build(env, conf, name)
 
     // register scala type factories
@@ -46,7 +46,7 @@ object DBI {
   *
   * @param db the [[org.skife.jdbi.v2.DBI]] instance to wrap.
   */
-class DBIWrapper(db: org.skife.jdbi.v2.DBI) {
+class JDBIWrapper(db: org.skife.jdbi.v2.DBI) {
 
   /** Creates a typed DAO instance.
     *
