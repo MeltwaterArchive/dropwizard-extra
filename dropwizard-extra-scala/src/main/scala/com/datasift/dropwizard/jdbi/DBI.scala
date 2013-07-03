@@ -14,22 +14,22 @@ object DBI {
     *
     * The name of this instance will be the JDBC URL of the database.
     *
-    * @param conf configuration for the database connection.
     * @param env environment to manage the database connection lifecycle.
+    * @param conf configuration for the database connection.
     * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
     */
-  def apply(conf: DataSourceFactory, env: Environment): org.skife.jdbi.v2.DBI = {
-    apply(conf, env, conf.getUrl)
+  def apply(env: Environment, conf: DataSourceFactory): org.skife.jdbi.v2.DBI = {
+    apply(env, conf, conf.getUrl)
   }
 
   /** Creates a [[org.skife.jdbi.v2.DBI]] from the given configuration.
     *
-    * @param conf configuration for the database connection.
     * @param env environment to manage the database connection lifecycle.
+    * @param conf configuration for the database connection.
     * @param name the name of this DBI instance.
     * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
     */
-  def apply(conf: DataSourceFactory, env: Environment, name: String): org.skife.jdbi.v2.DBI = {
+  def apply(env: Environment, conf: DataSourceFactory, name: String): org.skife.jdbi.v2.DBI = {
     val dbi = new DBIFactory().build(env, conf, name)
 
     // register scala type factories
