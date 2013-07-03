@@ -18,7 +18,7 @@ object JDBI {
     * @param conf configuration for the database connection.
     * @return a configured and managed [[org.skife.jdbi.v2.DBI]] instance.
     */
-  def apply(env: Environment, conf: DataSourceFactory): org.skife.jdbi.v2.DBI = {
+  def apply(env: Environment, conf: DataSourceFactory): DBI = {
     apply(env, conf, conf.getUrl)
   }
 
@@ -46,7 +46,7 @@ object JDBI {
   *
   * @param db the [[org.skife.jdbi.v2.DBI]] instance to wrap.
   */
-class JDBIWrapper(db: org.skife.jdbi.v2.DBI) {
+class JDBIWrapper(db: DBI) {
 
   /** Creates a typed DAO instance.
     *
