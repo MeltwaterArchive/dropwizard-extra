@@ -1,9 +1,13 @@
 package com.datasift.dropwizard.kafka.consumer;
 
 import com.yammer.dropwizard.lifecycle.Managed;
+import com.yammer.dropwizard.util.Duration;
+import kafka.common.InvalidMessageSizeException;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +28,14 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     private final ExecutorService executor;
     private final Decoder<T> decoder;
     private final StreamProcessor<T> processor;
+    private final Duration initialDelay;
+    private final Duration maxDelay;
+    private final Duration durationForResettingErrorHandlingState;
+    private final int maxRetries;
+    private final boolean shutDownServerOnUnrecoverableError;
+    private boolean fatalErrorOccurred = false;
+    private LifeCycle server;
+
 
     /**
      * Creates a {@link SynchronousConsumer} to process a stream.
@@ -34,17 +46,41 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      *                {@code T} before being processed.
      * @param processor a {@link StreamProcessor} for processing messages of type {@code T}.
      * @param executor the {@link ExecutorService} to process the stream with.
+     * @param initialDelay the initial {@link Duration} after which to attempt a recovery after an Exception.
+     * @param maxDelay the maximum {@link Duration} to wait between recovery attempts.
+     * @param durationForResettingErrorHandlingState If no errors have occurred for this duration, the retry count is reverted to zero and the delay between retries is reset to initialDelay
+     * @param maxRetries the maximum number of continuous recovery attempts before moving to an unrecoverable state. -1 indicates no upper limit to the number of retries.
+     * @param shutDownServerOnUnrecoverableError indicates whether to gracefully shut down the server in the event of an unrecoverable error.
      */
     public SynchronousConsumer(final ConsumerConnector connector,
                                final Map<String, Integer> partitions,
                                final Decoder<T> decoder,
                                final StreamProcessor<T> processor,
-                               final ExecutorService executor) {
+                               final ExecutorService executor,
+                               final Duration initialDelay,
+                               final Duration maxDelay,
+                               final Duration durationForResettingErrorHandlingState,
+                               final int maxRetries,
+                               final boolean shutDownServerOnUnrecoverableError) {
         this.connector = connector;
         this.partitions = partitions;
         this.decoder = decoder;
         this.processor = processor;
         this.executor = executor;
+        this.initialDelay = initialDelay;
+        this.maxDelay = maxDelay;
+        this.durationForResettingErrorHandlingState = durationForResettingErrorHandlingState;
+        this.maxRetries = maxRetries;
+        this.shutDownServerOnUnrecoverableError = shutDownServerOnUnrecoverableError;
+    }
+
+    /**
+     *
+     * @param server a reference to the Jetty Server.
+     */
+    public void setServer(LifeCycle server)
+    {
+        this.server = server;
     }
 
     /**
@@ -93,13 +129,44 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
+     * Shuts down the Jetty Server
+     */
+    private void shutDownServer()
+    {
+        if(this.server != null){
+            Thread shutDownThread = new Thread(){
+              public void run() {
+                  try {
+                      server.stop();
+                  } catch (Exception e) {
+                      LOG.error("Error occurred while attempting to shut down Jetty.");
+                  }
+              }
+            };
+            shutDownThread.setName("Unrecoverable_Error_Jetty_Shutdown_Thread");
+            shutDownThread.setDaemon(true);
+            shutDownThread.start();
+        }
+    }
+
+    /**
      * Determines if this {@link KafkaConsumer} is currently consuming.
      *
      * @return true if this {@link KafkaConsumer} is currently consuming from at least one
-     *         partition; otherwise, false.
+     *         partition and no fatal errors have been detected; otherwise, false.
      */
     public boolean isRunning() {
-        return !executor.isShutdown() && !executor.isTerminated();
+        return !executor.isShutdown() && !executor.isTerminated() && !fatalErrorOccurred;
+    }
+
+    /**
+     * Captures the fact that one of the {@link StreamProcessorRunnable} instances has terminated unexpectedly
+     *
+     * This is exposed via the {@link #isRunning() isRunning} method.
+     */
+    private void fatalErrorInStreamProcessor()
+    {
+        this.fatalErrorOccurred = true;
     }
 
     /**
@@ -111,6 +178,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
         private final KafkaMessageStream<T> stream;
         private final String topic;
+        private int exponent = 0;
+        private int retryCount = 0;
+        private long timeStampOfLastRecoverableError = 0;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and stream.
@@ -135,24 +205,62 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         public void run() {
             try {
                 processor.process(stream, topic);
-            } catch (final IllegalStateException e) {
+            }
+            catch(final IllegalStateException e){
+                LOG.warn("Fatal Error processing stream, stopping consumer", e);
                 error(e);
-            } catch (final Exception e) {
+            }
+            catch (final Exception e) {
                 recoverableError(e);
+            }
+            catch(final Throwable e){
+                LOG.warn("Fatal Error processing stream, stopping consumer", e);
+                error(e);
             }
         }
 
         private void recoverableError(final Exception e) {
             LOG.warn("Error processing stream, restarting stream consumer", e);
-            executor.execute(this);
+            //Check if the time between recoverable errors is large enough to reset the retry count and sleepTime
+            long now = System.currentTimeMillis();
+            if(now - timeStampOfLastRecoverableError >= durationForResettingErrorHandlingState.toMilliseconds()){
+                retryCount = 0;
+                exponent = 0;
+            }
+            //Determine how long to sleep for
+            long sleepTime = (long)(initialDelay.toMilliseconds() * Math.pow( 2, ++exponent));
+            if(sleepTime > maxDelay.toMilliseconds()){
+                sleepTime = maxDelay.toMilliseconds();
+                exponent = 0;
+            }
+            //If a ceiling has been set on the number of retries, check if we have reached the ceiling
+            retryCount++;
+            if(maxRetries > -1 && retryCount >= maxRetries){
+                LOG.warn("Maximum number of retries reached ("+maxRetries+"), transitioning to unrecoverable error state.");
+                error(e);
+            }
+            else{
+                try {
+                    Thread.sleep(sleepTime);
+                }catch(InterruptedException ie){
+                    LOG.warn("Error recovery grace period interrupted.", ie);
+                }
+                timeStampOfLastRecoverableError = System.currentTimeMillis();
+                executor.execute(this);
+            }
         }
 
-        private void error(final Exception e) {
-            LOG.error("Unrecoverable error processing stream, shutting down", e);
+        private void error(final Throwable e) {
+            LOG.error("Unrecoverable error processing stream, shutting down.", e);
+            fatalErrorInStreamProcessor();
             try {
                 stop();
             } catch (final Exception ex) {
                 throw new RuntimeException(ex);
+            } finally {
+                if(shutDownServerOnUnrecoverableError){
+                  shutDownServer();
+                }
             }
         }
     }

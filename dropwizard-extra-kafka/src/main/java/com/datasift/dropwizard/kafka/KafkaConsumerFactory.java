@@ -7,11 +7,14 @@ import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
 import com.yammer.dropwizard.config.Environment;
+import com.yammer.dropwizard.lifecycle.ServerLifecycleListener;
+import com.yammer.dropwizard.util.Duration;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.message.Message;
 import kafka.serializer.Decoder;
 import kafka.serializer.DefaultDecoder;
+import org.eclipse.jetty.server.Server;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -149,7 +152,20 @@ public class KafkaConsumerFactory {
                     configuration.getPartitions(),
                     decoder,
                     processor,
-                    executor);
+                    executor,
+                    configuration.getIntialDelayforRecovery(),
+                    configuration.getMaximumDelayforRecovery(),
+                    configuration.getDurationForResettingErrorHandlingState(),
+                    configuration.getMaximumErrorRecoveryAttempts(),
+                    configuration.isShutDownServerOnUnrecoverableError());
+
+            //provide a reference to the Jetty server to the consumer
+            environment.addServerLifecycleListener(new ServerLifecycleListener() {
+                @Override
+                public void serverStarted(Server server) {
+                    consumer.setServer(server);
+                }
+            });
 
             // manage the consumer
             environment.manage(consumer);

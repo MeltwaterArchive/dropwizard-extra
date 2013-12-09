@@ -113,6 +113,44 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     protected int rebalanceRetries = 4;
 
     /**
+
+     * The initial delay after which to attempt a recovery of a KafkaConsumer, in the event of a failure.
+     */
+    @JsonProperty
+    @NotNull
+    protected Duration intialDelayforRecovery = Duration.milliseconds(500);
+
+
+    /**
+     * The maximum delay between recovery attempts of a KafkaConsumer.
+     */
+    @JsonProperty
+    @NotNull
+    protected Duration maximumDelayforRecovery = Duration.minutes(5);
+
+    /**
+     * If no errors have occurred for this duration, the KafkaConsumer is assumed to have returned to normal conditions.
+     * The retry count is reverted to zero and the delay between retries is reset to initialDelay
+     */
+    @JsonProperty
+    @NotNull
+    protected Duration durationForResettingErrorHandlingState = Duration.minutes(2);
+
+    /**
+     * The maximum number of continuous recovery attempts before moving to an unrecoverable state. -1 indicates no upper limit to the number of retries.
+     */
+    @JsonProperty
+    @Min(-1)
+    protected int maximumErrorRecoveryAttempts = 20;
+
+    /**
+     * Indicates whether to gracefully shut down the server in the event of an unrecoverable error.
+     */
+    @JsonProperty
+    @NotNull
+    protected boolean shutDownServerOnUnrecoverableError = false;
+
+    /**
      * @see KafkaConsumerConfiguration#group
      */
     public String getGroup() {
@@ -182,5 +220,46 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      */
     public int getRebalanceRetries() {
         return rebalanceRetries;
+    }
+
+    /**
+     * @see KafkaConsumerConfiguration#intialDelayforRecovery
+     */
+    public Duration getIntialDelayforRecovery() {
+        return intialDelayforRecovery == null
+                ? Duration.milliseconds(500)
+                : intialDelayforRecovery;
+    }
+
+    /**
+     * @see KafkaConsumerConfiguration#maximumDelayforRecovery
+     */
+    public Duration getMaximumDelayforRecovery() {
+        return maximumDelayforRecovery == null
+                ? Duration.minutes(5)
+                : maximumDelayforRecovery;
+    }
+
+    /**
+     * @see KafkaConsumerConfiguration#durationForResettingErrorHandlingState
+     */
+    public Duration getDurationForResettingErrorHandlingState() {
+        return durationForResettingErrorHandlingState == null
+                ? Duration.minutes(2)
+                : durationForResettingErrorHandlingState;
+    }
+
+    /**
+     * @see KafkaConsumerConfiguration#maximumErrorRecoveryAttempts
+     */
+    public int getMaximumErrorRecoveryAttempts() {
+        return maximumErrorRecoveryAttempts;
+    }
+
+    /**
+     * @see KafkaConsumerConfiguration#shutDownServerOnUnrecoverableError
+     */
+    public boolean isShutDownServerOnUnrecoverableError() {
+        return shutDownServerOnUnrecoverableError;
     }
 }
