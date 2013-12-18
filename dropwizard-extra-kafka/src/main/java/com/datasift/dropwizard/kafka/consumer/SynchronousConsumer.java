@@ -129,10 +129,10 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     /**
      * Shuts down the Jetty Server
      */
-    private void shutDownServer()
+    private void shutdownServer()
     {
         if(this.server != null){
-            Thread shutDownThread = new Thread(){
+            Thread shutdownThread = new Thread(){
               public void run() {
                   try {
                       server.stop();
@@ -141,9 +141,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                   }
               }
             };
-            shutDownThread.setName("Unrecoverable_Error_Jetty_Shutdown_Thread");
-            shutDownThread.setDaemon(true);
-            shutDownThread.start();
+            shutdownThread.setName("Unrecoverable_Error_Jetty_Shutdown_Thread");
+            shutdownThread.setDaemon(true);
+            shutdownThread.start();
         }
     }
 
@@ -158,7 +158,8 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * Captures the fact that one of the {@link StreamProcessorRunnable} instances has terminated unexpectedly
+     * Captures the fact that one of the {@link StreamProcessorRunnable} instances has terminated
+     * unexpectedly
      *
      * This is exposed via the {@link #isRunning() isRunning} method.
      */
@@ -176,8 +177,8 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         private final KafkaMessageStream<T> stream;
         private final String topic;
         private int exponent = 0;
-        private int retryCount = 0;
-        private long timeStampOfLastRecoverableError = 0;
+        private int attempts = 0;
+        private long lastErrorTimestamp = 0;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and stream.
@@ -203,42 +204,38 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
             try {
                 processor.process(stream, topic);
             } catch (final IllegalStateException e) {
-                LOG.warn("Fatal Error processing stream, stopping consumer", e);
                 error(e);
             } catch (final Exception e) {
                 recoverableError(e);
             } catch (final Throwable e) {
-                LOG.warn("Fatal Error processing stream, stopping consumer", e);
                 error(e);
             }
         }
 
         private void recoverableError(final Exception e) {
             LOG.warn("Error processing stream, restarting stream consumer", e);
-            //Check if the time between recoverable errors is large enough to reset the retry count and sleepTime
-            final long now = System.currentTimeMillis();
-            if (now - timeStampOfLastRecoverableError >= retryResetDelay.toMilliseconds()) {
-                retryCount = 0;
-                exponent = 0;
+
+            // reset attempts if there hasn't been a failure in a while
+            if (System.currentTimeMillis() - lastErrorTimestamp >= retryResetDelay.toMilliseconds()) {
+                attempts = 0;
             }
-            //Determine how long to sleep for
-            long sleepTime = (long)(initialDelay.toMilliseconds() * Math.pow( 2, ++exponent));
-            if (sleepTime > maxDelay.toMilliseconds()) {
-                sleepTime = maxDelay.toMilliseconds();
-                exponent = 0;
-            }
+
             //If a ceiling has been set on the number of retries, check if we have reached the ceiling
-            retryCount++;
-            if (maxRetries > -1 && retryCount >= maxRetries) {
-                LOG.warn("Maximum number of retries reached ("+maxRetries+"), transitioning to unrecoverable error state.");
+            attempts++;
+            if (maxRetries > -1 && attempts >= maxRetries) {
+                LOG.warn("Failed to restart consumer after {} retries", maxRetries);
                 error(e);
             } else {
                 try {
+                    final long sleepTime = Math.min(
+                            maxDelay.toMilliseconds(),
+                            (long) (initialDelay.toMilliseconds() * Math.pow( 2, attempts)));
+
                     Thread.sleep(sleepTime);
                 } catch(InterruptedException ie){
                     LOG.warn("Error recovery grace period interrupted.", ie);
                 }
-                timeStampOfLastRecoverableError = System.currentTimeMillis();
+                lastErrorTimestamp = System.currentTimeMillis();
                 executor.execute(this);
             }
         }
@@ -252,7 +249,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                 throw new RuntimeException(ex);
             } finally {
                 if (shutdownOnFatal) {
-                  shutDownServer();
+                  shutdownServer();
                 }
             }
         }
