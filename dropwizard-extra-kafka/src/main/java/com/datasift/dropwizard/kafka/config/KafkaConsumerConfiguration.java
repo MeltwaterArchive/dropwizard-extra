@@ -113,12 +113,11 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     protected int rebalanceRetries = 4;
 
     /**
-
-     * The initial delay after which to attempt a recovery of a KafkaConsumer, in the event of a failure.
+     * Initial delay before attempting recovery of a failed consumer.
      */
     @JsonProperty
     @NotNull
-    protected Duration intialDelayforRecovery = Duration.milliseconds(500);
+    protected Duration initialRecoveryDelay = Duration.milliseconds(500);
 
 
     /**
@@ -126,7 +125,7 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      */
     @JsonProperty
     @NotNull
-    protected Duration maximumDelayforRecovery = Duration.minutes(5);
+    protected Duration maxRecoveryDelay = Duration.minutes(5);
 
     /**
      * If no errors have occurred for this duration, the KafkaConsumer is assumed to have returned to normal conditions.
@@ -134,21 +133,23 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      */
     @JsonProperty
     @NotNull
-    protected Duration durationForResettingErrorHandlingState = Duration.minutes(2);
+    protected Duration retryResetDelay = Duration.minutes(2);
 
     /**
-     * The maximum number of continuous recovery attempts before moving to an unrecoverable state. -1 indicates no upper limit to the number of retries.
+     * Maximum number of continuous recovery attempts before moving to an unrecoverable state.
+     * <p/>
+     * -1 indicates no upper limit to the number of retries.
      */
     @JsonProperty
     @Min(-1)
-    protected int maximumErrorRecoveryAttempts = 20;
+    protected int maxRecoveryAttempts = 20;
 
     /**
-     * Indicates whether to gracefully shut down the server in the event of an unrecoverable error.
+     * Whether to gracefully shutdown the server in the event of an unrecoverable error.
      */
     @JsonProperty
     @NotNull
-    protected boolean shutDownServerOnUnrecoverableError = false;
+    protected boolean shutdownOnFatal = false;
 
     /**
      * @see KafkaConsumerConfiguration#group
@@ -223,43 +224,43 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     }
 
     /**
-     * @see KafkaConsumerConfiguration#intialDelayforRecovery
+     * @see KafkaConsumerConfiguration#initialRecoveryDelay
      */
-    public Duration getIntialDelayforRecovery() {
-        return intialDelayforRecovery == null
+    public Duration getInitialRecoveryDelay() {
+        return initialRecoveryDelay == null
                 ? Duration.milliseconds(500)
-                : intialDelayforRecovery;
+                : initialRecoveryDelay;
     }
 
     /**
-     * @see KafkaConsumerConfiguration#maximumDelayforRecovery
+     * @see KafkaConsumerConfiguration#maxRecoveryDelay
      */
-    public Duration getMaximumDelayforRecovery() {
-        return maximumDelayforRecovery == null
+    public Duration getMaxRecoveryDelay() {
+        return maxRecoveryDelay == null
                 ? Duration.minutes(5)
-                : maximumDelayforRecovery;
+                : maxRecoveryDelay;
     }
 
     /**
-     * @see KafkaConsumerConfiguration#durationForResettingErrorHandlingState
+     * @see KafkaConsumerConfiguration#retryResetDelay
      */
-    public Duration getDurationForResettingErrorHandlingState() {
-        return durationForResettingErrorHandlingState == null
+    public Duration getRetryResetDelay() {
+        return retryResetDelay == null
                 ? Duration.minutes(2)
-                : durationForResettingErrorHandlingState;
+                : retryResetDelay;
     }
 
     /**
-     * @see KafkaConsumerConfiguration#maximumErrorRecoveryAttempts
+     * @see KafkaConsumerConfiguration#maxRecoveryAttempts
      */
-    public int getMaximumErrorRecoveryAttempts() {
-        return maximumErrorRecoveryAttempts;
+    public int getMaxRecoveryAttempts() {
+        return maxRecoveryAttempts;
     }
 
     /**
-     * @see KafkaConsumerConfiguration#shutDownServerOnUnrecoverableError
+     * @see KafkaConsumerConfiguration#shutdownOnFatal
      */
-    public boolean isShutDownServerOnUnrecoverableError() {
-        return shutDownServerOnUnrecoverableError;
+    public boolean isShutdownOnFatal() {
+        return shutdownOnFatal;
     }
 }

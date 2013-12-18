@@ -8,8 +8,8 @@ partitions:
   foo: 1
   bar: 2
 rebalanceRetries: 5
-intialDelayforRecovery: 500ms
-maximumDelayforRecovery: 5m
-durationForResettingErrorHandlingState: 2m
-maximumErrorRecoveryAttempts: 5
-shutDownServerOnUnrecoverableError: false
+initialRecoveryDelay: 500ms
+maxRecoveryDelay: 5m
+retryResetDelay: 2m
+maxRecoveryAttempts: 5
+shutdownOnFatal: false

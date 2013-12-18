@@ -2,11 +2,9 @@ package com.datasift.dropwizard.kafka.consumer;
 
 import com.yammer.dropwizard.lifecycle.Managed;
 import com.yammer.dropwizard.util.Duration;
-import kafka.common.InvalidMessageSizeException;
 import kafka.consumer.KafkaMessageStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +28,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     private final StreamProcessor<T> processor;
     private final Duration initialDelay;
     private final Duration maxDelay;
-    private final Duration durationForResettingErrorHandlingState;
+    private final Duration retryResetDelay;
     private final int maxRetries;
-    private final boolean shutDownServerOnUnrecoverableError;
+    private final boolean shutdownOnFatal;
     private boolean fatalErrorOccurred = false;
     private LifeCycle server;
 
@@ -48,9 +46,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      * @param executor the {@link ExecutorService} to process the stream with.
      * @param initialDelay the initial {@link Duration} after which to attempt a recovery after an Exception.
      * @param maxDelay the maximum {@link Duration} to wait between recovery attempts.
-     * @param durationForResettingErrorHandlingState If no errors have occurred for this duration, the retry count is reverted to zero and the delay between retries is reset to initialDelay
+     * @param retryResetDelay If no errors have occurred for this duration, the retry count is reverted to zero and the delay between retries is reset to initialDelay
      * @param maxRetries the maximum number of continuous recovery attempts before moving to an unrecoverable state. -1 indicates no upper limit to the number of retries.
-     * @param shutDownServerOnUnrecoverableError indicates whether to gracefully shut down the server in the event of an unrecoverable error.
+     * @param shutdownOnFatal indicates whether to gracefully shut down the server in the event of an unrecoverable error.
      */
     public SynchronousConsumer(final ConsumerConnector connector,
                                final Map<String, Integer> partitions,
@@ -59,9 +57,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                                final ExecutorService executor,
                                final Duration initialDelay,
                                final Duration maxDelay,
-                               final Duration durationForResettingErrorHandlingState,
+                               final Duration retryResetDelay,
                                final int maxRetries,
-                               final boolean shutDownServerOnUnrecoverableError) {
+                               final boolean shutdownOnFatal) {
         this.connector = connector;
         this.partitions = partitions;
         this.decoder = decoder;
@@ -69,9 +67,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         this.executor = executor;
         this.initialDelay = initialDelay;
         this.maxDelay = maxDelay;
-        this.durationForResettingErrorHandlingState = durationForResettingErrorHandlingState;
+        this.retryResetDelay = retryResetDelay;
         this.maxRetries = maxRetries;
-        this.shutDownServerOnUnrecoverableError = shutDownServerOnUnrecoverableError;
+        this.shutdownOnFatal = shutdownOnFatal;
     }
 
     /**
@@ -164,8 +162,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      *
      * This is exposed via the {@link #isRunning() isRunning} method.
      */
-    private void fatalErrorInStreamProcessor()
-    {
+    private void fatalErrorInStreamProcessor() {
         this.fatalErrorOccurred = true;
     }
 
@@ -205,15 +202,12 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         public void run() {
             try {
                 processor.process(stream, topic);
-            }
-            catch(final IllegalStateException e){
+            } catch (final IllegalStateException e) {
                 LOG.warn("Fatal Error processing stream, stopping consumer", e);
                 error(e);
-            }
-            catch (final Exception e) {
+            } catch (final Exception e) {
                 recoverableError(e);
-            }
-            catch(final Throwable e){
+            } catch (final Throwable e) {
                 LOG.warn("Fatal Error processing stream, stopping consumer", e);
                 error(e);
             }
@@ -222,27 +216,26 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         private void recoverableError(final Exception e) {
             LOG.warn("Error processing stream, restarting stream consumer", e);
             //Check if the time between recoverable errors is large enough to reset the retry count and sleepTime
-            long now = System.currentTimeMillis();
-            if(now - timeStampOfLastRecoverableError >= durationForResettingErrorHandlingState.toMilliseconds()){
+            final long now = System.currentTimeMillis();
+            if (now - timeStampOfLastRecoverableError >= retryResetDelay.toMilliseconds()) {
                 retryCount = 0;
                 exponent = 0;
             }
             //Determine how long to sleep for
             long sleepTime = (long)(initialDelay.toMilliseconds() * Math.pow( 2, ++exponent));
-            if(sleepTime > maxDelay.toMilliseconds()){
+            if (sleepTime > maxDelay.toMilliseconds()) {
                 sleepTime = maxDelay.toMilliseconds();
                 exponent = 0;
             }
             //If a ceiling has been set on the number of retries, check if we have reached the ceiling
             retryCount++;
-            if(maxRetries > -1 && retryCount >= maxRetries){
+            if (maxRetries > -1 && retryCount >= maxRetries) {
                 LOG.warn("Maximum number of retries reached ("+maxRetries+"), transitioning to unrecoverable error state.");
                 error(e);
-            }
-            else{
+            } else {
                 try {
                     Thread.sleep(sleepTime);
-                }catch(InterruptedException ie){
+                } catch(InterruptedException ie){
                     LOG.warn("Error recovery grace period interrupted.", ie);
                 }
                 timeStampOfLastRecoverableError = System.currentTimeMillis();
@@ -258,7 +251,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
             } catch (final Exception ex) {
                 throw new RuntimeException(ex);
             } finally {
-                if(shutDownServerOnUnrecoverableError){
+                if (shutdownOnFatal) {
                   shutDownServer();
                 }
             }

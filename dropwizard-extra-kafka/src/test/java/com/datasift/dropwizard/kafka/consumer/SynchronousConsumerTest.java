@@ -69,11 +69,11 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
-                configuration.getDurationForResettingErrorHandlingState(),
-                configuration.getMaximumErrorRecoveryAttempts(),
-                configuration.isShutDownServerOnUnrecoverableError());
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
+                configuration.getRetryResetDelay(),
+                configuration.getMaxRecoveryAttempts(),
+                configuration.isShutdownOnFatal());
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -113,11 +113,11 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
-                configuration.getDurationForResettingErrorHandlingState(),
-                configuration.getMaximumErrorRecoveryAttempts(),
-                configuration.isShutDownServerOnUnrecoverableError());
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
+                configuration.getRetryResetDelay(),
+                configuration.getMaxRecoveryAttempts(),
+                configuration.isShutdownOnFatal());
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -160,11 +160,11 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
-                configuration.getDurationForResettingErrorHandlingState(),
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
+                configuration.getRetryResetDelay(),
                 maxRetries,
-                configuration.isShutDownServerOnUnrecoverableError());
+                configuration.isShutdownOnFatal());
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -205,10 +205,10 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
-                configuration.getDurationForResettingErrorHandlingState(),
-                configuration.getMaximumErrorRecoveryAttempts(),
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
+                configuration.getRetryResetDelay(),
+                configuration.getMaxRecoveryAttempts(),
                 shutDownServerOnUnrecoverableError);
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
@@ -253,9 +253,9 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
-                configuration.getDurationForResettingErrorHandlingState(),
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
+                configuration.getRetryResetDelay(),
                 maxRetries,
                 shutDownServerOnUnrecoverableError);
         consumer.setServer(jettyServer);
@@ -310,8 +310,8 @@ public class SynchronousConsumerTest {
                 decoder,
                 processor,
                 executor,
-                configuration.getIntialDelayforRecovery(),
-                configuration.getMaximumDelayforRecovery(),
+                configuration.getInitialRecoveryDelay(),
+                configuration.getMaxRecoveryDelay(),
                 durationForResettingErrorHandlingState,
                 maxRetries,
                 shutDownServerOnUnrecoverableError);

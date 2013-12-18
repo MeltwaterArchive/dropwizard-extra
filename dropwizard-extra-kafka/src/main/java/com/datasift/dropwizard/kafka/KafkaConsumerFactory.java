@@ -8,7 +8,6 @@ import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.lifecycle.ServerLifecycleListener;
-import com.yammer.dropwizard.util.Duration;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.message.Message;
@@ -153,11 +152,11 @@ public class KafkaConsumerFactory {
                     decoder,
                     processor,
                     executor,
-                    configuration.getIntialDelayforRecovery(),
-                    configuration.getMaximumDelayforRecovery(),
-                    configuration.getDurationForResettingErrorHandlingState(),
-                    configuration.getMaximumErrorRecoveryAttempts(),
-                    configuration.isShutDownServerOnUnrecoverableError());
+                    configuration.getInitialRecoveryDelay(),
+                    configuration.getMaxRecoveryDelay(),
+                    configuration.getRetryResetDelay(),
+                    configuration.getMaxRecoveryAttempts(),
+                    configuration.isShutdownOnFatal());
 
             //provide a reference to the Jetty server to the consumer
             environment.addServerLifecycleListener(new ServerLifecycleListener() {
