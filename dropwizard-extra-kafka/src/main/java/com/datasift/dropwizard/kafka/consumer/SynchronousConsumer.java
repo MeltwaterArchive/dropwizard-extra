@@ -31,6 +31,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     private final Duration retryResetDelay;
     private final int maxRetries;
     private final boolean shutdownOnFatal;
+    private final Duration shutdownGracePeriod;
     private boolean fatalErrorOccurred = false;
     private LifeCycle server;
 
@@ -59,7 +60,8 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                                final Duration maxDelay,
                                final Duration retryResetDelay,
                                final int maxRetries,
-                               final boolean shutdownOnFatal) {
+                               final boolean shutdownOnFatal,
+                               final Duration shutdownGracePeriod) {
         this.connector = connector;
         this.partitions = partitions;
         this.decoder = decoder;
@@ -70,6 +72,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         this.retryResetDelay = retryResetDelay;
         this.maxRetries = maxRetries;
         this.shutdownOnFatal = shutdownOnFatal;
+        this.shutdownGracePeriod = shutdownGracePeriod;
     }
 
     /**
@@ -124,6 +127,8 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     @Override
     public void stop() throws Exception {
         connector.shutdown();
+        executor.shutdown();
+        executor.awaitTermination(shutdownGracePeriod.getQuantity(), shutdownGracePeriod.getUnit());
     }
 
     /**

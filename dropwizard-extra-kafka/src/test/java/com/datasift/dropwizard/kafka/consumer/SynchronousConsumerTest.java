@@ -73,7 +73,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
-                configuration.isShutdownOnFatal());
+                configuration.isShutdownOnFatal(),
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -117,7 +118,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
-                configuration.isShutdownOnFatal());
+                configuration.isShutdownOnFatal(),
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -164,7 +166,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 configuration.getRetryResetDelay(),
                 maxRetries,
-                configuration.isShutdownOnFatal());
+                configuration.isShutdownOnFatal(),
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -209,7 +212,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
-                shutDownServerOnUnrecoverableError);
+                shutDownServerOnUnrecoverableError,
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -257,7 +261,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 configuration.getRetryResetDelay(),
                 maxRetries,
-                shutDownServerOnUnrecoverableError);
+                shutDownServerOnUnrecoverableError,
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -314,7 +319,8 @@ public class SynchronousConsumerTest {
                 configuration.getMaxRecoveryDelay(),
                 durationForResettingErrorHandlingState,
                 maxRetries,
-                shutDownServerOnUnrecoverableError);
+                shutDownServerOnUnrecoverableError,
+                Duration.seconds(2));
         consumer.setServer(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();

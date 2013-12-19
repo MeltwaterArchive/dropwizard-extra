@@ -156,7 +156,8 @@ public class KafkaConsumerFactory {
                     configuration.getMaxRecoveryDelay(),
                     configuration.getRetryResetDelay(),
                     configuration.getMaxRecoveryAttempts(),
-                    configuration.isShutdownOnFatal());
+                    configuration.isShutdownOnFatal(),
+                    configuration.getShutdownGracePeriod());
 
             //provide a reference to the Jetty server to the consumer
             environment.addServerLifecycleListener(new ServerLifecycleListener() {

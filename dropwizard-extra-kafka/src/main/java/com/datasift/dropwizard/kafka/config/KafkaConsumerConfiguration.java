@@ -151,6 +151,10 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
     @NotNull
     protected boolean shutdownOnFatal = false;
 
+    @JsonProperty
+    @NotNull
+    protected Duration shutdownGracePeriod = Duration.seconds(5);
+
     /**
      * @see KafkaConsumerConfiguration#group
      */
@@ -262,5 +266,9 @@ public class KafkaConsumerConfiguration extends KafkaClientConfiguration {
      */
     public boolean isShutdownOnFatal() {
         return shutdownOnFatal;
+    }
+
+    public Duration getShutdownGracePeriod() {
+        return shutdownGracePeriod;
     }
 }
