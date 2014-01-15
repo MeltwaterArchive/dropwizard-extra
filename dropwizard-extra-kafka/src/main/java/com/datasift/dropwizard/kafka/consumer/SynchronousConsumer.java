@@ -241,7 +241,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                     LOG.warn("Error recovery grace period interrupted.", ie);
                 }
                 lastErrorTimestamp = System.currentTimeMillis();
-                executor.execute(this);
+                if (!executor.isShutdown()) {
+                    executor.execute(this);
+                }
             }
         }
 
