@@ -35,6 +35,23 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     private boolean fatalErrorOccurred = false;
     private LifeCycle server;
 
+    // a thread to asynchronously handle unrecoverable errors in the stream consumer
+    private final Thread shutdownThread = new Thread("kafka-unrecoverable-error-handler"){
+        public void run() {
+            try {
+                if (shutdownOnFatal && server != null) {
+                    // shutdown the full service
+                    // note: shuts down the consumer as it's Managed by the Environment
+                    server.stop();
+                } else {
+                    // just shutdown the consumer
+                    SynchronousConsumer.this.stop();
+                }
+            } catch (Exception e) {
+                LOG.error("Error occurred while attempting emergency shut down.");
+            }
+        }
+    };
 
     /**
      * Creates a {@link SynchronousConsumer} to process a stream.
@@ -73,6 +90,9 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         this.maxRetries = maxRetries;
         this.shutdownOnFatal = shutdownOnFatal;
         this.shutdownGracePeriod = shutdownGracePeriod;
+
+        // if triggered, our emergency shutdown thread should be daemonised so it doesn't block the JVM from dying
+        shutdownThread.setDaemon(true);
     }
 
     /**
@@ -132,27 +152,6 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * Shuts down the Jetty Server
-     */
-    private void shutdownServer()
-    {
-        if(this.server != null){
-            Thread shutdownThread = new Thread(){
-              public void run() {
-                  try {
-                      server.stop();
-                  } catch (Exception e) {
-                      LOG.error("Error occurred while attempting to shut down Jetty.");
-                  }
-              }
-            };
-            shutdownThread.setName("Unrecoverable_Error_Jetty_Shutdown_Thread");
-            shutdownThread.setDaemon(true);
-            shutdownThread.start();
-        }
-    }
-
-    /**
      * Determines if this {@link KafkaConsumer} is currently consuming.
      *
      * @return true if this {@link KafkaConsumer} is currently consuming from at least one
@@ -181,7 +180,6 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
         private final KafkaMessageStream<T> stream;
         private final String topic;
-        private int exponent = 0;
         private int attempts = 0;
         private long lastErrorTimestamp = 0;
 
@@ -218,7 +216,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         }
 
         private void recoverableError(final Exception e) {
-            LOG.warn("Error processing stream, restarting stream consumer", e);
+            LOG.warn("Error processing stream, restarting stream consumer ({} attempts remaining): {}", maxRetries - attempts, e.toString());
 
             // reset attempts if there hasn't been a failure in a while
             if (System.currentTimeMillis() - lastErrorTimestamp >= retryResetDelay.toMilliseconds()) {
@@ -237,7 +235,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
                             (long) (initialDelay.toMilliseconds() * Math.pow( 2, attempts)));
 
                     Thread.sleep(sleepTime);
-                } catch(InterruptedException ie){
+                } catch(final InterruptedException ie){
                     LOG.warn("Error recovery grace period interrupted.", ie);
                 }
                 lastErrorTimestamp = System.currentTimeMillis();
@@ -250,14 +248,13 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         private void error(final Throwable e) {
             LOG.error("Unrecoverable error processing stream, shutting down.", e);
             fatalErrorInStreamProcessor();
+
             try {
-                stop();
-            } catch (final Exception ex) {
-                throw new RuntimeException(ex);
-            } finally {
-                if (shutdownOnFatal) {
-                  shutdownServer();
+                if (shutdownThread.getState() == Thread.State.NEW) {
+                    shutdownThread.start();
                 }
+            } catch (final IllegalThreadStateException ignored) {
+                // the thread is already started, so don't worry about it
             }
         }
     }
