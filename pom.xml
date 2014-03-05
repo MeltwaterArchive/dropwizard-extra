@@ -92,14 +92,6 @@
     <url>https://github.com/datasift/dropwizard-extra</url>
   </scm>
 
-  <distributionManagement>
-    <site>
-      <id>github</id>
-      <name>GitHub Pages Site</name>
-      <url>gitsite:git@github.com/datasift/dropwizard-extra.git</url>
-    </site>
-  </distributionManagement>
-
   <modules>
     <module>dropwizard-extra-core</module>
     <module>dropwizard-extra-curator</module>
