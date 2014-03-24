@@ -38,17 +38,26 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     // a thread to asynchronously handle unrecoverable errors in the stream consumer
     private final Thread shutdownThread = new Thread("kafka-unrecoverable-error-handler"){
         public void run() {
-            try {
-                if (shutdownOnFatal && server != null) {
-                    // shutdown the full service
-                    // note: shuts down the consumer as it's Managed by the Environment
-                    server.stop();
-                } else {
-                    // just shutdown the consumer
-                    SynchronousConsumer.this.stop();
+            while (true) {
+                try {
+                    Thread.sleep(10000);
+                } catch (final InterruptedException e) {
+                    // stop sleeping
                 }
-            } catch (Exception e) {
-                LOG.error("Error occurred while attempting emergency shut down.");
+                if (fatalErrorOccurred) {
+                    try {
+                        if (shutdownOnFatal && server != null) {
+                            // shutdown the full service
+                            // note: shuts down the consumer as it's Managed by the Environment
+                            server.stop();
+                        } else {
+                            // just shutdown the consumer
+                            SynchronousConsumer.this.stop();
+                        }
+                    } catch (Exception e) {
+                        LOG.error("Error occurred while attempting emergency shut down.");
+                    }
+                }
             }
         }
     };
@@ -93,6 +102,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
 
         // if triggered, our emergency shutdown thread should be daemonised so it doesn't block the JVM from dying
         shutdownThread.setDaemon(true);
+        shutdownThread.start();
     }
 
     /**
@@ -169,6 +179,7 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      */
     private void fatalErrorInStreamProcessor() {
         this.fatalErrorOccurred = true;
+        this.shutdownThread.interrupt();
     }
 
     /**
@@ -248,14 +259,6 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
         private void error(final Throwable e) {
             LOG.error("Unrecoverable error processing stream, shutting down.", e);
             fatalErrorInStreamProcessor();
-
-            try {
-                if (shutdownThread.getState() == Thread.State.NEW) {
-                    shutdownThread.start();
-                }
-            } catch (final IllegalThreadStateException ignored) {
-                // the thread is already started, so don't worry about it
-            }
         }
     }
 }
