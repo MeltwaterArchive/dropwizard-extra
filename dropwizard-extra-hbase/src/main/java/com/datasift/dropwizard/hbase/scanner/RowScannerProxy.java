@@ -133,6 +133,20 @@ public class RowScannerProxy implements RowScanner {
      *
      * @return this {@link RowScanner} to facilitate method chaining.
      *
+     * @see org.hbase.async.Scanner#setQualifiers(byte[][])
+     */
+    public RowScanner setQualifiers(final byte[][] qualifiers) {
+        scanner.setQualifiers(qualifiers);
+        return this;
+    }
+
+    /**
+     * Set the qualifier to select from cells
+     *
+     * @param qualifier the family to select from cells.
+     *
+     * @return this {@link RowScanner} to facilitate method chaining.
+     *
      * @see org.hbase.async.Scanner#setQualifier(String)
      */
     public RowScanner setQualifier(final String qualifier) {
