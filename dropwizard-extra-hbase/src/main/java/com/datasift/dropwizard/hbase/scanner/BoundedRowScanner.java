@@ -144,6 +144,20 @@ public class BoundedRowScanner implements RowScanner {
     }
 
     /**
+     * Set the qualifier to select from cells
+     *
+     * @param qualifier the family to select from cells.
+     *
+     * @return this {@link RowScanner} to facilitate method chaining.
+     *
+     * @see org.hbase.async.Scanner#setQualifiers(byte[][])
+     */
+    public RowScanner setQualifiers(final byte[][] qualifiers) {
+        scanner.setQualifiers(qualifiers);
+        return this;
+    }
+
+    /**
      * Set a regular expression to filter keys being scanned.
      *
      * @param regexp a regular expression to filter keys with
