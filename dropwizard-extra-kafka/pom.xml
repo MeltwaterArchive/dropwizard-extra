@@ -18,17 +18,13 @@
   </description>
 
   <properties>
-    <kafka.version>0.7.0</kafka.version>
+    <kafka.version>0.8.1.1</kafka.version>
+    <scala.version>2.10</scala.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.codahale.dropwizard</groupId>
+      <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>
@@ -37,8 +33,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>kafka</groupId>
-      <artifactId>core-kafka_${scala.version}</artifactId>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka_${scala.version}</artifactId>
       <version>${kafka.version}</version>
       <exclusions>
         <exclusion>

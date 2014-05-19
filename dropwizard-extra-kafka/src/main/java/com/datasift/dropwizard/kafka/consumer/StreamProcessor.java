@@ -1,5 +1,7 @@
 package com.datasift.dropwizard.kafka.consumer;
 
+import kafka.message.MessageAndMetadata;
+
 /**
  * Processes an {@link Iterable} of messages of type {@code T}.
  * <p/>
@@ -9,7 +11,7 @@ package com.datasift.dropwizard.kafka.consumer;
  * <i>Note: since consumers may use multiple threads, it is important that implementations are
  * thread-safe.</i>
  */
-public interface StreamProcessor<T> {
+public interface StreamProcessor<K, V> {
 
     /**
      * Process an {@link Iterable} of messages of type T.
@@ -17,5 +19,5 @@ public interface StreamProcessor<T> {
      * @param stream the stream of messages to process.
      * @param topic the topic the {@code stream} belongs to.
      */
-    public void process(Iterable<T> stream, String topic);
+    public void process(Iterable<MessageAndMetadata<K, V>> stream, String topic);
 }

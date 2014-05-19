@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.kafka;
 
-import com.codahale.dropwizard.jackson.Jackson;
+import io.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
-import com.codahale.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.configuration.ConfigurationFactory;
 import org.junit.Before;
 import org.junit.Test;
 

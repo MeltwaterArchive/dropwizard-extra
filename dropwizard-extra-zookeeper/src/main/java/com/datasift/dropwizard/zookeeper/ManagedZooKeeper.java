@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.zookeeper;
 
-import com.codahale.dropwizard.lifecycle.Managed;
+import io.dropwizard.lifecycle.Managed;
 import org.apache.zookeeper.ZooKeeper;
 
 /**

@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.zookeeper;
 
-import com.codahale.dropwizard.util.Duration;
-import com.codahale.dropwizard.validation.ValidationMethod;
+import io.dropwizard.util.Duration;
+import io.dropwizard.validation.ValidationMethod;
 import com.datasift.dropwizard.zookeeper.health.ZooKeeperHealthCheck;
-import com.codahale.dropwizard.setup.Environment;
+import io.dropwizard.setup.Environment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
 import org.apache.zookeeper.Watcher;

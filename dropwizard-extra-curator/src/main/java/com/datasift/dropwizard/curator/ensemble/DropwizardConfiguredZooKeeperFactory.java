@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.curator.ensemble;
 
-import com.codahale.dropwizard.setup.Environment;
+import io.dropwizard.setup.Environment;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import org.apache.curator.utils.ZookeeperFactory;
-import com.codahale.dropwizard.util.Duration;
+import io.dropwizard.util.Duration;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 

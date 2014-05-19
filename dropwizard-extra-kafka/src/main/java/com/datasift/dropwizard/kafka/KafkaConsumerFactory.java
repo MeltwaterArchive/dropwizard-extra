@@ -1,12 +1,12 @@
 package com.datasift.dropwizard.kafka;
 
-import com.codahale.dropwizard.util.Duration;
-import com.codahale.dropwizard.util.Size;
+import io.dropwizard.util.Duration;
+import io.dropwizard.util.Size;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
-import com.codahale.dropwizard.setup.Environment;
+import io.dropwizard.setup.Environment;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
@@ -15,6 +15,7 @@ import kafka.consumer.ConsumerConfig;
 import kafka.message.Message;
 import kafka.serializer.Decoder;
 import kafka.serializer.DefaultDecoder;
+import kafka.utils.VerifiableProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
@@ -33,6 +34,8 @@ import java.util.concurrent.ExecutorService;
  * and will have {@link com.codahale.metrics.health.HealthCheck}s installed to monitor its status.
  */
 public class KafkaConsumerFactory extends KafkaClientFactory {
+
+    private static final Decoder<byte[]> DefaultDecoder = new DefaultDecoder(new VerifiableProperties());
 
     @NotEmpty
     protected String group = "";
@@ -327,8 +330,8 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @return a {@link KafkaConsumerBuilder} to build a {@link KafkaConsumer} for the given
      *         processor.
      */
-    public KafkaConsumerBuilder<Message> processWith(final StreamProcessor<Message> processor) {
-        return processWith(new DefaultDecoder(), processor);
+    public KafkaConsumerBuilder<byte[], byte[]> processWith(final StreamProcessor<byte[], byte[]> processor) {
+        return processWith(DefaultDecoder, processor);
     }
 
     /**
@@ -343,24 +346,34 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @return a {@link KafkaConsumerBuilder} to build a {@link KafkaConsumer} for the given
      *         processor and decoder.
      */
-    public <T> KafkaConsumerBuilder<T> processWith(final Decoder<T> decoder,
-                                                   final StreamProcessor<T> processor) {
-        return new KafkaConsumerBuilder<>(decoder, processor);
+    public <V> KafkaConsumerBuilder<byte[], V> processWith(final Decoder<V> decoder,
+                                                           final StreamProcessor<byte[], V> processor) {
+        return new KafkaConsumerBuilder<>(DefaultDecoder, decoder, processor);
+    }
+
+    public <K, V> KafkaConsumerBuilder<K, V> processWith(final Decoder<K> keyDecoder,
+                                                         final Decoder<V> valueDecoder,
+                                                         final StreamProcessor<K, V> processor) {
+        return new KafkaConsumerBuilder<>(keyDecoder, valueDecoder, processor);
     }
 
     /**
      * A Builder for building a configured {@link KafkaConsumer}.
      *
-     * @param <T> the type of the messages the {@link KafkaConsumer} will process.
+     * @param <V> the type of the messages the {@link KafkaConsumer} will process.
      */
-    public class KafkaConsumerBuilder<T> {
+    public class KafkaConsumerBuilder<K, V> {
 
-        private final Decoder<T> decoder;
-        private final StreamProcessor<T> processor;
+        private final Decoder<K> keyDecoder;
+        private final Decoder<V> valueDecoder;
+        private final StreamProcessor<K, V> processor;
         private static final String DEFAULT_NAME = "kafka-consumer-default";
 
-        private KafkaConsumerBuilder(final Decoder<T> decoder, final StreamProcessor<T> processor) {
-            this.decoder = decoder;
+        private KafkaConsumerBuilder(final Decoder<K> keyDecoder,
+                                     final Decoder<V> valueDecoder,
+                                     final StreamProcessor<K, V> processor) {
+            this.keyDecoder = keyDecoder;
+            this.valueDecoder = valueDecoder;
             this.processor = processor;
         }
 
@@ -428,7 +441,8 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
             final SynchronousConsumer consumer = new SynchronousConsumer<>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(KafkaConsumerFactory.this)),
                     getPartitions(),
-                    decoder,
+                    keyDecoder,
+                    valueDecoder,
                     processor,
                     executor);
 

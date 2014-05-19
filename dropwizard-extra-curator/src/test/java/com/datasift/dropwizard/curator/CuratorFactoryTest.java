@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.curator;
 
-import com.codahale.dropwizard.configuration.ConfigurationFactory;
-import com.codahale.dropwizard.jackson.Jackson;
+import io.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
 import org.apache.curator.framework.api.CompressionProvider;

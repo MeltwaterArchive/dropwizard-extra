@@ -1,9 +1,9 @@
 package com.datasift.dropwizard.zookeeper;
 
-import com.codahale.dropwizard.jackson.Jackson;
+import io.dropwizard.jackson.Jackson;
 import com.google.common.io.Resources;
-import com.codahale.dropwizard.configuration.ConfigurationFactory;
-import com.codahale.dropwizard.util.Duration;
+import io.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.util.Duration;
 import org.junit.Before;
 import org.junit.Test;
 

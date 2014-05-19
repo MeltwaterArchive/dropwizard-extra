@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.util;
 
-import com.codahale.dropwizard.util.Duration;
+import io.dropwizard.util.Duration;
 import org.junit.Test;
 
 import java.io.Serializable;

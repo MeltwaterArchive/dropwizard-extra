@@ -1,10 +1,10 @@
 package com.datasift.dropwizard.hbase;
 
-import com.codahale.dropwizard.util.Duration;
-import com.codahale.dropwizard.util.Size;
+import io.dropwizard.util.Duration;
+import io.dropwizard.util.Size;
 import com.codahale.metrics.MetricRegistry;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
-import com.codahale.dropwizard.setup.Environment;
+import io.dropwizard.setup.Environment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -196,7 +196,7 @@ public class HBaseClientFactory {
 
     /**
      * Builds a default {@link HBaseClient} instance from the specified {@link
-     * HBaseClientConfiguration}.
+     * HBaseClientFactory}.
      *
      * @param environment the {@link Environment} to build {@link HBaseClient} instances for.
      * @return an {@link HBaseClient}, managed and configured according to the {@code configuration}
@@ -206,7 +206,7 @@ public class HBaseClientFactory {
     }
 
     /**
-     * Builds an {@link HBaseClient} instance from the specified {@link HBaseClientConfiguration}
+     * Builds an {@link HBaseClient} instance from the specified {@link HBaseClientFactory}
      * with the given {@code name}.
      *
      * @param environment the {@link Environment} to build {@link HBaseClient} instances for.
@@ -240,9 +240,9 @@ public class HBaseClientFactory {
     }
 
     /**
-     * Builds a new {@link HBaseClient} according to the given {@link HBaseClientConfiguration}.
+     * Builds a new {@link HBaseClient} according to the given {@link HBaseClientFactory}.
      * <p/>
-     * If instrumentation {@link HBaseClientConfiguration#instrumented is enabled} in the
+     * If instrumentation {@link #instrumented is enabled} in the
      * configuration, this will build an {@link InstrumentedHBaseClient} wrapping the given {@link
      * HBaseClient}.
      * <p/>
@@ -262,12 +262,12 @@ public class HBaseClientFactory {
     }
 
     /**
-     * Builds a new {@link HBaseClient} according to the given {@link HBaseClientConfiguration}.
+     * Builds a new {@link HBaseClient} according to the given {@link HBaseClientFactory}.
      * <p/>
-     * If the {@link HBaseClientConfiguration#maxConcurrentRequests} is non-zero in the
+     * If the {@link #maxConcurrentRequests} is non-zero in the
      * configuration, this will build a {@link BoundedHBaseClient} that wraps the given client.
      * <p/>
-     * If {@link HBaseClientConfiguration#maxConcurrentRequests} is zero, the given {@link
+     * If {@link #maxConcurrentRequests} is zero, the given {@link
      * HBaseClient} will be returned verbatim.
      *
      * @param client an underlying {@link HBaseClient} implementation.

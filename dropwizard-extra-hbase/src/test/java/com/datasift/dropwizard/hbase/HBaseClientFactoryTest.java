@@ -1,10 +1,10 @@
 package com.datasift.dropwizard.hbase;
 
-import com.codahale.dropwizard.jackson.Jackson;
+import io.dropwizard.jackson.Jackson;
 import com.google.common.io.Resources;
-import com.codahale.dropwizard.configuration.ConfigurationFactory;
-import com.codahale.dropwizard.util.Duration;
-import com.codahale.dropwizard.util.Size;
+import io.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.util.Duration;
+import io.dropwizard.util.Size;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests {@link HBaseClientConfiguration}.
+ * Tests {@link HBaseClientFactory}.
  */
 public class HBaseClientFactoryTest {
 

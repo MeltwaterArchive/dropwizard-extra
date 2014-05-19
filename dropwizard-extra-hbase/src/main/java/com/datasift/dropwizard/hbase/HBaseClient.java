@@ -2,8 +2,8 @@ package com.datasift.dropwizard.hbase;
 
 import com.datasift.dropwizard.hbase.scanner.RowScanner;
 import com.stumbleupon.async.Deferred;
-import com.codahale.dropwizard.util.Duration;
-import com.codahale.dropwizard.util.Size;
+import io.dropwizard.util.Duration;
+import io.dropwizard.util.Size;
 import org.hbase.async.*;
 import org.jboss.netty.util.Timer;
 

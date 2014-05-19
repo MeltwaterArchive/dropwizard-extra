@@ -129,7 +129,7 @@ public class RowScannerProxy implements RowScanner {
     /**
      * Set the qualifier to select from cells
      *
-     * @param qualifier the family to select from cells.
+     * @param qualifiers the family to select from cells.
      *
      * @return this {@link RowScanner} to facilitate method chaining.
      *

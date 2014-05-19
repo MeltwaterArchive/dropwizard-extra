@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.kafka;
 
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
-import com.codahale.dropwizard.util.Duration;
+import io.dropwizard.util.Duration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Base configuration for Kafka clients.
  *
- * @see com.datasift.dropwizard.kafka.config.KafkaConsumerFactory
+ * @see com.datasift.dropwizard.kafka.KafkaConsumerFactory
  * @see KafkaProducerFactory
  */
 abstract public class KafkaClientFactory {
@@ -23,7 +23,7 @@ abstract public class KafkaClientFactory {
     protected Duration socketTimeout = Duration.seconds(30);
 
     /**
-     * Returns the {@link ZooKeeperConfiguration} of the ZooKeeper quorum to use.
+     * Returns the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
      *
      * @return the ZooKeeper quorum to use.
      */
@@ -33,7 +33,7 @@ abstract public class KafkaClientFactory {
     }
 
     /**
-     * Sets the {@link ZooKeeperConfiguration} of the ZooKeeper quorum to use.
+     * Sets the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
      *
      * @param zookeeper the ZooKeeper quorum to use.
      */

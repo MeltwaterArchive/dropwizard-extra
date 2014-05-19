@@ -1,6 +1,6 @@
 package com.datasift.dropwizard.curator;
 
-import com.codahale.dropwizard.util.Duration;
+import io.dropwizard.util.Duration;
 import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredEnsembleProvider;
 import com.datasift.dropwizard.curator.ensemble.DropwizardConfiguredZooKeeperFactory;
 import com.datasift.dropwizard.curator.health.CuratorHealthCheck;
@@ -10,7 +10,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import com.codahale.dropwizard.setup.Environment;
+import io.dropwizard.setup.Environment;
 import org.apache.curator.framework.api.CompressionProvider;
 import org.apache.curator.framework.imps.GzipCompressionProvider;
 import org.apache.curator.retry.ExponentialBackoffRetry;

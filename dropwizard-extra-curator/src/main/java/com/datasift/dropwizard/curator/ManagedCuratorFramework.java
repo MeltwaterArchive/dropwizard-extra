@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.curator;
 
 import org.apache.curator.framework.CuratorFramework;
-import com.codahale.dropwizard.lifecycle.Managed;
+import io.dropwizard.lifecycle.Managed;
 
 /**
  * Manages the lifecycle of a {@link CuratorFramework} instance.

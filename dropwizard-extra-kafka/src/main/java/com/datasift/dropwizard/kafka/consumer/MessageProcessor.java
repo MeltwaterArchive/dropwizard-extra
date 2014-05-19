@@ -1,8 +1,8 @@
 package com.datasift.dropwizard.kafka.consumer;
 
 import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import kafka.message.MessageAndMetadata;
 
 /**
  * Processes messages of type {@code T} from a Kafka message stream.
@@ -10,9 +10,10 @@ import com.codahale.metrics.Timer;
  * This {@link StreamProcessor} is instrumented with {@link Metric}s; specifically, a {@link Timer}
  * that tracks the time taken to process each message in the stream.
  *
- * @param <T> the decoded type of the message to process
+ * @param <K> the decoded type of the key for each message being processed
+ * @param <V> the decoded type of the message to process
  */
-public abstract class MessageProcessor<T> implements StreamProcessor<T> {
+public abstract class MessageProcessor<K, V> implements StreamProcessor<K, V> {
 //
 //    /**
 //     * {@link Timer} for the processing of each message in the stream.
@@ -32,10 +33,13 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
     /**
      * Processes a {@code message} of type {@code T}.
      *
+     * @param key the key of the message to process.
      * @param message the message to process.
-     * @param topic the topic the message belongs to.
+     * @param topic the topic the entry belongs to.
+     * @param partition the partition of the topic the entry is contained in.
+     * @param offset the offset of the message within the partition of the topic.
      */
-    abstract public void process(T message, String topic);
+    abstract public void process(K key, V message, String topic, int partition, long offset);
 
     /**
      * Processes a {@link Iterable} by iteratively processing each message.
@@ -45,10 +49,10 @@ public abstract class MessageProcessor<T> implements StreamProcessor<T> {
      *
      * @see StreamProcessor#process(Iterable, String)
      */
-    public void process(final Iterable<T> stream, final String topic) {
-        for (final T message : stream) {
+    public void process(final Iterable<MessageAndMetadata<K, V>> stream, final String topic) {
+        for (final MessageAndMetadata<K, V> entry : stream) {
 //            final Timer.Context context = processed.time();
-            process(message, topic);
+            process(entry.key(), entry.message(), topic, entry.partition(), entry.offset());
 //            context.stop();
         }
     }

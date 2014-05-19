@@ -19,7 +19,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.codahale.dropwizard</groupId>
+      <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
     </dependency>
     <dependency>

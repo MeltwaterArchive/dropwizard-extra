@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.kafka.consumer;
 
-import com.codahale.dropwizard.lifecycle.Managed;
-import kafka.consumer.KafkaMessageStream;
+import io.dropwizard.lifecycle.Managed;
+import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
 import org.slf4j.Logger;
@@ -15,34 +15,37 @@ import java.util.concurrent.ExecutorService;
 /**
  * A {@link KafkaConsumer} that processes messages synchronously using an {@link ExecutorService}.
  */
-public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
+public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final ConsumerConnector connector;
     private final Map<String, Integer> partitions;
     private final ExecutorService executor;
-    private final Decoder<T> decoder;
-    private final StreamProcessor<T> processor;
+    private final Decoder<K> keyDecoder;
+    private final Decoder<V> valueDecoder;
+    private final StreamProcessor<K, V> processor;
 
     /**
      * Creates a {@link SynchronousConsumer} to process a stream.
      *
      * @param connector the {@link ConsumerConnector} of the underlying consumer.
      * @param partitions a mapping of the topic -> partitions to consume.
-     * @param decoder a {@link Decoder} for decoding each {@link kafka.message.Message} to type
-     *                {@code T} before being processed.
-     * @param processor a {@link StreamProcessor} for processing messages of type {@code T}.
+     * @param keyDecoder a {@link Decoder} for decoding the key of each message before being processed.
+     * @param valueDecoder a {@link Decoder} for decoding each message before being processed.
+     * @param processor a {@link StreamProcessor} for processing messages.
      * @param executor the {@link ExecutorService} to process the stream with.
      */
     public SynchronousConsumer(final ConsumerConnector connector,
                                final Map<String, Integer> partitions,
-                               final Decoder<T> decoder,
-                               final StreamProcessor<T> processor,
+                               final Decoder<K> keyDecoder,
+                               final Decoder<V> valueDecoder,
+                               final StreamProcessor<K, V> processor,
                                final ExecutorService executor) {
         this.connector = connector;
         this.partitions = partitions;
-        this.decoder = decoder;
+        this.keyDecoder = keyDecoder;
+        this.valueDecoder = valueDecoder;
         this.processor = processor;
         this.executor = executor;
     }
@@ -67,16 +70,16 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
      */
     @Override
     public void start() throws Exception {
-        final Set<Map.Entry<String, List<KafkaMessageStream<T>>>> streams =
-                connector.createMessageStreams(partitions, decoder).entrySet();
+        final Set<Map.Entry<String, List<KafkaStream<K, V>>>> streams =
+                connector.createMessageStreams(partitions, keyDecoder, valueDecoder).entrySet();
 
-        for (final Map.Entry<String, List<KafkaMessageStream<T>>> e : streams) {
+        for (final Map.Entry<String, List<KafkaStream<K, V>>> e : streams) {
             final String topic = e.getKey();
-            final List<KafkaMessageStream<T>> messageStreams = e.getValue();
+            final List<KafkaStream<K, V>> messageStreams = e.getValue();
 
             LOG.info("Consuming from topic '{}' with {} threads", topic, messageStreams.size());
 
-            for (final KafkaMessageStream<T> stream : messageStreams) {
+            for (final KafkaStream<K, V> stream : messageStreams) {
                 executor.execute(new StreamProcessorRunnable(topic, stream));
             }
         }
@@ -103,22 +106,22 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed {
     }
 
     /**
-     * A {@link Runnable} that processes a {@link KafkaMessageStream}.
+     * A {@link Runnable} that processes a {@link KafkaStream}.
      *
      * The configured {@link StreamProcessor} is used to process the stream.
      */
     private class StreamProcessorRunnable implements Runnable {
 
-        private final KafkaMessageStream<T> stream;
+        private final KafkaStream<K, V> stream;
         private final String topic;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and stream.
          *
-         * @param topic the topic the {@link KafkaMessageStream} belongs to.
+         * @param topic the topic the {@link KafkaStream} belongs to.
          * @param stream a stream of {@link kafka.message.Message}s in the topic.
          */
-        public StreamProcessorRunnable(final String topic, final KafkaMessageStream<T> stream) {
+        public StreamProcessorRunnable(final String topic, final KafkaStream<K, V> stream) {
             this.topic = topic;
             this.stream = stream;
         }
