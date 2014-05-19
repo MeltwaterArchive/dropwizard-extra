@@ -1,9 +1,12 @@
 package com.datasift.dropwizard.kafka.consumer;
 
 import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.lifecycle.ServerLifecycleListener;
+import io.dropwizard.util.Duration;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
+import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * A {@link KafkaConsumer} that processes messages synchronously using an {@link ExecutorService}.
  */
-public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
+public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, ServerLifecycleListener {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -25,6 +28,42 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
     private final Decoder<K> keyDecoder;
     private final Decoder<V> valueDecoder;
     private final StreamProcessor<K, V> processor;
+    private final Duration initialRecoveryDelay;
+    private final Duration maxRecoveryDelay;
+    private final Duration retryResetDelay;
+    private final int maxRecoveryAttempts;
+    private final boolean shutdownOnFatal;
+    private final Duration shutdownGracePeriod;
+
+    private Server server = null;
+    private boolean fatalErrorOccurred = false;
+
+    // a thread to asynchronously handle unrecoverable errors in the stream consumer
+    private final Thread shutdownThread = new Thread("kafka-unrecoverable-error-handler"){
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(10000);
+                } catch (final InterruptedException e) {
+                    // stop sleeping
+                }
+                if (fatalErrorOccurred) {
+                    try {
+                        if (shutdownOnFatal && server != null) {
+                            // shutdown the full service
+                            // note: shuts down the consumer as it's Managed by the Environment
+                            server.stop();
+                        } else {
+                            // just shutdown the consumer
+                            SynchronousConsumer.this.stop();
+                        }
+                    } catch (Exception e) {
+                        LOG.error("Error occurred while attempting emergency shut down.", e);
+                    }
+                }
+            }
+        }
+    };
 
     /**
      * Creates a {@link SynchronousConsumer} to process a stream.
@@ -41,13 +80,28 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
                                final Decoder<K> keyDecoder,
                                final Decoder<V> valueDecoder,
                                final StreamProcessor<K, V> processor,
-                               final ExecutorService executor) {
+                               final ExecutorService executor,
+                               final Duration initialRecoveryDelay,
+                               final Duration maxRecoveryDelay,
+                               final Duration retryResetDelay,
+                               final int maxRecoveryAttempts,
+                               final boolean shutdownOnFatal,
+                               final Duration shutdownGracePeriod) {
         this.connector = connector;
         this.partitions = partitions;
         this.keyDecoder = keyDecoder;
         this.valueDecoder = valueDecoder;
         this.processor = processor;
         this.executor = executor;
+        this.initialRecoveryDelay = initialRecoveryDelay;
+        this.maxRecoveryDelay = maxRecoveryDelay;
+        this.retryResetDelay = retryResetDelay;
+        this.maxRecoveryAttempts = maxRecoveryAttempts;
+        this.shutdownOnFatal = shutdownOnFatal;
+        this.shutdownGracePeriod = shutdownGracePeriod;
+
+        shutdownThread.setDaemon(true);
+        shutdownThread.start();
     }
 
     /**
@@ -55,6 +109,11 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
      */
     public void commitOffsets() {
         connector.commitOffsets();
+    }
+
+    @Override
+    public void serverStarted(final Server server) {
+        this.server = server;
     }
 
     /**
@@ -93,6 +152,8 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
     @Override
     public void stop() throws Exception {
         connector.shutdown();
+        executor.shutdown();
+        executor.awaitTermination(shutdownGracePeriod.getQuantity(), shutdownGracePeriod.getUnit());
     }
 
     /**
@@ -105,6 +166,11 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
         return !executor.isShutdown() && !executor.isTerminated();
     }
 
+    private void fatalError() {
+        this.fatalErrorOccurred = true;
+        this.shutdownThread.interrupt();
+    }
+
     /**
      * A {@link Runnable} that processes a {@link KafkaStream}.
      *
@@ -114,6 +180,8 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
 
         private final KafkaStream<K, V> stream;
         private final String topic;
+        private int attempts = 0;
+        private long lastErrorTimestamp = 0;
 
         /**
          * Creates a {@link StreamProcessorRunnable} for the given topic and stream.
@@ -142,21 +210,45 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed {
                 error(e);
             } catch (final Exception e) {
                 recoverableError(e);
+            } catch (final Throwable e) {
+                error(e);
             }
         }
 
         private void recoverableError(final Exception e) {
-            LOG.warn("Error processing stream, restarting stream consumer", e);
-            executor.execute(this);
+            LOG.warn("Error processing stream, restarting stream consumer ({} attempts remaining): {}",
+                    maxRecoveryAttempts - attempts, e.toString());
+
+            // reset attempts if there hasn't been a failure in a while
+            if (System.currentTimeMillis() - lastErrorTimestamp >= retryResetDelay.toMilliseconds()) {
+                attempts = 0;
+            }
+
+            // if a ceiling has been set on the number of retries, check if we have reached the ceiling
+            attempts++;
+            if (maxRecoveryAttempts > -1 && attempts >= maxRecoveryAttempts) {
+                LOG.warn("Failed to restart consumer after {} retries", maxRecoveryAttempts);
+                error(e);
+            } else {
+                try {
+                    final long sleepTime = Math.min(
+                            maxRecoveryDelay.toMilliseconds(),
+                            (long) (initialRecoveryDelay.toMilliseconds() * Math.pow( 2, attempts)));
+
+                    Thread.sleep(sleepTime);
+                } catch(final InterruptedException ie){
+                    LOG.warn("Error recovery grace period interrupted.", ie);
+                }
+                lastErrorTimestamp = System.currentTimeMillis();
+                if (!executor.isShutdown()) {
+                    executor.execute(this);
+                }
+            }
         }
 
-        private void error(final Exception e) {
+        private void error(final Throwable e) {
             LOG.error("Unrecoverable error processing stream, shutting down", e);
-            try {
-                stop();
-            } catch (final Exception ex) {
-                throw new RuntimeException(ex);
-            }
+            fatalError();
         }
     }
 }

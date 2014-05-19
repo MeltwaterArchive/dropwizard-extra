@@ -65,6 +65,24 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     @Min(0)
     protected int rebalanceRetries = 4;
 
+    @NotNull
+    protected Duration initialRecoveryDelay = Duration.milliseconds(500);
+
+    @NotNull
+    protected Duration maxRecoveryDelay = Duration.minutes(5);
+
+    @NotNull
+    protected Duration retryResetDelay = Duration.minutes(2);
+
+    @Min(-1)
+    protected int maxRecoveryAttempts = 20;
+
+    @NotNull
+    protected boolean shutdownOnFatal = false;
+
+    @NotNull
+    protected Duration shutdownGracePeriod = Duration.seconds(5);
+
     /**
      * Returns the consumer group the {@link KafkaConsumer} belongs to.
      *
@@ -323,6 +341,54 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         this.rebalanceRetries = rebalanceRetries;
     }
 
+    public Duration getInitialRecoveryDelay() {
+        return initialRecoveryDelay;
+    }
+
+    public void setInitialRecoveryDelay(final Duration initialRecoveryDelay) {
+        this.initialRecoveryDelay = initialRecoveryDelay;
+    }
+
+    public Duration getMaxRecoveryDelay() {
+        return maxRecoveryDelay;
+    }
+
+    public void setMaxRecoveryDelay(final Duration maxRecoveryDelay) {
+        this.maxRecoveryDelay = maxRecoveryDelay;
+    }
+
+    public Duration getRetryResetDelay() {
+        return retryResetDelay;
+    }
+
+    public void setRetryResetDelay(final Duration retryResetDelay) {
+        this.retryResetDelay = retryResetDelay;
+    }
+
+    public int getMaxRecoveryAttempts() {
+        return maxRecoveryAttempts;
+    }
+
+    public void setMaxRecoveryAttempts(final int maxRecoveryAttempts) {
+        this.maxRecoveryAttempts = maxRecoveryAttempts;
+    }
+
+    public boolean isShutdownOnFatal() {
+        return shutdownOnFatal;
+    }
+
+    public void setShutdownOnFatal(final boolean shutdownOnFatal) {
+        this.shutdownOnFatal = shutdownOnFatal;
+    }
+
+    public Duration getShutdownGracePeriod() {
+        return shutdownGracePeriod;
+    }
+
+    public void setShutdownGracePeriod(final Duration shutdownGracePeriod) {
+        this.shutdownGracePeriod = shutdownGracePeriod;
+    }
+
     /**
      * Prepares a {@link KafkaConsumerBuilder} for a given {@link StreamProcessor}.
      *
@@ -444,7 +510,13 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                     keyDecoder,
                     valueDecoder,
                     processor,
-                    executor);
+                    executor,
+                    getInitialRecoveryDelay(),
+                    getMaxRecoveryDelay(),
+                    getRetryResetDelay(),
+                    getMaxRecoveryAttempts(),
+                    isShutdownOnFatal(),
+                    getShutdownGracePeriod());
 
             // manage the consumer
             environment.lifecycle().manage(consumer);
