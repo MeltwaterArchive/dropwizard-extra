@@ -163,7 +163,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
      *         partition; otherwise, false.
      */
     public boolean isRunning() {
-        return !executor.isShutdown() && !executor.isTerminated();
+        return !executor.isShutdown() && !executor.isTerminated() && !fatalErrorOccurred;
     }
 
     private void fatalError() {
