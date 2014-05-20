@@ -532,31 +532,31 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         final ZooKeeperFactory zookeeper = factory.getZookeeper();
         final Properties props = new Properties();
 
-        props.setProperty("zk.connect",
+        props.setProperty("zookeeper.connect",
                 zookeeper.getQuorumSpec());
-        props.setProperty("zk.connectiontimeout.ms",
+        props.setProperty("zookeeper.connection.timeout.ms",
                 String.valueOf(zookeeper.getConnectionTimeout().toMilliseconds()));
-        props.setProperty("zk.sessiontimeout.ms",
+        props.setProperty("zookeeper.session.timeout.ms",
                 String.valueOf(zookeeper.getSessionTimeout().toMilliseconds()));
-        props.setProperty("groupid",
+        props.setProperty("group.id",
                 factory.getGroup());
         props.setProperty("socket.timeout.ms",
                 String.valueOf(factory.getSocketTimeout().toMilliseconds()));
-        props.setProperty("socket.buffersize",
+        props.setProperty("socket.receive.buffer.bytes",
                 String.valueOf(factory.getReceiveBufferSize().toBytes()));
-        props.setProperty("fetch.size",
+        props.setProperty("fetch.message.max.bytes",
                 String.valueOf(factory.getFetchSize().toBytes()));
-        props.setProperty("backoff.increment.ms",
+        props.setProperty("fetch.wait.max.ms",
                 String.valueOf(factory.getBackOffIncrement().toMilliseconds()));
-        props.setProperty("queuedchunks.max",
+        props.setProperty("queued.max.message.chunks",
                 String.valueOf(factory.getQueuedChunks()));
-        props.setProperty("autocommit.enable",
+        props.setProperty("auto.commit.enable",
                 String.valueOf(factory.getAutoCommit()));
-        props.setProperty("autocommit.interval.ms",
+        props.setProperty("auto.commit.interval.ms",
                 String.valueOf(factory.getAutoCommitInterval().toMilliseconds()));
         props.setProperty("consumer.timeout.ms",
                 String.valueOf(factory.getTimeout().toMilliseconds()));
-        props.setProperty("rebalance.retries.max",
+        props.setProperty("rebalance.max.retries",
                 String.valueOf(factory.getRebalanceRetries()));
 
         return new ConsumerConfig(props);
