@@ -37,6 +37,19 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     private static final Decoder<byte[]> DefaultDecoder = new DefaultDecoder(new VerifiableProperties());
 
+    /**
+     * A description of the initial offset to consume from a partition when no committed offset
+     * exists.
+     * <p/>
+     * <dl>
+     *     <dt>SMALLEST</dt><dd>Use the smallest (i.e. earliest) available offset. In effect,
+     *                          consuming the entire log.</dd>
+     *     <dt>LARGEST</dt><dd>Use the largest (i.e. latest) available offset. In effect,
+     *                         tailing the end of the log.</dd>
+     * </dl>
+     */
+    public enum InitialOffset { SMALLEST, LARGEST, ERROR }
+
     @NotEmpty
     protected String group = "";
 
@@ -61,6 +74,9 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     @NotNull
     protected Duration autoCommitInterval = Duration.seconds(10);
+
+    @NotNull
+    protected InitialOffset initialOffset = InitialOffset.LARGEST;
 
     @Min(0)
     protected int rebalanceRetries = 4;
@@ -322,6 +338,30 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     }
 
     /**
+     * Returns the setting for the initial offset to consume from when no committed offset exists.
+     *
+     * @return the initial offset to consume from in a partition.
+     *
+     * @see InitialOffset
+     */
+    @JsonProperty
+    public InitialOffset getInitialOffset() {
+        return initialOffset;
+    }
+
+    /**
+     * Sets the setting for the initial offset to consume from when no committed offset exists.
+     *
+     * @param initialOffset the initial offset to consume from in a partition.
+     *
+     * @see InitialOffset
+     */
+    @JsonProperty
+    public void setInitialOffset(final InitialOffset initialOffset) {
+        this.initialOffset = initialOffset;
+    }
+
+    /**
      * Returns the maximum number of retries during a re-balance.
      *
      * @return the maximum number of times to retry a re-balance operation.
@@ -554,6 +594,8 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                 String.valueOf(factory.getAutoCommit()));
         props.setProperty("auto.commit.interval.ms",
                 String.valueOf(factory.getAutoCommitInterval().toMilliseconds()));
+        props.setProperty("auto.offset.reset",
+                String.valueOf(factory.getInitialOffset()).toLowerCase());
         props.setProperty("consumer.timeout.ms",
                 String.valueOf(factory.getTimeout().toMilliseconds()));
         props.setProperty("rebalance.max.retries",

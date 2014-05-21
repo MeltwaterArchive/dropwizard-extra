@@ -53,4 +53,16 @@ public class KafkaConsumerConfigurationTest {
                    factory.getRebalanceRetries(),
                    is(5));
     }
+
+    @Test
+    public void testInitialOffset() {
+        final KafkaConsumerFactory factory = new KafkaConsumerFactory();
+        assertThat("auto.offset.reset defaults to 'largest'",
+                   KafkaConsumerFactory.toConsumerConfig(factory).autoOffsetReset(),
+                   equalTo("largest"));
+        factory.setInitialOffset(KafkaConsumerFactory.InitialOffset.SMALLEST);
+        assertThat("auto.offset.reset changed to 'smallest'",
+                KafkaConsumerFactory.toConsumerConfig(factory).autoOffsetReset(),
+                equalTo("smallest"));
+    }
 }
