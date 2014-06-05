@@ -5,7 +5,7 @@
     "ad_ca": "ad_impression_campaign_id",
     "ad_uid": "ad_impression_user_id",
     "aid": "app_id",
-    "mid": "member_id",
+    "mid": "merchant_id",
     "cd": "browser_color_depth",
     "co": "custom_context",
     "cookies": "browser_allows_cookies",
