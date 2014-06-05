@@ -1,12 +1,12 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.kafka.util.Compression;
-import io.dropwizard.util.Duration;
-import io.dropwizard.util.Size;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import ch.qos.logback.classic.Logger;
+import com.sun.istack.internal.NotNull;
+import kafka.producer.ProducerConfig;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import java.util.Properties;
 
 /**
  * Configuration for the Kafka producer.
@@ -14,233 +14,351 @@ import javax.validation.constraints.NotNull;
  * By default, the producer will be synchronous, blocking the calling thread until the message has
  * been sent.
  * <p/>
- * To use an asynchronous producer, set {@link KafkaProducerFactory#async} with the desired
- * properties.
  */
 public class KafkaProducerFactory extends KafkaClientFactory {
 
-    @NotNull
-    protected Size sendBufferSize = Size.kilobytes(10);
-
-    @NotNull
-    protected Duration connectionTimeout = Duration.milliseconds(5000);
-
-    @Min(0)
-    protected long reconnectInterval = 30000;
-
-    @NotNull
-    protected Size maxMessageSize = Size.megabytes(1);
-
-    protected Compression compression = Compression.parse("none");
-
-    protected String[] compressedTopics = new String[0];
-
-    @Min(0)
-    protected int partitionMissRetries = 3;
-
-    protected KafkaAsyncProducerFactory async = null;
+    public static final String NO_STRING_VALUE_ASSIGNED = "DEADBEEF";
+    public static final int NO_INT_VALUE_ASSIGNED = 0xdeadbeef;
+    protected static final Logger LOGGER = (Logger) LoggerFactory.getLogger(KafkaProducerFactory.class);
 
     /**
-     * Returns the size of the client-side send buffer.
+     * metadata.broker.list localhost:9091
+     * This is for bootstrapping and the producer will only use it for getting metadata (topics,
+     * partitions and replicas). The socket connections for sending the actual data will be established
+     * based on the broker information returned in the metadata. The format is host1:port1,host2:port2,
+     * and the list can be a subset of brokers or a VIP pointing to a subset of brokers.
      *
-     * @return the size of the client-side send buffer.
      */
-    @JsonProperty
-    public Size getSendBufferSize() {
-        return sendBufferSize;
+    protected String metadataBrokerList = "localhost:9091";
+
+    /**
+     * request.required.acks
+     * This value controls when a produce request is considered completed. Specifically, how many other
+     * brokers must have committed the data to their log and acknowledged this to the leader? Typical
+     * values are
+     * 0, which means that the producer never waits for an acknowledgement from the broker (the same
+     * behavior as 0.7). This option provides the lowest latency but the weakest durability guarantees
+     * (some data will be lost when a server fails).
+     * 1, which means that the producer gets an acknowledgement after the leader replica has received
+     * the data. This option provides better durability as the client waits until the server
+     * acknowledges the request as successful (only messages that were
+     * written to the now-dead leader but not yet replicated will be lost).
+     * -1, which means that the producer gets an acknowledgement after all in-sync replicas have
+     * received the data. This option provides the best durability, we guarantee that no messages will
+     * be lost as long as at least one in sync replica remains.
+     */
+
+    protected int requestRequiredAcks = -1;
+
+    /**
+     * request.timeout.ms	10000
+     * The amount of time the broker will wait trying to meet the request.required.acks requirement
+     * before sending back an error to the client.
+     */
+
+    protected int requestTimeout = 1000;
+
+    /**
+     * producer.type	sync
+     * This parameter specifies whether the messages are sent asynchronously in a background thread.
+     * Valid values are (1) async for asynchronous send and (2) sync for synchronous send.
+     * By setting the producer to async we allow batching together of requests (which is great for
+     * throughput) but open the possibility of a failure of the client machine dropping unsent data.
+     */
+
+    protected String producerType = "sync";
+
+    /**
+     * serializer.class	kafka.serializer.DefaultEncoder
+     * The serializer class for messages. The default encoder takes a byte[] and returns
+     * the same byte[].
+     */
+    protected String serializerClass = "kafka.serializer.DefaultEncoder";
+
+    /**
+     * key.serializer.class
+     * The serializer class for keys (defaults to the same as for messages if nothing is given).
+     */
+    protected String keySerializerClass = NO_STRING_VALUE_ASSIGNED;
+
+    /**
+     * partitioner.class	kafka.producer.DefaultPartitioner	The partitioner class for partitioning
+     * messages amongst sub-topics. The default partitioner is based on the hash of the key.
+     */
+
+    protected String partitionerClass = "kafka.producer.DefaultPartitioner";
+
+    /**
+     * compression.codec	none
+     * This parameter allows you to specify the compression codec for all data generated by
+     * this producer. Valid values are "none", "gzip" and "snappy".
+     */
+
+    protected String compressionCodec = "none";
+
+    /**
+     * compressed.topics	null
+     * This parameter allows you to set whether compression should be turned on for particular topics.
+     * If the compression codec is anything other than NoCompressionCodec, enable compression only for
+     * specified topics if any. If the list of compressed topics is empty, then enable the specified
+     * compression codec for all topics. If the compression codec is NoCompressionCodec, compression is
+     * disabled for all topics
+     */
+
+    protected String compressedTopics = null;
+
+    /**
+     * message.send.max.retries	3
+     * This property will cause the producer to automatically retry a failed send request.
+     * This property specifies the number of retries when such failures occur. Note that setting a
+     * non-zero value here can lead to duplicates in the case of network errors that cause a message to
+     * be sent but the acknowledgement to be lost.
+     */
+
+    protected int messageSendMaxRetries = 3;
+
+    /**
+     * retry.backoff.ms	100
+     * Before each retry, the producer refreshes the metadata of relevant topics to see if a new leader
+     * has been elected. Since leader election takes a bit of time, this property specifies the amount
+     * of time that the producer waits before refreshing the metadata.
+     */
+
+    protected int retryBackoffMilliSecs = 100;
+
+    /**
+     * topic.metadata.refresh.interval.ms	600 * 1000
+     * The producer generally refreshes the topic metadata from brokers when there is a failure
+     * (partition missing, leader not available...). It will also poll regularly
+     * (default: every 10min so 600000ms). If you set this to a negative value, metadata will
+     * only getrefreshed on failure. If you set this to zero, the metadata will get refreshed
+     * after each message sent (not recommended). Important note: the refresh happen only
+     * AFTER the message is sent, so if the producer never sends a message the metadata is
+     * never refreshed
+     */
+
+    protected int topicMetadataRefreshIntervalMilliSecs = 600 * 100;
+
+    /**
+     * queue.buffering.max.ms	5000
+     * Maximum time to buffer data when using async mode.
+     * For example a setting of 100 will try to batch together 100ms of messages to send at once.
+     * This will improve throughput but adds message delivery latency due to the buffering.
+     */
+
+    protected int queueBufferingMaxMilliSecs = 500;
+
+    /**
+     * queue.buffering.max.messages	10000
+     * The maximum number of unsent messages that can be
+     * queued up the producer when using async mode before either the producer must be blocked
+     * or data must be dropped.
+     */
+
+    protected int queueBufferingMaxMessages = 10000;
+
+    /**
+     * queue.enqueue.timeout.ms	-1
+     * The amount of time to block before dropping messages when running in async mode and the buffer
+     * has reached queue.buffering.max.messages. If set to 0 events will be enqueued immediately or
+     * dropped if the queue is full (the producer send call will never block). If set to -1 the producer
+     * will block indefinitely and never willingly drop a send.
+     */
+
+    protected int queueEnqueueTimeoutMilliSecs = -1;
+
+    /**
+     * batch.num.messages	200	The number of messages to send in one batch when using async mode. The
+     * producer will wait until either this number of messages are ready to send or queue.buffer.max.ms
+     * is reached.
+     */
+
+    protected int batchNumMessages = 200;
+
+    /**
+     * send.buffer.bytes	100 * 1024
+     * Socket write buffer size
+     */
+
+    protected int sendBufferBytes = 100 * 1024;
+
+    /**
+     * client.id	""	The client id is a user-specified string sent in each request to help
+     * trace calls. It should logically identify the application making the request.
+     */
+
+    protected String clientId = "dropwizard-extra-kafka-producer";
+
+
+    /**
+     */
+    public ProducerConfig asProducerConfig(){
+
+        Properties props = new Properties();
+        props.put("metadata.broker.list", getMetadataBrokerList());
+        props.put("request.required.acks", getRequestRequiredAcks());
+        props.put("request.timeout.ms", getRequestTimeout());
+        props.put("producer.type", getProducerType());
+        props.put("serializer.class", getSerializerClass());
+        props.put("key.serializer.class", getKeySerializerClass());
+        props.put("partitioner.class", getPartitionerClass());
+        props.put("compression.codec", getCompressionCodec());
+        props.put("compressed.topics", getCompressedTopics());
+        props.put("message.send.max.retries", getMessageSendMaxRetries());
+        props.put("retry.backoff.ms", getRetryBackoffMilliSecs());
+        props.put("topic.metadata.refresh.interval.ms", getTopicMetadataRefreshIntervalMilliSecs());
+        props.put("queue.buffering.max.ms", getQueueBufferingMaxMilliSecs());
+        props.put("queue.buffering.max.messages", getQueueBufferingMaxMessages());
+        props.put("queue.enqueue.timeout.ms", getQueueEnqueueTimeoutMilliSecs());
+        props.put("batch.num.messages", getBatchNumMessages());
+        props.put("send.buffer.bytes", getSendBufferBytes());
+        props.put("client.id", getClientId());
+
+        return new ProducerConfig(props);
+
     }
 
-    /**
-     * Sets the size of the client-side send buffer.
-     *
-     * @param size the size of the client-side send buffer.
-     */
-    @JsonProperty
-    public void setSendBufferSize(final Size size) {
-        this.sendBufferSize = size;
+    public String getMetadataBrokerList() {
+        return metadataBrokerList;
     }
 
-    /**
-     * Returns the maximum time to wait on connection to a broker.
-     *
-     * @return the maximum time to wait on connection to a broker.
-     */
-    @JsonProperty
-    public Duration getConnectionTimeout() {
-        return connectionTimeout;
+    public void setMetadataBrokerList(String metadataBrokerList) {
+        this.metadataBrokerList = metadataBrokerList;
     }
 
-    /**
-     * Sets the maximum time to wait on connection to a broker.
-     *
-     * @param timeout the maximum time to wait on connection to a broker.
-     */
-    @JsonProperty
-    public void getConnectionTimeout(final Duration timeout) {
-        this.connectionTimeout = timeout;
+    public int getRequestRequiredAcks() {
+        return requestRequiredAcks;
     }
 
-    /**
-     * Returns the number of produce requests to a broker after which to reset the connection.
-     *
-     * @return the number of produce requests to a broker after which the connection will be reset.
-     */
-    @JsonProperty
-    public long getReconnectInterval() {
-        return reconnectInterval;
+    public void setRequestRequiredAcks(int requestRequiredAcks) {
+        this.requestRequiredAcks = requestRequiredAcks;
     }
 
-    /**
-     * Sets the number of produce requests to a broker after which to reset the connection.
-     *
-     * @param interval the number of produce requests after which the connection will be reset.
-     */
-    @JsonProperty
-    public void getReconnectInterval(final long interval) {
-        this.reconnectInterval = interval;
+    public int getRequestTimeout() {
+        return requestTimeout;
     }
 
-    /**
-     * Returns the maximum size of a message payload.
-     * <p/>
-     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
-     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
-     *
-     * @return the maximum size of a message payload.
-     */
-    @JsonProperty
-    public Size getMaxMessageSize() {
-        return maxMessageSize;
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
     }
 
-    /**
-     * Sets the maximum size of a message payload.
-     * <p/>
-     * Attempts to produce a {@link kafka.message.Message} with a payload that exceeds this limit
-     * will cause the producer to throw a {@link kafka.common.MessageSizeTooLargeException}.
-     *
-     * @param size the maximum size of a message payload.
-     */
-    @JsonProperty
-    public void getMaxMessageSize(final Size size) {
-        this.maxMessageSize = size;
+    public String getProducerType() {
+        return producerType;
     }
 
-    /**
-     * Returns the compression codec for compressing all messages of compressed topics.
-     *
-     * @return the compression codec for compressing messages with.
-     * @throws IllegalArgumentException if the compression codec is invalid or unsupported.
-     *
-     * @see KafkaProducerFactory#getCompression()
-     */
-    @JsonProperty
-    public Compression getCompression() {
-        return compression == null
-                ? Compression.parse("default")
-                : compression;
-    }
-    /**
-     * Sets the compression codec for compressing all messages of compressed topics.
-     *
-     * @param compression the compression codec for compressing messages with.
-     * @throws IllegalArgumentException if the compression codec is invalid or unsupported.
-     *
-     * @see KafkaProducerFactory#getCompression()
-     */
-    @JsonProperty
-    public void setCompression(final String compression) {
-        this.compression = Compression.parse(compression);
+    public void setProducerType(String producerType) {
+        this.producerType = producerType;
     }
 
-    /**
-     * Returns an optional list of the topics to compress.
-     * <p/>
-     * If {@link #getCompression() compression} is enabled, this filters the topics compression is
-     * enabled for. Leaving this empty and enabling compression will cause all topics to be
-     * compressed.
-     *
-     * @return the list of topics compression is enabled for, or an empty list when compression is
-     *         enabled for all topics.
-     */
-    @JsonProperty
-    public String[] getCompressedTopics() {
-        return compressedTopics == null
-                ? new String[0]
-                : compressedTopics;
+    public String getSerializerClass() {
+        return serializerClass;
     }
 
-    /**
-     * Returns an optional list of the topics to compress.
-     * <p/>
-     * If {@link #getCompression() compression} is enabled, this filters the topics compression is
-     * enabled for. Leaving this empty and enabling compression will cause all topics to be
-     * compressed.
-     *
-     * @param compressedTopics the list of topics compression is enabled for, or an empty list when
-     *                         compression is enabled for all topics.
-     */
-    @JsonProperty
-    public void setCompressedTopics(final String[] compressedTopics) {
+    public void setSerializerClass(String serializerClass) {
+        this.serializerClass = serializerClass;
+    }
+
+    public String getKeySerializerClass() {
+        return keySerializerClass;
+    }
+
+    public void setKeySerializerClass(String keySerializerClass) {
+        this.keySerializerClass = keySerializerClass;
+    }
+
+    public String getPartitionerClass() {
+        return partitionerClass;
+    }
+
+    public void setPartitionerClass(String partitionerClass) {
+        this.partitionerClass = partitionerClass;
+    }
+
+    public String getCompressionCodec() {
+        return compressionCodec;
+    }
+
+    public void setCompressionCodec(String compressionCodec) {
+        this.compressionCodec = compressionCodec;
+    }
+
+    public String getCompressedTopics() {
+        return compressedTopics;
+    }
+
+    public void setCompressedTopics(String compressedTopics) {
         this.compressedTopics = compressedTopics;
     }
 
-    /**
-     * Returns the number of retries for refreshing the partition cache after a cache miss.
-     *
-     * @return the number of retries for refreshing the partition cache after a cache miss.
-     */
-    @JsonProperty
-    public int getPartitionMissRetries() {
-        return partitionMissRetries;
+    public int getMessageSendMaxRetries() {
+        return messageSendMaxRetries;
     }
 
-    /**
-     * Sets the number of retries for refreshing the partition cache after a cache miss.
-     *
-     * @param retries the number of retries for refreshing the partition cache after a cache miss.
-     */
-    @JsonProperty
-    public void getPartitionMissRetries(final int retries) {
-        this.partitionMissRetries = retries;
+    public void setMessageSendMaxRetries(int messageSendMaxRetries) {
+        this.messageSendMaxRetries = messageSendMaxRetries;
     }
 
-    /**
-     * Returns a factory for the asynchronous producer, defaults to synchronous.
-     * <p/>
-     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
-     *
-     * @return a factory for asynchronous producers or null, if the producer is to be synchronous.
-     *
-     * @see KafkaAsyncProducerFactory
-     */
-    @JsonProperty
-    public KafkaAsyncProducerFactory getAsync() {
-        return async;
+    public int getRetryBackoffMilliSecs() {
+        return retryBackoffMilliSecs;
     }
 
-    /**
-     * Sets a factory for the asynchronous producer, defaults to synchronous.
-     * <p/>
-     * If this is provided, the producer will be asynchronous; otherwise, it will be synchronous.
-     *
-     * @param factory a factory for asynchronous producers or null, if the producer is to be
-     *                synchronous.
-     *
-     * @see KafkaAsyncProducerFactory
-     */
-    @JsonProperty
-    public void setAsync(final KafkaAsyncProducerFactory factory) {
-        this.async = factory;
+    public void setRetryBackoffMilliSecs(int retryBackoffMilliSecs) {
+        this.retryBackoffMilliSecs = retryBackoffMilliSecs;
     }
 
-    /**
-     * Determines whether the configured producer should be asynchronous.
-     *
-     * @return true if the producer should be asynchronous; otherwise, false.
-     */
-    public boolean isAsync() {
-        return async != null;
+    public int getTopicMetadataRefreshIntervalMilliSecs() {
+        return topicMetadataRefreshIntervalMilliSecs;
     }
 
+    public void setTopicMetadataRefreshIntervalMilliSecs(int topicMetadataRefreshIntervalMilliSecs) {
+        this.topicMetadataRefreshIntervalMilliSecs = topicMetadataRefreshIntervalMilliSecs;
+    }
+
+    public int getQueueBufferingMaxMilliSecs() {
+        return queueBufferingMaxMilliSecs;
+    }
+
+    public void setQueueBufferingMaxMilliSecs(int queueBufferingMaxMilliSecs) {
+        this.queueBufferingMaxMilliSecs = queueBufferingMaxMilliSecs;
+    }
+
+    public int getQueueBufferingMaxMessages() {
+        return queueBufferingMaxMessages;
+    }
+
+    public void setQueueBufferingMaxMessages(int queueBufferingMaxMessages) {
+        this.queueBufferingMaxMessages = queueBufferingMaxMessages;
+    }
+
+    public int getQueueEnqueueTimeoutMilliSecs() {
+        return queueEnqueueTimeoutMilliSecs;
+    }
+
+    public void setQueueEnqueueTimeoutMilliSecs(int queueEnqueueTimeoutMilliSecs) {
+        this.queueEnqueueTimeoutMilliSecs = queueEnqueueTimeoutMilliSecs;
+    }
+
+    public int getBatchNumMessages() {
+        return batchNumMessages;
+    }
+
+    public void setBatchNumMessages(int batchNumMessages) {
+        this.batchNumMessages = batchNumMessages;
+    }
+
+    public int getSendBufferBytes() {
+        return sendBufferBytes;
+    }
+
+    public void setSendBufferBytes(int sendBufferBytes) {
+        this.sendBufferBytes = sendBufferBytes;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 }

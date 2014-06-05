@@ -137,7 +137,7 @@ public class MessageEnricher {
                     }
                  }
                 */
-                //map the values to valid
+                //test the values to valid
                 JsonNode validValues = rootNode.path("valid_values");
                 JsonNode keyValidValues = validValues.path(fn);
                 JsonNode validVal = keyValidValues.get(val);
@@ -193,7 +193,7 @@ public class MessageEnricher {
                         LOGGER.error(String.format("Location l1 is null for  IP address : %s. ", ipAddress));
                     }
                 }else{
-                    LOGGER.error(String.format("the GeoIp lookup service is null : %s. Can not map ip to geo for IP address %s ",lookupService, ipAddress));
+                    LOGGER.error(String.format("the GeoIp lookup service is null : %s. Can not test ip to geo for IP address %s ",lookupService, ipAddress));
                 }
             } else {
                 LOGGER.error(String.format("the IP address field is null : %s",ipAddress));

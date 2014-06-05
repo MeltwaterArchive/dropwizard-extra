@@ -4,6 +4,9 @@ package com.datasift.dropwizard.examples.kafka;
 import kafka.producer.Partitioner;
 import kafka.utils.VerifiableProperties;
 
+/**
+ * This simple partitioner makes sure that all messages from one
+ */
 public class SimplePartitioner implements Partitioner {
     //what do we do with these properties??
     private VerifiableProperties props;

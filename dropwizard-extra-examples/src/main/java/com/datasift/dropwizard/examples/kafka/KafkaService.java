@@ -3,7 +3,7 @@ package com.datasift.dropwizard.examples.kafka;
  * Created by ram on 6/2/14.
  */
 import com.datasift.dropwizard.kafka.KafkaConsumerFactory;
-import com.datasift.dropwizard.kafka.KafkaProducerConfiguration;
+import com.datasift.dropwizard.kafka.KafkaProducerFactory;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.ConfigurationException;
@@ -56,7 +56,7 @@ public class KafkaService extends Application<KafkaEnricherConfiguration> implem
     private Producer buildProducer(String configName) throws IOException, ConfigurationException {
 
         final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        KafkaProducerConfiguration kpc = new ConfigurationFactory<>(KafkaProducerConfiguration.class, validator,
+        KafkaProducerFactory kpc = new ConfigurationFactory<>(KafkaProducerFactory.class, validator,
                 Jackson.newObjectMapper(),
                 DROPWIZARD_PREFIX)
                 .build(new File(System.getProperty(USER_DIR)
