@@ -1,9 +1,7 @@
 package com.datasift.dropwizard.kafka;
 
 import ch.qos.logback.classic.Logger;
-import com.sun.istack.internal.NotNull;
 import kafka.producer.ProducerConfig;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
@@ -17,8 +15,6 @@ import java.util.Properties;
  */
 public class KafkaProducerFactory extends KafkaClientFactory {
 
-    public static final String NO_STRING_VALUE_ASSIGNED = "DEADBEEF";
-    public static final int NO_INT_VALUE_ASSIGNED = 0xdeadbeef;
     protected static final Logger LOGGER = (Logger) LoggerFactory.getLogger(KafkaProducerFactory.class);
 
     /**
@@ -79,7 +75,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
      * key.serializer.class
      * The serializer class for keys (defaults to the same as for messages if nothing is given).
      */
-    protected String keySerializerClass = NO_STRING_VALUE_ASSIGNED;
+    protected String keySerializerClass = "kafka.serializer.DefaultEncoder";
 
     /**
      * partitioner.class	kafka.producer.DefaultPartitioner	The partitioner class for partitioning
@@ -196,22 +192,25 @@ public class KafkaProducerFactory extends KafkaClientFactory {
 
         Properties props = new Properties();
         props.put("metadata.broker.list", getMetadataBrokerList());
-        props.put("request.required.acks", getRequestRequiredAcks());
-        props.put("request.timeout.ms", getRequestTimeout());
+        props.put("request.required.acks", Integer.toString(getRequestRequiredAcks()));
+        props.put("request.timeout.ms", Integer.toString(getRequestTimeout()));
         props.put("producer.type", getProducerType());
         props.put("serializer.class", getSerializerClass());
         props.put("key.serializer.class", getKeySerializerClass());
         props.put("partitioner.class", getPartitionerClass());
         props.put("compression.codec", getCompressionCodec());
-        props.put("compressed.topics", getCompressedTopics());
-        props.put("message.send.max.retries", getMessageSendMaxRetries());
-        props.put("retry.backoff.ms", getRetryBackoffMilliSecs());
-        props.put("topic.metadata.refresh.interval.ms", getTopicMetadataRefreshIntervalMilliSecs());
-        props.put("queue.buffering.max.ms", getQueueBufferingMaxMilliSecs());
-        props.put("queue.buffering.max.messages", getQueueBufferingMaxMessages());
-        props.put("queue.enqueue.timeout.ms", getQueueEnqueueTimeoutMilliSecs());
-        props.put("batch.num.messages", getBatchNumMessages());
-        props.put("send.buffer.bytes", getSendBufferBytes());
+
+        if(compressedTopics != null) {
+            props.put("compressed.topics", getCompressedTopics());
+        }
+        props.put("message.send.max.retries", Integer.toString(getMessageSendMaxRetries()));
+        props.put("retry.backoff.ms", Integer.toString(getRetryBackoffMilliSecs()));
+        props.put("topic.metadata.refresh.interval.ms", Integer.toString(getTopicMetadataRefreshIntervalMilliSecs()));
+        props.put("queue.buffering.max.ms", Integer.toString(getQueueBufferingMaxMilliSecs()));
+        props.put("queue.buffering.max.messages", Integer.toString(getQueueBufferingMaxMessages()));
+        props.put("queue.enqueue.timeout.ms", Integer.toString(getQueueEnqueueTimeoutMilliSecs()));
+        props.put("batch.num.messages", Integer.toString(getBatchNumMessages()));
+        props.put("send.buffer.bytes", Integer.toString(getSendBufferBytes()));
         props.put("client.id", getClientId());
 
         return new ProducerConfig(props);
