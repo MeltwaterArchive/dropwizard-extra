@@ -1,9 +1,11 @@
 package com.datasift.dropwizard.kafka.consumer;
 
+import io.dropwizard.lifecycle.Managed;
+
 /**
  * Interface for consuming a stream of messages from Kafka.
  */
-public interface KafkaConsumer {
+public interface KafkaConsumer extends Managed {
 
     /**
      * Commit the offsets of the current position in the message streams.
@@ -19,4 +21,5 @@ public interface KafkaConsumer {
      *              partition; otherwise, false.
      */
     public boolean isRunning();
+
 }

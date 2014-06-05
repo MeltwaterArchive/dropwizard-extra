@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * A {@link KafkaConsumer} that processes messages synchronously using an {@link ExecutorService}.
  */
-public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, ServerLifecycleListener {
+public class SynchronousConsumer<K, V> implements KafkaConsumer,  ServerLifecycleListener {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -216,6 +216,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
         }
 
         private void recoverableError(final Exception e) {
+            e.printStackTrace();
             LOG.warn("Error processing stream, restarting stream consumer ({} attempts remaining): {}",
                     maxRecoveryAttempts - attempts, e.toString());
 

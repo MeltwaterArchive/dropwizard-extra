@@ -1,6 +1,7 @@
 package com.datasift.dropwizard.kafka;
 
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
+import io.dropwizard.Configuration;
 import io.dropwizard.util.Duration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

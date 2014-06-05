@@ -242,4 +242,5 @@ public class KafkaProducerFactory extends KafkaClientFactory {
     public boolean isAsync() {
         return async != null;
     }
+
 }
