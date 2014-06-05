@@ -1,7 +1,6 @@
 package com.datasift.dropwizard.examples.kafka;
 
 import ch.qos.logback.classic.Logger;
-import com.yammer.metrics.annotation.Timed;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
@@ -25,7 +24,6 @@ public class KafkaEnricherResource {
     }
 
     @GET
-    @Timed
     public Response produce(@Context UriInfo uriInfo){
         // do nothing
         LOGGER.info(String.format("Trying to access / on KafkaEnricherResource not supported : %s", uriInfo.getRequestUri()));
