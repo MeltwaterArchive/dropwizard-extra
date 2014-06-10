@@ -34,8 +34,8 @@ public class KafkaStreamProcessor implements StreamProcessor {
             LOGGER.info(String.format("Enriching Message: %s",msg));
             msg = enricher.enrich(msg);
             LOGGER.info(String.format("Enriched Message: %s", msg));
-            KeyedMessage<String, String> keyedMessage = new KeyedMessage<>(kec.producer.topic, "message", msg);
-            producer.send(keyedMessage);
+            //KeyedMessage<String, String> keyedMessage = new KeyedMessage<>(kec.kafkaProducer.topic, "message", msg);
+           // producer.send(keyedMessage);
         }
     }
 

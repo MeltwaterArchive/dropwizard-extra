@@ -36,11 +36,13 @@ public class MessageEnricher {
     public MessageEnricher(KafkaEnricherConfiguration kec) throws Exception{
         this.kec = kec;
         rootNode = loadMapFile();
-        keyMap = rootNode.path("keyMap");
-        if(kec.geoIp.path.equals(".")){
-            kec.geoIp.path = System.getProperty("user.dir");
+        KafkaEnricherConfiguration.GeoIp geoIp = kec.getGeoIp();
+        String geoIpPath = geoIp.getPath();
+        if(geoIpPath.equals(".")){
+            geoIpPath = System.getProperty("user.dir");
+            geoIp.setPath(geoIpPath);
         }
-        lookupService = new LookupService(kec.geoIp.path+ File.separator+kec.geoIp.liteCityV6,
+        lookupService = new LookupService(geoIpPath+ File.separator+geoIp.getLiteCityV6(),
                 LookupService.GEOIP_MEMORY_CACHE );
     }
     private static String getStackTrace(Throwable t){
@@ -52,8 +54,9 @@ public class MessageEnricher {
 
     private JsonNode loadMapFile() throws Exception{
 
-        String file = kec.jsonMap.file;
-        String path = kec.jsonMap.path;
+        KafkaEnricherConfiguration.JsonMap jsonMap = kec.getJsonMap();
+        String file = jsonMap.getFile();
+        String path = jsonMap.getPath();
         if(path.equals(".")){
             path = System.getProperty("user.dir");
         }

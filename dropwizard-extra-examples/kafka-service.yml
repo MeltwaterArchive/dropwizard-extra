@@ -38,11 +38,11 @@ logging:
 #      includes: (all)
 #      frequency: 1 second
 
-jsonMap:
+json.map:
   file: "map.json"
   path: "."
 
-geoIp:
+geo.ip:
   ip: "GeoIP.dat"
   ipAsNum: "GeoIPASNum.dat"
   ipAsNumV6: "GeoIPASNumv6.dat"
@@ -51,7 +51,27 @@ geoIp:
   liteCityV6: "GeoLiteCityv6.dat"
   path: "./geoip"
 
-producer:
-    test: "test"
-    topic: "adsavvy.geo_enriched"
+#producer:
+#    test: "test"
+#    topic: "adsavvy.geo_enriched"
 
+kafka.consumer:
+    zookeeper:
+      hosts:
+        - localhost
+        #- "fake.remotehost"
+      port: 2181
+    group: test
+    partitions:
+      foo: 1
+      bar: 2
+      adsavvy.track: 2
+    rebalanceRetries: 5
+
+kafka.producer:
+    metadata.broker.list: "127.0.0.1:9092"
+    serializer.class: "kafka.serializer.StringEncoder"
+    partitioner.class: "com.datasift.dropwizard.examples.kafka.SimplePartitioner"
+    request.required.acks: 1
+
+kafka.producer.topic: adsavvy.geo_enriched
