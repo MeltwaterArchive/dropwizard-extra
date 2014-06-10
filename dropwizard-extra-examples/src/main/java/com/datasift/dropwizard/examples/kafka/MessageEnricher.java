@@ -36,6 +36,7 @@ public class MessageEnricher {
     public MessageEnricher(KafkaEnricherConfiguration kec) throws Exception{
         this.kec = kec;
         rootNode = loadMapFile();
+        keyMap = rootNode.get("keyMap");
         KafkaEnricherConfiguration.GeoIp geoIp = kec.getGeoIp();
         String geoIpPath = geoIp.getPath();
         if(geoIpPath.equals(".")){

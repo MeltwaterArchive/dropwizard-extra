@@ -3,7 +3,6 @@ package com.datasift.dropwizard.examples.kafka;
 import com.datasift.dropwizard.kafka.KafkaConsumerFactory;
 import com.datasift.dropwizard.kafka.KafkaProducerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.internal.NotNull;
 import io.dropwizard.Configuration;
 
 import java.util.Properties;
