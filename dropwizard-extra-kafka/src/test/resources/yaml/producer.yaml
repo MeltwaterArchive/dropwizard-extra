@@ -1,0 +1,18 @@
+metadata.broker.list : "myhost1:myport1, myhost2:myport2"
+request.required.acks: 1
+request.timeout.ms: 40000
+producer.type: async
+serializer.class: "kafka.serializer.StringEncoder"
+key.serializer.class: "kafka.serializer.StringEncoder"
+partitioner.class: "com.datasift.dropwizard.kafka.SimplePartitioner"
+compression.codec: gzip
+compressed.topics: "topic1, topic2"
+message.send.max.retries: 5
+retry.backoff.ms: 200
+topic.metadata.refresh.interval.ms: 300000
+queue.buffering.max.ms: 1000
+queue.buffering.max.messages: 500
+queue.enqueue.timeout.ms: 0
+batch.num.messages: 500
+send.buffer.bytes: 10240
+client.id: "test.client"
