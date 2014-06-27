@@ -30,9 +30,10 @@ public class CuratorHealthCheck extends HealthCheck {
      */
     @Override
     protected Result check() throws Exception {
+        String namespace = framework.getNamespace();
         if (!framework.isStarted()) {
             return Result.unhealthy("Client not started");
-        } else if (framework.checkExists().forPath("/") == null) {
+        } else if (framework.checkExists().forPath("".equals(namespace) ? "/" : "") == null) {
             return Result.unhealthy("Root for namespace does not exist");
         }
 
