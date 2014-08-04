@@ -1,5 +1,6 @@
 package com.datasift.dropwizard.kafka;
 
+import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import io.dropwizard.util.Duration;
 import io.dropwizard.util.Size;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
@@ -544,7 +545,31 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                                    final ExecutorService executor,
                                    final String name) {
 
-            final SynchronousConsumer consumer = new SynchronousConsumer<>(
+            final SynchronousConsumer<K, V> consumer = build(executor);
+
+            // manage the consumer
+            environment.lifecycle().manage(consumer);
+
+            // add health checks
+            environment.healthChecks().register(name, new KafkaConsumerHealthCheck(consumer));
+
+            return consumer;
+        }
+
+        /**
+         * Builds a {@link SynchronousConsumer} instance with this builders' configuration using the
+         * given {@link ExecutorService}.
+         * <p/>
+         * If possible, it's always preferable to use one of the overloads that take an {@link
+         * Environment} directly. This overload exists for situations where you don't have access to
+         * an {@link Environment} (e.g. some Commands or unit tests).
+         *
+         * @param executor The {@link ExecutorService} to process messages with.
+         *
+         * @return a configured {@link KafkaConsumer}.
+         */
+        public SynchronousConsumer<K, V> build(final ExecutorService executor) {
+            return new SynchronousConsumer<>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(KafkaConsumerFactory.this)),
                     getPartitions(),
                     keyDecoder,
@@ -557,14 +582,6 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                     getMaxRecoveryAttempts(),
                     isShutdownOnFatal(),
                     getShutdownGracePeriod());
-
-            // manage the consumer
-            environment.lifecycle().manage(consumer);
-
-            // add health checks
-            environment.healthChecks().register(name, new KafkaConsumerHealthCheck(consumer));
-
-            return consumer;
         }
     }
 
