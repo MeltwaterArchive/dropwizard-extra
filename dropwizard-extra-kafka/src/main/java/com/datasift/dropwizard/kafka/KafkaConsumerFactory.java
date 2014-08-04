@@ -140,7 +140,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param partitions a Map of topics to the number of partitions to consume from them.
      */
     @JsonProperty
-    public void getPartitions(final Map<String, Integer> partitions) {
+    public void setPartitions(final Map<String, Integer> partitions) {
         this.partitions = partitions;
     }
 
