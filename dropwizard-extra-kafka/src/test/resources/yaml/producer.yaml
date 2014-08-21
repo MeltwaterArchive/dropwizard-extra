@@ -1,0 +1,18 @@
+metadataBrokerList : "myhost1:myport1, myhost2:myport2"
+requestRequiredAcks: 1
+requestTimeout: 400 milliseconds
+producerType: async
+serializerClass: "some.serializer.Class"
+keySerializerClass: "some.serializer.key.Class"
+partitionerClass: "some.partitioner.Class"
+compressionCodec: gzip
+compressedTopics: "topic, othertopic"
+messageSendMaxRetries: 3
+retryBackoff: 20 milliseconds
+topicMetadataRefreshInterval: 3 seconds
+queueBufferingMax: 100 milliseconds
+queueBufferingMaxMessages: 50
+queueEnqueueTimeoutMillisecs: -1
+batchNumMessages: 50
+sendBufferSize: 5 kilobytes
+clientId: "test.client"

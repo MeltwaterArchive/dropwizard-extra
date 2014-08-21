@@ -1,16 +1,15 @@
 package com.datasift.dropwizard.kafka;
 
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
-import io.dropwizard.util.Duration;
-import io.dropwizard.util.Size;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumerHealthCheck;
 import com.datasift.dropwizard.kafka.consumer.StreamProcessor;
 import com.datasift.dropwizard.kafka.consumer.SynchronousConsumer;
-import io.dropwizard.setup.Environment;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Duration;
+import io.dropwizard.util.Size;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.message.Message;
@@ -140,7 +139,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param partitions a Map of topics to the number of partitions to consume from them.
      */
     @JsonProperty
-    public void getPartitions(final Map<String, Integer> partitions) {
+    public void setPartitions(final Map<String, Integer> partitions) {
         this.partitions = partitions;
     }
 
@@ -196,7 +195,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param size the size of the client-side receive buffer.
      */
     @JsonProperty
-    public void getReceiveBufferSize(final Size size) {
+    public void setReceiveBufferSize(final Size size) {
         this.receiveBufferSize = size;
     }
 
@@ -228,7 +227,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @see kafka.javaapi.message.ByteBufferMessageSet#iterator()
      */
     @JsonProperty
-    public void getFetchSize(final Size size) {
+    public void setFetchSize(final Size size) {
         this.fetchSize = size;
     }
 
@@ -256,7 +255,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param increment the amount by which the retry timeout will be increased after each attempt.
      */
     @JsonProperty
-    public void getBackOffIncrement(final Duration increment) {
+    public void setBackOffIncrement(final Duration increment) {
         this.backOffIncrement = increment;
     }
 
@@ -284,7 +283,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * has been iterated.
      */
     @JsonProperty
-    public void getQueuedChunks(final int maxChunks) {
+    public void setQueuedChunks(final int maxChunks) {
         this.queuedChunks = maxChunks;
     }
 
@@ -334,7 +333,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @see #getAutoCommit
      */
     @JsonProperty
-    public void getAutoCommitInterval(final Duration autoCommitInterval) {
+    public void setAutoCommitInterval(final Duration autoCommitInterval) {
         this.autoCommitInterval = autoCommitInterval;
     }
 
@@ -378,54 +377,66 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param rebalanceRetries the maximum number of times to retry a re-balance operation.
      */
     @JsonProperty
-    public void getRebalanceRetries(final int rebalanceRetries) {
+    public void setRebalanceRetries(final int rebalanceRetries) {
         this.rebalanceRetries = rebalanceRetries;
     }
 
+    @JsonProperty
     public Duration getInitialRecoveryDelay() {
         return initialRecoveryDelay;
     }
 
+    @JsonProperty
     public void setInitialRecoveryDelay(final Duration initialRecoveryDelay) {
         this.initialRecoveryDelay = initialRecoveryDelay;
     }
 
+    @JsonProperty
     public Duration getMaxRecoveryDelay() {
         return maxRecoveryDelay;
     }
 
+    @JsonProperty
     public void setMaxRecoveryDelay(final Duration maxRecoveryDelay) {
         this.maxRecoveryDelay = maxRecoveryDelay;
     }
 
+    @JsonProperty
     public Duration getRetryResetDelay() {
         return retryResetDelay;
     }
 
+    @JsonProperty
     public void setRetryResetDelay(final Duration retryResetDelay) {
         this.retryResetDelay = retryResetDelay;
     }
 
+    @JsonProperty
     public int getMaxRecoveryAttempts() {
         return maxRecoveryAttempts;
     }
 
+    @JsonProperty
     public void setMaxRecoveryAttempts(final int maxRecoveryAttempts) {
         this.maxRecoveryAttempts = maxRecoveryAttempts;
     }
 
+    @JsonProperty
     public boolean isShutdownOnFatal() {
         return shutdownOnFatal;
     }
 
+    @JsonProperty
     public void setShutdownOnFatal(final boolean shutdownOnFatal) {
         this.shutdownOnFatal = shutdownOnFatal;
     }
 
+    @JsonProperty
     public Duration getShutdownGracePeriod() {
         return shutdownGracePeriod;
     }
 
+    @JsonProperty
     public void setShutdownGracePeriod(final Duration shutdownGracePeriod) {
         this.shutdownGracePeriod = shutdownGracePeriod;
     }

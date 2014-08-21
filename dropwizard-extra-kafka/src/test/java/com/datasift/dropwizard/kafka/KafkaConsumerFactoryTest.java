@@ -1,9 +1,10 @@
 package com.datasift.dropwizard.kafka;
 
-import io.dropwizard.jackson.Jackson;
 import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.io.Resources;
 import io.dropwizard.configuration.ConfigurationFactory;
+import io.dropwizard.jackson.Jackson;
+import io.dropwizard.util.Duration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Tests {@link KafkaConsumerFactory}.
  */
-public class KafkaConsumerConfigurationTest {
+public class KafkaConsumerFactoryTest {
 
     private KafkaConsumerFactory factory = null;
 
@@ -65,4 +66,12 @@ public class KafkaConsumerConfigurationTest {
                 KafkaConsumerFactory.toConsumerConfig(factory).autoOffsetReset(),
                 equalTo("smallest"));
     }
+
+    @Test
+    public void testRetryResetDelay() {
+        assertThat("retryResetDelay is overridden to 3 seconds",
+                factory.getRetryResetDelay(),
+                is(Duration.seconds(3)));
+    }
+
 }
