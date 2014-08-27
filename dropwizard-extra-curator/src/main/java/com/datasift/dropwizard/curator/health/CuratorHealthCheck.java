@@ -2,6 +2,7 @@ package com.datasift.dropwizard.curator.health;
 
 import org.apache.curator.framework.CuratorFramework;
 import com.codahale.metrics.health.HealthCheck;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 
 /**
  * A {@link HealthCheck} that ensures a {@link CuratorFramework} is started and that the configured
@@ -30,9 +31,10 @@ public class CuratorHealthCheck extends HealthCheck {
      */
     @Override
     protected Result check() throws Exception {
-        if (!framework.isStarted()) {
+        final String namespace = framework.getNamespace();
+        if (framework.getState() != CuratorFrameworkState.STARTED) {
             return Result.unhealthy("Client not started");
-        } else if (framework.checkExists().forPath("/") == null) {
+        } else if (framework.checkExists().forPath(namespace.isEmpty() ? "/" : "") == null) {
             return Result.unhealthy("Root for namespace does not exist");
         }
 
