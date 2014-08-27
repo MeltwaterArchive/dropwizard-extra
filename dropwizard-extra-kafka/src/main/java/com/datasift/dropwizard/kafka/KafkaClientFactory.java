@@ -15,32 +15,8 @@ import javax.validation.constraints.NotNull;
  */
 abstract public class KafkaClientFactory {
 
-    @Valid
-    @NotNull
-    protected ZooKeeperFactory zookeeper = new ZooKeeperFactory();
-
     @NotNull
     protected Duration socketTimeout = Duration.seconds(30);
-
-    /**
-     * Returns the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
-     *
-     * @return the ZooKeeper quorum to use.
-     */
-    @JsonProperty
-    public ZooKeeperFactory getZookeeper() {
-        return zookeeper;
-    }
-
-    /**
-     * Sets the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
-     *
-     * @param zookeeper the ZooKeeper quorum to use.
-     */
-    @JsonProperty
-    public void setZookeeper(final ZooKeeperFactory zookeeper) {
-        this.zookeeper = zookeeper;
-    }
 
     /**
      * Returns the time to wait on a network socket before timing out requests.

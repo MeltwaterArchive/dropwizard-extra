@@ -58,6 +58,8 @@ public class Compression {
     public static Compression parse(final String codec) {
         if ("gzip".equals(codec) || "gz".equals(codec)) {
             return new Compression(GZIPCompressionCodec.codec());
+        } else if ("snappy".equals(codec)) {
+            return new Compression(SnappyCompressionCodec.codec());
         } else if ("none".equals(codec) || "no".equals(codec) || "false".equals(codec)) {
             return new Compression(NoCompressionCodec.codec());
         } else if ("default".equals(codec)

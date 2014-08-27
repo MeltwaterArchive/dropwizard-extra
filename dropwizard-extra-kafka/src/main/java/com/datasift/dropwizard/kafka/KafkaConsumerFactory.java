@@ -19,6 +19,7 @@ import kafka.serializer.DefaultDecoder;
 import kafka.utils.VerifiableProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -49,7 +50,11 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      *                         tailing the end of the log.</dd>
      * </dl>
      */
-    public enum InitialOffset { SMALLEST, LARGEST, ERROR }
+    public enum InitialOffset { SMALLEST, LARGEST }
+
+    @Valid
+    @NotNull
+    protected ZooKeeperFactory zookeeper = new ZooKeeperFactory();
 
     @NotEmpty
     protected String group = "";
@@ -101,6 +106,26 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     protected Duration shutdownGracePeriod = Duration.seconds(5);
 
     /**
+     * Returns the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
+     *
+     * @return the ZooKeeper quorum to use.
+     */
+    @JsonProperty
+    public ZooKeeperFactory getZookeeper() {
+        return zookeeper;
+    }
+
+    /**
+     * Sets the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
+     *
+     * @param zookeeper the ZooKeeper quorum to use.
+     */
+    @JsonProperty
+    public void setZookeeper(final ZooKeeperFactory zookeeper) {
+        this.zookeeper = zookeeper;
+    }
+
+    /**
      * Returns the consumer group the {@link KafkaConsumer} belongs to.
      *
      * @return the consumer group the {@link KafkaConsumer} belongs to.
@@ -140,7 +165,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
      * @param partitions a Map of topics to the number of partitions to consume from them.
      */
     @JsonProperty
-    public void getPartitions(final Map<String, Integer> partitions) {
+    public void setPartitions(final Map<String, Integer> partitions) {
         this.partitions = partitions;
     }
 
@@ -590,7 +615,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         final Properties props = new Properties();
 
         props.setProperty("zookeeper.connect",
-                zookeeper.getQuorumSpec());
+                zookeeper.getQuorumSpec() + zookeeper.getNamespace());
         props.setProperty("zookeeper.connection.timeout.ms",
                 String.valueOf(zookeeper.getConnectionTimeout().toMilliseconds()));
         props.setProperty("zookeeper.session.timeout.ms",
