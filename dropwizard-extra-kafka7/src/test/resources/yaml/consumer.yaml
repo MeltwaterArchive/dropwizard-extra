@@ -1,0 +1,11 @@
+zookeeper:
+  hosts:
+    - localhost
+    - fake.remotehost
+  port: 2181
+group: test
+partitions:
+  foo: 1
+  bar: 2
+rebalanceRetries: 5
+retryResetDelay: 3 seconds

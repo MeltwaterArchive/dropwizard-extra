@@ -113,6 +113,7 @@
     <module>dropwizard-extra-curator</module>
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
+    <module>dropwizard-extra-kafka7</module>
     <module>dropwizard-extra-zookeeper</module>
     <module>dropwizard-extra-util</module>
   </modules>
