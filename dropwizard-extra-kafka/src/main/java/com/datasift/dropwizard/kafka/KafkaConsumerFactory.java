@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.kafka;
 
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import io.dropwizard.util.Duration;
 import io.dropwizard.util.Size;
 import com.datasift.dropwizard.kafka.consumer.KafkaConsumer;

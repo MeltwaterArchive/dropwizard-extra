@@ -3,7 +3,6 @@ package com.datasift.dropwizard.kafka;
 import com.datasift.dropwizard.kafka.Producer.InstrumentedProducer;
 import com.datasift.dropwizard.kafka.Producer.KafkaProducer;
 import com.datasift.dropwizard.kafka.util.Compression;
-import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;

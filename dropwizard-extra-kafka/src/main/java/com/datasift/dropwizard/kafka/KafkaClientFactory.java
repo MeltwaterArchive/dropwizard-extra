@@ -1,10 +1,8 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.zookeeper.ZooKeeperFactory;
 import io.dropwizard.util.Duration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
