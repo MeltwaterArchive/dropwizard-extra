@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.kafka.Producer.InstrumentedProducer;
-import com.datasift.dropwizard.kafka.Producer.KafkaProducer;
+import com.datasift.dropwizard.kafka.producer.InstrumentedProducer;
+import com.datasift.dropwizard.kafka.producer.KafkaProducer;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
