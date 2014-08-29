@@ -265,10 +265,14 @@ public class KafkaProducerFactory extends KafkaClientFactory {
                                        final Class<Partitioner> partitioner,
                                        final Environment environment,
                                        final String name) {
-        return new InstrumentedProducer<>(
+        InstrumentedProducer<K, V> instrumentedProducer = new InstrumentedProducer<>(
                 build(keyEncoder, messageEncoder, partitioner, name),
                 environment.metrics(),
                 name);
+
+        environment.lifecycle().manage(instrumentedProducer);
+
+        return instrumentedProducer;
     }
 
     public <K, V> Producer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,
