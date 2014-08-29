@@ -1,7 +1,7 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.kafka.Producer.InstrumentedProducer;
-import com.datasift.dropwizard.kafka.Producer.KafkaProducer;
+import com.datasift.dropwizard.kafka.producer.InstrumentedProducer;
+import com.datasift.dropwizard.kafka.producer.KafkaProducer;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -265,10 +265,14 @@ public class KafkaProducerFactory extends KafkaClientFactory {
                                        final Class<Partitioner> partitioner,
                                        final Environment environment,
                                        final String name) {
-        return new InstrumentedProducer<>(
+        InstrumentedProducer<K, V> instrumentedProducer = new InstrumentedProducer<>(
                 build(keyEncoder, messageEncoder, partitioner, name),
                 environment.metrics(),
                 name);
+
+        environment.lifecycle().manage(instrumentedProducer);
+
+        return instrumentedProducer;
     }
 
     public <K, V> Producer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,

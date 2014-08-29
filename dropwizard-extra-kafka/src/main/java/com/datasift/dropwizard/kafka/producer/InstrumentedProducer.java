@@ -1,14 +1,16 @@
-package com.datasift.dropwizard.kafka.Producer;
+package com.datasift.dropwizard.kafka.producer;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
+import io.dropwizard.lifecycle.Managed;
 
 import java.util.List;
 
 /**
- * A {@link Producer} that is instrumented with metrics.
+ * A {@link Producer} that is instrumented with metrics and support for being
+ * Managed by dropwizard lifecycle.
  */
 public class InstrumentedProducer<K, V> implements KafkaProducer<K, V> {
 
@@ -32,7 +34,7 @@ public class InstrumentedProducer<K, V> implements KafkaProducer<K, V> {
         sentMessages.mark(messages.size());
     }
 
-    public void close() {
-        underlying.close();
-    }
+    public void start() {}
+    public void stop() { underlying.close(); }
+    public void close() { underlying.close(); }
 }
