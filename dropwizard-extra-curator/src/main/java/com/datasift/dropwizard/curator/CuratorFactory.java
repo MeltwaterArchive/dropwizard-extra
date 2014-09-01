@@ -212,13 +212,14 @@ public class CuratorFactory {
      */
     public CuratorFramework build(final Environment environment, final String name) {
         final ZooKeeperFactory factory = getZooKeeperFactory();
+        final String namespace = factory.getNamespace();
         final CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
                 .zookeeperFactory(new DropwizardConfiguredZooKeeperFactory(environment, name))
                 .ensembleProvider(new DropwizardConfiguredEnsembleProvider(factory))
                 .connectionTimeoutMs((int) factory.getConnectionTimeout().toMilliseconds())
                 .threadFactory(new ThreadFactoryBuilder().setNameFormat(name + "-%d").build())
                 .sessionTimeoutMs((int) factory.getSessionTimeout().toMilliseconds())
-                .namespace(factory.getNamespace())
+                .namespace(namespace.startsWith("/") ? namespace.substring(1) : namespace)
                 .compressionProvider(getCompressionProvider())
                 .retryPolicy(getRetryPolicy())
                 .canBeReadOnly(factory.isReadOnly());
