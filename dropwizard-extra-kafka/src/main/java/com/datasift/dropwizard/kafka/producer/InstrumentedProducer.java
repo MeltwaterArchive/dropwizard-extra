@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.kafka.Producer;
+package com.datasift.dropwizard.kafka.producer;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;

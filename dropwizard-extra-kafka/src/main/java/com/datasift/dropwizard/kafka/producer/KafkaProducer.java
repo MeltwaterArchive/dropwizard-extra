@@ -1,4 +1,4 @@
-package com.datasift.dropwizard.kafka.Producer;
+package com.datasift.dropwizard.kafka.producer;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
