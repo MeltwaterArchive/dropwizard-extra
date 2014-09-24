@@ -29,6 +29,8 @@ import java.util.Properties;
 
 public class KafkaProducerFactory extends KafkaClientFactory {
 
+    static final int DEFAULT_BROKER_PORT = 9092;
+
     @Valid
     private Optional<ZooKeeperFactory> zookeeper = Optional.absent();
 
@@ -261,7 +263,9 @@ public class KafkaProducerFactory extends KafkaClientFactory {
         } else {
             final StringBuilder sb = new StringBuilder(10*factory.getBrokers().size());
             for (final ImmutableMap.Entry<Integer, InetSocketAddress> e : factory.getBrokers().entrySet()) {
-                sb.append(e.getKey()).append(':').append(e.getValue().toString()).append(',');
+                final String host = e.getValue().getHostString();
+                final int port = e.getValue().getPort() == 0 ? DEFAULT_BROKER_PORT : e.getValue().getPort();
+                sb.append(e.getKey()).append(':').append(host).append(':').append(port).append(',');
             }
             props.setProperty("broker.list", sb.substring(0, sb.length() - 1));
         }

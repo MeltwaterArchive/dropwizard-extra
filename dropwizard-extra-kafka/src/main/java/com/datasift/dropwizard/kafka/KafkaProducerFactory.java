@@ -34,6 +34,8 @@ import java.util.Properties;
  */
 public class KafkaProducerFactory extends KafkaClientFactory {
 
+    static final int DEFAULT_BROKER_PORT = 6667;
+
     /**
      * The acknowledgements to wait for before considering a message as sent.
      */
@@ -289,8 +291,13 @@ public class KafkaProducerFactory extends KafkaClientFactory {
                                                   final String name) {
         final Properties properties = new Properties();
 
+        final StringBuilder sb = new StringBuilder(10*factory.getBrokers().size());
+        for (final InetSocketAddress addr : factory.getBrokers()) {
+            final int port = addr.getPort() == 0 ? DEFAULT_BROKER_PORT : addr.getPort();
+            sb.append(addr.getHostString()).append(':').append(port).append(',');
+        }
         properties.setProperty(
-                "metadata.broker.list", Joiner.on(',').join(factory.getBrokers()));
+                "metadata.broker.list", sb.substring(0, sb.length() - 1));
         properties.setProperty(
                 "request.required.acks", Integer.toString(factory.getAcknowledgement().getValue()));
         properties.setProperty(
