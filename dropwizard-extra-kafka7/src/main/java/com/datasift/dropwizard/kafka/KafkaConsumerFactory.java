@@ -625,11 +625,11 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                 factory.getGroup());
         props.setProperty("socket.timeout.ms",
                 String.valueOf(factory.getSocketTimeout().toMilliseconds()));
-        props.setProperty("socket.receive.buffer",
+        props.setProperty("socket.buffersize",
                 String.valueOf(factory.getReceiveBufferSize().toBytes()));
         props.setProperty("fetch.size",
                 String.valueOf(factory.getFetchSize().toBytes()));
-        props.setProperty("fetch.wait.max.ms",
+        props.setProperty("backoff.increment.ms",
                 String.valueOf(factory.getBackOffIncrement().toMilliseconds()));
         props.setProperty("queuedchunks.max",
                 String.valueOf(factory.getQueuedChunks()));
