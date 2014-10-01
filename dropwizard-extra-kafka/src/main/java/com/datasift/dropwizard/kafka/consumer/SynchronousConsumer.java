@@ -151,9 +151,13 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
      */
     @Override
     public void stop() throws Exception {
+        LOG.trace("Shutting down Connector");
         connector.shutdown();
+        LOG.trace("Connector shut down");
+        LOG.trace("Shutting down Executor");
         executor.shutdown();
         executor.awaitTermination(shutdownGracePeriod.getQuantity(), shutdownGracePeriod.getUnit());
+        LOG.trace("Executor shut down");
     }
 
     /**
