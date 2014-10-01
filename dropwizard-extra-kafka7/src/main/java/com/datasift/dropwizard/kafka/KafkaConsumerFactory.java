@@ -541,7 +541,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
             int threads = 0;
             for (final Integer p : getPartitions().values()) {
-                threads = threads + p;
+                threads += p;
             }
 
             final ExecutorService executor = environment.lifecycle()
