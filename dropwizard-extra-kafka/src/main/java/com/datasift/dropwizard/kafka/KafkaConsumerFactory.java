@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * A factory for creating and managing {@link KafkaConsumer} instances.
@@ -103,6 +104,9 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     @NotNull
     protected Duration shutdownGracePeriod = Duration.seconds(5);
+
+    @NotNull
+    protected Duration startDelay = Duration.seconds(2);
 
     /**
      * Returns the {@link ZooKeeperFactory} of the ZooKeeper quorum to use.
@@ -466,6 +470,14 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         this.shutdownGracePeriod = shutdownGracePeriod;
     }
 
+    @JsonProperty
+    public Duration getStartDelay() { return startDelay; }
+
+    @JsonProperty
+    public void setStartDelay(final Duration startDelay) {
+        this.startDelay = startDelay;
+    }
+
     /**
      * Prepares a {@link KafkaConsumerBuilder} for a given {@link StreamProcessor}.
      *
@@ -554,11 +566,10 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                 threads = threads + p;
             }
 
-            final ExecutorService executor = environment.lifecycle()
-                    .executorService(name + "-%d")
-                        .minThreads(threads)
-                        .maxThreads(threads)
-                        .keepAliveTime(Duration.seconds(0))
+            final ScheduledExecutorService executor = environment.lifecycle()
+                    .scheduledExecutorService(name + "-%d")
+                        .threads(threads)
+                        .shutdownTime(getShutdownGracePeriod())
                         .build();
 
             return build(environment, executor, name);
@@ -578,7 +589,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
          * @return a managed and configured {@link KafkaConsumer}.
          */
         public KafkaConsumer build(final Environment environment,
-                                   final ExecutorService executor,
+                                   final ScheduledExecutorService executor,
                                    final String name) {
 
             final SynchronousConsumer<K, V> consumer = build(executor);
@@ -605,7 +616,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
          *
          * @return a configured {@link KafkaConsumer}.
          */
-        public SynchronousConsumer<K, V> build(final ExecutorService executor) {
+        public SynchronousConsumer<K, V> build(final ScheduledExecutorService executor) {
             return new SynchronousConsumer<>(
                     Consumer.createJavaConsumerConnector(toConsumerConfig(KafkaConsumerFactory.this)),
                     getPartitions(),
@@ -618,7 +629,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
                     getRetryResetDelay(),
                     getMaxRecoveryAttempts(),
                     isShutdownOnFatal(),
-                    getShutdownGracePeriod());
+                    getStartDelay());
         }
     }
 

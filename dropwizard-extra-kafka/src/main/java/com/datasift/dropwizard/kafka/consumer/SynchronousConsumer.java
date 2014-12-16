@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link KafkaConsumer} that processes messages synchronously using an {@link ExecutorService}.
@@ -24,7 +26,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
 
     private final ConsumerConnector connector;
     private final Map<String, Integer> partitions;
-    private final ExecutorService executor;
+    private final ScheduledExecutorService executor;
     private final Decoder<K> keyDecoder;
     private final Decoder<V> valueDecoder;
     private final StreamProcessor<K, V> processor;
@@ -33,7 +35,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
     private final Duration retryResetDelay;
     private final int maxRecoveryAttempts;
     private final boolean shutdownOnFatal;
-    private final Duration shutdownGracePeriod;
+    private final Duration startDelay;
 
     private Server server = null;
     private boolean fatalErrorOccurred = false;
@@ -80,13 +82,13 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
                                final Decoder<K> keyDecoder,
                                final Decoder<V> valueDecoder,
                                final StreamProcessor<K, V> processor,
-                               final ExecutorService executor,
+                               final ScheduledExecutorService executor,
                                final Duration initialRecoveryDelay,
                                final Duration maxRecoveryDelay,
                                final Duration retryResetDelay,
                                final int maxRecoveryAttempts,
                                final boolean shutdownOnFatal,
-                               final Duration shutdownGracePeriod) {
+                               final Duration startDelay) {
         this.connector = connector;
         this.partitions = partitions;
         this.keyDecoder = keyDecoder;
@@ -98,7 +100,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
         this.retryResetDelay = retryResetDelay;
         this.maxRecoveryAttempts = maxRecoveryAttempts;
         this.shutdownOnFatal = shutdownOnFatal;
-        this.shutdownGracePeriod = shutdownGracePeriod;
+        this.startDelay = startDelay;
 
         shutdownThread.setDaemon(true);
         shutdownThread.start();
@@ -139,7 +141,10 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
             LOG.info("Consuming from topic '{}' with {} threads", topic, messageStreams.size());
 
             for (final KafkaStream<K, V> stream : messageStreams) {
-                executor.execute(new StreamProcessorRunnable(topic, stream));
+                executor.schedule(
+                        new StreamProcessorRunnable(topic, stream),
+                        startDelay.getQuantity(),
+                        startDelay.getUnit());
             }
         }
     }
@@ -154,10 +159,6 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
         LOG.trace("Shutting down Connector");
         connector.shutdown();
         LOG.trace("Connector shut down");
-        LOG.trace("Shutting down Executor");
-        executor.shutdown();
-        executor.awaitTermination(shutdownGracePeriod.getQuantity(), shutdownGracePeriod.getUnit());
-        LOG.trace("Executor shut down");
     }
 
     /**

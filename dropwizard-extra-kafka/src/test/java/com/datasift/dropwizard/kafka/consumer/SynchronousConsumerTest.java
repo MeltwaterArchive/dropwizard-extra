@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +66,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         Mockito.doAnswer(new Answer() {
@@ -76,6 +78,15 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws Unrecoverable IllegalStateException
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         Mockito.doThrow(new IllegalStateException()).when(processor).process(Mockito.any(Iterable.class), Mockito.anyString());
@@ -91,7 +102,7 @@ public class SynchronousConsumerTest {
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
                 configuration.isShutdownOnFatal(),
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -110,7 +121,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         Mockito.doAnswer(new Answer() {
@@ -122,6 +133,15 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws recoverable Exception and then recovers
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         Mockito.doThrow(new RuntimeException()).doNothing().when(processor).process(Mockito.any(Iterable.class), Mockito.anyString());
@@ -137,7 +157,7 @@ public class SynchronousConsumerTest {
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
                 configuration.isShutdownOnFatal(),
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -156,7 +176,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         Mockito.doAnswer(new Answer() {
@@ -168,6 +188,15 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws maximum number of recoverable Exception and transition to unrecoverable
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         final int maxRetries = 3;
@@ -186,7 +215,7 @@ public class SynchronousConsumerTest {
                 configuration.getRetryResetDelay(),
                 maxRetries,
                 configuration.isShutdownOnFatal(),
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -205,7 +234,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         Mockito.doAnswer(new Answer() {
@@ -217,6 +246,15 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws Unrecoverable IllegalStateException
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         final boolean shutDownServerOnUnrecoverableError = true;
@@ -233,7 +271,7 @@ public class SynchronousConsumerTest {
                 configuration.getRetryResetDelay(),
                 configuration.getMaxRecoveryAttempts(),
                 shutDownServerOnUnrecoverableError,
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -252,7 +290,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         Mockito.doAnswer(new Answer() {
@@ -264,6 +302,15 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws Unrecoverable IllegalStateException
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         final boolean shutDownServerOnUnrecoverableError = true;
@@ -283,7 +330,7 @@ public class SynchronousConsumerTest {
                 configuration.getRetryResetDelay(),
                 maxRetries,
                 shutDownServerOnUnrecoverableError,
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
@@ -304,7 +351,7 @@ public class SynchronousConsumerTest {
         Server jettyServer = PowerMockito.mock(Server.class);
         Mockito.doNothing().when(jettyServer).stop();
         //Mock an Executor to simply run the StreamProcessorRunnable
-        ExecutorService executor = Mockito.mock(ExecutorService.class);
+        ScheduledExecutorService executor = Mockito.mock(ScheduledExecutorService.class);
         when(executor.isTerminated()).thenReturn(false);
         when(executor.isShutdown()).thenReturn(false);
         final long sleepTime = 100;
@@ -318,6 +365,16 @@ public class SynchronousConsumerTest {
                 return null;
             }
         }).when(executor).execute(Mockito.any(Runnable.class));
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                Thread.sleep(sleepTime);
+                Runnable runnable = (Runnable)args[0];
+                runnable.run();
+                return null;
+            }
+        }).when(executor).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
         //Mock the StreamProcessor - Throws Unrecoverable IllegalStateException
         StreamProcessor processor = Mockito.mock(StreamProcessor.class);
         final boolean shutDownServerOnUnrecoverableError = true;
@@ -342,7 +399,7 @@ public class SynchronousConsumerTest {
                 durationForResettingErrorHandlingState,
                 maxRetries,
                 shutDownServerOnUnrecoverableError,
-                Duration.seconds(2));
+                Duration.seconds(0));
         consumer.serverStarted(jettyServer);
         assertTrue(consumer.isRunning());
         consumer.start();
