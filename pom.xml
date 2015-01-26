@@ -100,7 +100,7 @@
     <developerConnection>scm:git:git@github.com:datasift/dropwizard-extra</developerConnection>
     <url>https://github.com/datasift/dropwizard-extra</url>
   </scm>
-
+  <!--
   <distributionManagement>
     <site>
       <id>github</id>
@@ -108,7 +108,7 @@
       <url>gitsite:git@github.com/datasift/dropwizard-extra.git</url>
     </site>
   </distributionManagement>
-
+-->
   <modules>
     <module>dropwizard-extra-curator</module>
     <module>dropwizard-extra-hbase</module>
@@ -257,7 +257,7 @@
         </executions>
       </plugin>
     </plugins>
-
+    <!--
     <extensions>
       <extension>
         <groupId>com.github.stephenc.wagon</groupId>
@@ -265,6 +265,7 @@
         <version>0.4.1</version>
       </extension>
     </extensions>
+-->
   </build>
 
   <reporting>
