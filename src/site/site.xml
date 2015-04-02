@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.2.2</version>
+  </skin>
+
+  <version position="right" />
+  <publishDate position="bottom" />
+
+  <body>
+    <breadcrumbs>
+      <item name="Dropwizard" href="http://dropwizard.codahale.com/manual/" />
+      <item name="Dropwizard Extra" href="index.html" />
+    </breadcrumbs>
+
+    <menu ref="modules" inherit="top" />
+
+    <menu ref="reports" inherit="top" inheritAsRef="true" />
+  </body>
+
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>false</sideBarEnabled>
+      <gitHub>
+        <projectId>datasift/dropwizard-extra</projectId>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+</project>

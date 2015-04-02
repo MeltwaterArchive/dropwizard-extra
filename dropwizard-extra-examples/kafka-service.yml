@@ -1,0 +1,77 @@
+server:
+  adminMinThreads: 1
+  adminMaxThreads: 64
+  applicationConnectors:
+    - type: http
+      port: 8082
+  adminConnectors:
+    - type: http
+      port: 8083
+
+logging:
+  level: INFO
+  loggers:
+    io.dropwizard: INFO
+ # appenders:
+ #   - type: file
+      # The file to which current statements will be logged.
+ #     currentLogFilename: logs/enricher-map.log
+
+      # When the log file rotates, the archived log will be renamed to this and gzipped. The
+      # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
+      # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
+ #     archivedLogFilenamePattern: logs/enricher-map-%d.log.gz
+
+      # The number of archived files to keep.
+ #     archivedFileCount: 5
+
+      # The timezone used to format dates. HINT: USE THE DEFAULT, UTC.
+ #     timeZone: UTC
+
+#metrics:
+#  reporters:
+#    - type: log
+#      markerName: METRICS
+#      durationUnit: milliseconds
+#      rateUnit: seconds
+#      excludes: (none)
+#      includes: (all)
+#      frequency: 1 second
+
+json.map:
+  file: "map.json"
+  path: "."
+
+geo.ip:
+  ip: "GeoIP.dat"
+  ipAsNum: "GeoIPASNum.dat"
+  ipAsNumV6: "GeoIPASNumv6.dat"
+  ipV6: "GeoIPv6.dat"
+  liteCity: "GeoLiteCity.dat"
+  liteCityV6: "GeoLiteCityv6.dat"
+  path: "./geoip"
+
+#producer:
+#    test: "test"
+#    topic: "adsavvy.geo_enriched"
+
+kafka.consumer:
+    zookeeper:
+      hosts:
+        - localhost
+        #- "fake.remotehost"
+      port: 2181
+    group: test
+    partitions:
+      foo: 1
+      bar: 2
+      adsavvy.track: 2
+    rebalanceRetries: 5
+
+kafka.producer:
+    metadata.broker.list: "127.0.0.1:9092"
+    serializer.class: "kafka.serializer.StringEncoder"
+    partitioner.class: "com.datasift.dropwizard.examples.kafka.SimplePartitioner"
+    request.required.acks: 1
+
+kafka.producer.topic: adsavvy.geo_enriched

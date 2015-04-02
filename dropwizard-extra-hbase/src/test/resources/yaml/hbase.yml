@@ -1,0 +1,5 @@
+flushInterval: 1m
+incrementBufferSize: 256KB
+maxConcurrentRequests: 1000
+connectionTimeout: 10s
+instrumented: no

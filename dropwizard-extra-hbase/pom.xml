@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.datasift.dropwizard</groupId>
+    <artifactId>dropwizard-extra</artifactId>
+    <version>0.7.0-1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>dropwizard-extra-hbase</artifactId>
+
+  <name>Dropwizard Extra HBase</name>
+  <url>http://datasift.github.com/dropwizard-extra/dropwizard-extra-hbase</url>
+  <description>
+    Dropwizard integration for working with HBase in Scala.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.datasift.dropwizard</groupId>
+      <artifactId>dropwizard-extra-zookeeper</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hbase</groupId>
+      <artifactId>asynchbase</artifactId>
+      <version>1.4.1</version>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links combine.children="append">
+            <link>http://tsunanet.net/~tsuna/async/api/</link>
+            <link>http://tsunanet.net/~tsuna/asynchbase/api/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+

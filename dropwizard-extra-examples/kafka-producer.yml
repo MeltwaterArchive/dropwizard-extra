@@ -1,0 +1,4 @@
+metadataBrokerList: "127.0.0.1:9092"
+serializerClass: "kafka.serializer.StringEncoder"
+partitionerClass: "com.datasift.dropwizard.examples.kafka.SimplePartitioner"
+requestRequiredAcks: 1
