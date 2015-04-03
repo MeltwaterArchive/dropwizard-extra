@@ -6,6 +6,7 @@ import io.dropwizard.configuration.ConfigurationFactory;
 import io.dropwizard.jackson.Jackson;
 
 import kafka.producer.ProducerConfig;
+import kafka.producer.DefaultPartitioner;
 import kafka.serializer.DefaultEncoder;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,4 +42,11 @@ public class KafkaProducerFactoryTest {
                 equalTo("localhost:4321,192.168.10.12:123,localhost:"
                         + DEFAULT_BROKER_PORT + ",192.168.4.21:" + DEFAULT_BROKER_PORT));
     }
+
+    @Test
+   public void testPartitioners(){
+      ProducerConfig config = KafkaProducerFactory.toProducerConfig(factory, DefaultEncoder.class, DefaultEncoder.class, DefaultPartitioner.class,  "test");
+      assertThat("partitioner class is correctly set", config.partitionerClass(), equalTo("kafka.producer.DefaultPartitioner"));
+   }
+
 }
