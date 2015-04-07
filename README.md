@@ -1,5 +1,7 @@
 Dropwizard Extra
 ================
+[![Build
+Status](https://travis-ci.org/ramv/dropwizard-extra.svg?branch=develop)](https://travis-ci.org/ramv/dropwizard-extra)
 
 *For those not content with the already excellent [Dropwizard](http://github.com/codahale/dropwizard)*
 
