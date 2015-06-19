@@ -265,7 +265,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
 
     public <K, V> KafkaProducer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,
                                        final Class<? extends Encoder<V>> messageEncoder,
-                                       final Class<Partitioner> partitioner,
+                                       final Class<? extends Partitioner> partitioner,
                                        final Environment environment,
                                        final String name) {
         final Producer<K, V> producer = build(keyEncoder, messageEncoder, partitioner, name);
@@ -278,7 +278,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
 
     public <K, V> Producer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,
                                        final Class<? extends Encoder<V>> messageEncoder,
-                                       final Class<Partitioner> partitioner,
+                                       final Class<? extends Partitioner> partitioner,
                                        final String name) {
         return new Producer<>(
                 toProducerConfig(this, messageEncoder, keyEncoder, partitioner, name));
@@ -287,7 +287,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
     static <K, V> ProducerConfig toProducerConfig(final KafkaProducerFactory factory,
                                                   final Class<? extends Encoder<V>> messageEncoder,
                                                   final Class<? extends Encoder<K>> keyEncoder,
-                                                  final Class<Partitioner> partitioner,
+                                                  final Class<? extends Partitioner> partitioner,
                                                   final String name) {
         final Properties properties = new Properties();
 
