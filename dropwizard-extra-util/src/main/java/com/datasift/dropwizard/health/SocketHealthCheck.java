@@ -67,11 +67,12 @@ public abstract class SocketHealthCheck extends HealthCheck {
      */
     @Override
     protected Result check() throws Exception {
-        final Socket socket = createSocket(hostname, port);
-        return socket.isConnected()
-                ? check(socket)
-                : Result.unhealthy(String.format(
-                        "Failed to connect to %s:%d", hostname, port));
+        try (final Socket socket = createSocket(hostname, port)) {
+            return socket.isConnected()
+                   ? check(socket)
+                   : Result.unhealthy(String.format(
+                           "Failed to connect to %s:%d", hostname, port));
+        }
     }
 
     /**
