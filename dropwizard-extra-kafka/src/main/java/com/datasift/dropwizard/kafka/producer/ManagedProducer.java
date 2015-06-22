@@ -8,9 +8,9 @@ import kafka.javaapi.producer.Producer;
  */
 public class ManagedProducer implements Managed {
 
-    private final Producer<?, ?> producer;
+    private final KafkaProducer<?, ?> producer;
 
-    public ManagedProducer(final Producer<?, ?> producer) {
+    public ManagedProducer(final KafkaProducer<?, ?> producer) {
         this.producer = producer;
     }
 

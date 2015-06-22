@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface KafkaProducer<K, V> {
 
-    public void send(KeyedMessage<K, V> message);
+    void send(KeyedMessage<K, V> message);
 
-    public void send(List<KeyedMessage<K, V>> messages);
+    void send(List<KeyedMessage<K, V>> messages);
 
-    public void close();
+    void close();
 }

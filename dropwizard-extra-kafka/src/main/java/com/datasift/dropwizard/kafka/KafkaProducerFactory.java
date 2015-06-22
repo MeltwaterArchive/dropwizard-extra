@@ -3,6 +3,7 @@ package com.datasift.dropwizard.kafka;
 import com.datasift.dropwizard.kafka.producer.InstrumentedProducer;
 import com.datasift.dropwizard.kafka.producer.KafkaProducer;
 import com.datasift.dropwizard.kafka.producer.ManagedProducer;
+import com.datasift.dropwizard.kafka.producer.ProxyProducer;
 import com.datasift.dropwizard.kafka.util.Compression;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -268,7 +269,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
                                        final Class<? extends Partitioner> partitioner,
                                        final Environment environment,
                                        final String name) {
-        final Producer<K, V> producer = build(keyEncoder, messageEncoder, partitioner, name);
+        final KafkaProducer<K, V> producer = build(keyEncoder, messageEncoder, partitioner, name);
         environment.lifecycle().manage(new ManagedProducer(producer));
         return new InstrumentedProducer<>(
                 producer,
@@ -276,12 +277,12 @@ public class KafkaProducerFactory extends KafkaClientFactory {
                 name);
     }
 
-    public <K, V> Producer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,
+    public <K, V> KafkaProducer<K, V> build(final Class<? extends Encoder<K>> keyEncoder,
                                        final Class<? extends Encoder<V>> messageEncoder,
                                        final Class<? extends Partitioner> partitioner,
                                        final String name) {
-        return new Producer<>(
-                toProducerConfig(this, messageEncoder, keyEncoder, partitioner, name));
+        return new ProxyProducer<>(new Producer<K, V>(
+                toProducerConfig(this, messageEncoder, keyEncoder, partitioner, name)));
     }
 
     static <K, V> ProducerConfig toProducerConfig(final KafkaProducerFactory factory,

@@ -1,6 +1,5 @@
 package com.datasift.dropwizard.kafka;
 
-import com.datasift.dropwizard.kafka.KafkaProducerFactory;
 import com.google.common.io.Resources;
 import io.dropwizard.configuration.ConfigurationFactory;
 import io.dropwizard.jackson.Jackson;

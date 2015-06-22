@@ -12,10 +12,10 @@ import java.util.List;
  */
 public class InstrumentedProducer<K, V> implements KafkaProducer<K, V> {
 
-    private final Producer<K, V> underlying;
+    private final KafkaProducer<K, V> underlying;
     private final Meter sentMessages;
 
-    public InstrumentedProducer(final Producer<K, V> underlying,
+    public InstrumentedProducer(final KafkaProducer<K, V> underlying,
                                 final MetricRegistry registry,
                                 final String name) {
         this.underlying = underlying;
