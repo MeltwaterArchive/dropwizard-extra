@@ -19,6 +19,18 @@ public class InstrumentedProducer<K, V> implements KafkaProducer<K, V> {
     }
 
     @Override
+    public void send(final String topic, final V message) {
+        underlying.send(topic, message);
+        sentMessages.mark();
+    }
+
+    @Override
+    public void send(final String topic, final K key, final V message) {
+        underlying.send(topic, key, message);
+        sentMessages.mark();
+    }
+
+    @Override
     public void send(final ProducerData<K, V> data) {
         underlying.send(data);
         sentMessages.mark();

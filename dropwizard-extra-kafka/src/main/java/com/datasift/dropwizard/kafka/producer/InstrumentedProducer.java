@@ -22,6 +22,16 @@ public class InstrumentedProducer<K, V> implements KafkaProducer<K, V> {
         this.sentMessages = registry.meter(MetricRegistry.name(name, "sent"));
     }
 
+    public void send(final String topic, final V message) {
+        underlying.send(topic, message);
+        sentMessages.mark();
+    }
+
+    public void send(final String topic, final K key, final V message) {
+        underlying.send(topic, key, message);
+        sentMessages.mark();
+    }
+
     public void send(final KeyedMessage<K, V> message) {
         underlying.send(message);
         sentMessages.mark();
