@@ -218,7 +218,7 @@ public class ZooKeeperFactory {
 
     /**
      * Returns the namespace to prepend to all paths accessed by the ZooKeeper client.
-     * <p/>
+     * <p>
      * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
      *
      * @return the namespace to prepend to all paths accessed by the ZooKeeper client.
@@ -230,7 +230,7 @@ public class ZooKeeperFactory {
 
     /**
      * Sets the namespace to prepend to all paths accessed by the ZooKeeper client.
-     * <p/>
+     * <p>
      * Since ZooKeeper is a shared space, this is a useful way to localise a service to a namespace.
      *
      * @param namespace the namespace to prepend to all paths accessed by the ZooKeeper client.
@@ -242,7 +242,7 @@ public class ZooKeeperFactory {
 
     /**
      * Returns whether or not this client can connect to read-only ZooKeeper instances.
-     * <p/>
+     * <p>
      * During a network partition, some or all nodes in the quorum may be in a read-only state. This
      * controls whether the client may enter read-only mode during a network partition.
      *
@@ -255,7 +255,7 @@ public class ZooKeeperFactory {
 
     /**
      * Sets whether or not this client can connect to read-only ZooKeeper instances.
-     * <p/>
+     * <p>
      * During a network partition, some or all nodes in the quorum may be in a read-only state. This
      * controls whether the client may enter read-only mode during a network partition.
      *
@@ -268,7 +268,7 @@ public class ZooKeeperFactory {
 
     /**
      * Retrieves a formatted specification of the ZooKeeper quorum..
-     * <p/>
+     * <p>
      * The specification is formatted as: host1:port,host2:port[,hostN:port]
      *
      * @return a specification of the ZooKeeper quorum, formatted as a String
@@ -285,7 +285,7 @@ public class ZooKeeperFactory {
 
     /**
      * Validates that the ZooKeeper client namespace is a valid ZNode.
-     * <p/>
+     * <p>
      * Note: this validation doesn't ensure that the ZNode exists, just that it is valid.
      *
      * @return true if the namespace is a valid ZNode; false if it is not.
@@ -302,7 +302,7 @@ public class ZooKeeperFactory {
 
     /**
      * Builds a default {@link ZooKeeper} instance..
-     * <p/>
+     * <p>
      * No {@link Watcher} will be configured for the built {@link ZooKeeper} instance. If you wish
      * to watch all events on the {@link ZooKeeper} client, use {@link #build(Environment, Watcher)}.
      *
@@ -319,7 +319,7 @@ public class ZooKeeperFactory {
 
     /**
      * Builds a default {@link ZooKeeper} instance.
-     * <p/>
+     * <p>
      * The given {@link Watcher} will be assigned to watch for all events on the {@link ZooKeeper}
      * client instance. If you wish to ignore events, use {@link #build(Environment)}.
      *
@@ -338,7 +338,7 @@ public class ZooKeeperFactory {
 
     /**
      * Builds a named {@link ZooKeeper} instance.
-     * <p/>
+     * <p>
      * No {@link Watcher} will be configured for the built {@link ZooKeeper} instance. If you wish
      * to watch all events on the {@link ZooKeeper} client, use {@link
      * #build(Environment, Watcher, String)}.
@@ -358,7 +358,7 @@ public class ZooKeeperFactory {
 
     /**
      * Builds a named {@link ZooKeeper} instance.
-     * <p/>
+     * <p>
      * The given {@link Watcher} will be assigned to watch for all events on the {@link ZooKeeper}
      * client instance. If you wish to ignore events, use {@link #build(Environment, String)}.
      *
