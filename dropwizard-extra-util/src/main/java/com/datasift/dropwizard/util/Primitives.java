@@ -10,18 +10,18 @@ import java.util.Set;
 
 /**
  * Utilities for working with primitive types and reflection.
- * <p/>
+ * <p>
  * <b>Terminology:</b>
- * <p/>
+ * <p>
  * Non-reference primitive types (e.g. <code>int</code>, <code>double</code>, <code>void</code>)
  * are considered <i>native primitives</i>, or sometimes, <i>unboxed primitives</i>.
- * <p/>
+ * <p>
  * Reference primitive types (e.g. {@link Integer}, {@link Double}, {@link Void}) are considered
  * <i>boxed primitives</i>.
- * <p/>
+ * <p>
  * Conversion between native primitves and boxed primitives can be done with {@link
  * Primitives#box(Class)} and {@link Primitives#unbox(Class)}.
- * <p/>
+ * <p>
  * Whenever possible, boxing/unboxing will be implicit and transparent, with a preference for
  * native primitive types.
  */
@@ -89,7 +89,7 @@ public class Primitives {
     /**
      * Determines whether the objects of the given source {@link Class} can be assigned to the
      * primitive type of the given target {@link Class}.
-     * <p/>
+     * <p>
      * If either type is a boxed-primitive, it will be unboxed automatically; all comparisons
      * will be of the native primitive types.
      *
@@ -124,7 +124,7 @@ public class Primitives {
 
     /**
      * Determines whether the given {@link Class} is for a primitive type; either native or boxed.
-     * <p/>
+     * <p>
      * Both boxed and native primitive types are considered "primitives". Example:
      * <code>
      *     Primitives.isPrimitive(int.class) == true;
@@ -143,7 +143,7 @@ public class Primitives {
 
     /**
      * Determines whether the given {@link Class} is for a boxed primitive type.
-     * <p/>
+     * <p>
      * Only boxed primitive types are accepted. Example:
      * <code>
      *     Primitives.isPrimitive(int.class) == false;
@@ -162,7 +162,7 @@ public class Primitives {
 
     /**
      * Determines whether the given {@link Class} is for a native primitive type.
-     * <p/>
+     * <p>
      * Only native primitive types are accepted. Example:
      * <code>
      *     Primitives.isPrimitive(int.class) == true;

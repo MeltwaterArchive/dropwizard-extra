@@ -14,17 +14,17 @@ import java.util.concurrent.Semaphore;
 
 /**
  * An {@link HBaseClient} that constrains the maximum number of concurrent asynchronous requests.
- * <p/>
+ * <p>
  * This client places an upper-bounds on the number of concurrent asynchronous requests awaiting
  * completion. When this limit is reached, subsequent requests will block until an existing request
  * completes.
- * <p/>
+ * <p>
  * This behaviour is particularly useful for throttling high-throughput applications where HBase is
  * the bottle-neck. Without backing-off, such an application may run out of memory. By constraining
  * the maximum number of requests to a sufficiently high limit, but low enough so that it can be
  * reached without running out of memory, such applications can organically throttle and back-off
  * their requests.
- * <p/>
+ * <p>
  * Book-keeping of in-flight requests is done using a {@link Semaphore} which is configured as
  * "non-fair" to reduce its impact on request throughput.
  */
@@ -55,7 +55,7 @@ public class BoundedHBaseClient implements HBaseClient {
     /**
      * Create a new instance with the given semaphore for the given underlying {@link HBaseClient}
      * implementation.
-     * <p/>
+     * <p>
      * <i>Note: this is only really useful for sharing a {@link Semaphore} between two {@link
      * BoundedHBaseClient} instances, which only really makes sense for instances configured for
      * the same cluster, but with different client-side settings. <b>Use with caution!!</b></i>

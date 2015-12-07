@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 /**
  * An {@link HBaseClient} that is instrumented with {@link Metric}s.
- * <p/>
+ * <p>
  * For each asynchronous request method, a {@link Timer} tracks the time taken for the request.
- * <p/>
+ * <p>
  * This implementation proxies all requests through an underlying {@link HBaseClient}; it merely
  * layers instrumentation on top of the underlying {@link HBaseClient}.
  *
@@ -38,9 +38,9 @@ public class InstrumentedHBaseClient implements HBaseClient {
 
     /**
      * Creates a new {@link InstrumentedHBaseClient} for the given underlying client.
-     * <p/>
+     * <p>
      * Instrumentation will be registered with the given {@link MetricRegistry}.
-     * <p/>
+     * <p>
      * A new {@link HBaseInstrumentation} container will be created for this {@link HBaseClient}
      * with the given {@link MetricRegistry}.
      *

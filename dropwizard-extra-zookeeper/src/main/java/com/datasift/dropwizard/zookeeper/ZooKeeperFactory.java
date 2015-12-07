@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * A Factory for creating configured and managed {@link ZooKeeper} client instances.
- * <p/>
+ * <p>
  * A {@link ZooKeeperHealthCheck} will be registered for each {@link ZooKeeper} client instance that
  * checks for the existence of the configured {@link #namespace}.
  *
@@ -63,7 +63,7 @@ public class ZooKeeperFactory {
 
         /**
          * Returns the authorization id to use.
-         * <p/>
+         * <p>
          * This is dependent on the authorization {@link #getScheme() scheme} being used.
          *
          * @return the scheme-specific authorization id.
@@ -77,7 +77,7 @@ public class ZooKeeperFactory {
 
         /**
          * Sets the authorization id to use.
-         * <p/>
+         * <p>
          * This is dependent on the authorization {@link #getScheme() scheme} being used.
          *
          * @param id the scheme-specific authorization id.

@@ -12,7 +12,7 @@ public class Classes {
 
     /**
      * Creates a new instance of the given {@link Class}, using the given arguments.
-     * <p/>
+     * <p>
      * A new instance object of the given {@link Class} is created, using reflection,
      * providing the given arguments to the constructor.
      *
@@ -45,8 +45,8 @@ public class Classes {
     /**
      * Creates a new instance of the same {@link Class} as the given <i>template</i>, using the
      * given constructor arguments.
-     * <p/>
-     * Given an object of type <code>T</code>, a new instance of {@link Class<T>} will be created,
+     * <p>
+     * Given an object of type <code>T</code>, a new instance of {@link Class} will be created,
      * passing the given <i>args</i> to the constructor.
      *
      * @param template an object that provides the {@link Class} to instantiate.
@@ -80,10 +80,10 @@ public class Classes {
     /**
      * Creates a new instance of the given {@link Class}, using the given arguments, ignoring
      * visibility.
-     * <p/>
+     * <p>
      * A new instance object of the given {@link Class} is created, using reflection,
      * providing the given arguments to the constructor.
-     * <p/>
+     * <p>
      * The visibility of the {@link Constructor} defined by the arguments is ignored and a new
      * instance created irrespective of the defined visibility. This is potentially dangerous,
      * as the API likely makes no guarantee as to the behaviour when instantiating from a non-public
@@ -124,10 +124,10 @@ public class Classes {
     /**
      * Creates a new instance of the same {@link Class} as the given <i>template</i>, using the
      * given constructor arguments and ignoring visibility.
-     * <p/>
-     * Given an object of type <code>T</code>, a new instance of {@link Class<T>} will be created,
+     * <p>
+     * Given an object of type <code>T</code>, a new instance of {@link Class} will be created,
      * passing the given <i>args</i> to the constructor.
-     * <p/>
+     * <p>
      * The visibility of the {@link Constructor} defined by the arguments is ignored and a new
      * instance created irrespective of the defined visibility. This is potentially dangerous,
      * as the API likely makes no guarantee as to the behaviour when instantiating from a non-public
@@ -161,11 +161,11 @@ public class Classes {
 
     /**
      * Gets the {@link Class} for multiple objects.
-     * <p/>
+     * <p>
      * The resulting array of {@link Class} objects that are ordered in parallel with the argument
      * list that produced it. This is especially useful for getting a {@link Constructor} for a
      * given set of arguments:
-     * <p/>
+     * <p>
      * <code>
      *     clazz.getConstructor(Classes.of("abc", 123));
      * </code>
@@ -184,16 +184,16 @@ public class Classes {
 
     /**
      * Ensures a variable argument list has been properly passed.
-     * <p/>
+     * <p>
      * Sometimes, you want to pass a single array-typed argument to a method that accepts
      * variable arguments. In these situations, that array will be unwrapped in to a list of
      * multiple arguments, instead of a single argument that is an array.
-     * <p/>
+     * <p>
      * Example:
      * <code>
      *     Classes.of(TableNotFoundException.class, tableName.getBytes());
      * </code>
-     * <p/>
+     * <p>
      * Resolving will differentiate a variable argument list from a single argument of the
      * following types:
      * <ul>
@@ -217,14 +217,14 @@ public class Classes {
     /**
      * Gets a {@link Constructor} from the given {@link Class} that is applicable to the given
      * arguments.
-     * <p/>
+     * <p>
      * If the types of the given arguments are not an exact match for any declared {@link
      * Constructor}s, a Constructor that will accept the arguments (e.g. because they are
      * sub-types of the parameters) will be searched for.
-     * <p/>
+     * <p>
      * If the given {@link Class} has no {@link Constructor} that is applicable to the given
      * arguments, a {@link NoSuchMethodException} will be thrown.
-     * <p/>
+     * <p>
      * No guarantees are made about the visibility of the {@link Constructor} returned; it may not
      * be accessible from the calling scope.
      *
@@ -254,14 +254,14 @@ public class Classes {
     /**
      * Gets the {@link Method} of the given name from the given {@link Class} that is applicable
      * to the given argument types.
-     * <p/>
+     * <p>
      * If the types of the given arguments are not an exact match for any declared {@link Method}s,
      * a {@link Method} that will accept the arguments (e.g. because they are sub-types of the
      * parameters) will be searched for.
-     * <p/>
+     * <p>
      * If the given {@link Class} has no {@link Method} with the given name that is applicable to
      * the given arguments, a {@link NoSuchMethodException} will be thrown.
-     * <p/>
+     * <p>
      * No guarantees are made about the visibility of the {@link Method} returned; it may not be
      * accessible from the calling scope. Similarly, the {@link Method} may be static or may be an
      * instance method.
@@ -291,7 +291,7 @@ public class Classes {
     /**
      * Determines if the {@link Class}s for the given target types can be assigned to from the
      * types represented by the given source {@link Class}s.
-     * <p/>
+     * <p>
      * Each target type will be matched up with the corresponding source type. If the length of the
      * two arrays differ, they are considered not assignable.
      *
@@ -324,7 +324,7 @@ public class Classes {
     /***
      * Determines if the given source {@link Class} represents a type that can be assigned to the
      * given target {@link Class}.
-     * <p/>
+     * <p>
      * If the source {@link Class} represents null (via {@link Null}), it can be assigned to any
      * {@link Class} that represents a reference type.
      *
@@ -345,7 +345,7 @@ public class Classes {
 
     /**
      * A placeholder Null type.
-     * <p/>
+     * <p>
      * This Null type provides a means to get a {@link Class} for null values. This should never be
      * used except for special-casing nulls.
      */

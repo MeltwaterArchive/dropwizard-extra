@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 /**
  * Client for scanning over a selection of rows.
- * <p/>
+ * <p>
  * To obtain an instance of a {@link RowScanner}, call {@link
  * com.datasift.dropwizard.hbase.HBaseClient#scan(byte[])}.
- * <p/>
+ * <p>
  * All implementations are wrapper proxies around {@link org.hbase.async.Scanner} providing
  * additional functionality.
  */

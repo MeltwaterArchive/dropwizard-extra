@@ -5,7 +5,7 @@ import org.apache.zookeeper.ZooKeeper;
 
 /**
  * A {@link HealthCheck} for a ZooKeeper ensemble.
- * <p/>
+ * <p>
  * Checks that:
  * <ul>
  *     <li>the client is alive,</li>
@@ -24,7 +24,6 @@ public class ZooKeeperHealthCheck extends HealthCheck {
      *
      * @param client the client to check the health of.
      * @param namespace the namespace to check for within the ZooKeeper ensemble.
-     * @param name the name of this {@link HealthCheck}.
      */
     public ZooKeeperHealthCheck(final ZooKeeper client, final String namespace) {
         this.client = client;

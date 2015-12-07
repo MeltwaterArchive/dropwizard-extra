@@ -26,10 +26,10 @@ import java.util.Properties;
 
 /**
  * Configuration for the Kafka producer.
- * <p/>
+ * <p>
  * By default, the producer will be synchronous, blocking the calling thread until the message has
  * been sent.
- * <p/>
+ * <p>
  * To use an asynchronous producer, set {@link KafkaProducerFactory#async} with the desired
  * properties.
  */
@@ -250,7 +250,7 @@ public class KafkaProducerFactory extends KafkaClientFactory {
     public void setClientIdSuffix(final Optional<String> clientIdSuffix) {
         this.clientIdSuffix = clientIdSuffix;
     }
-
+    
     public <V> KafkaProducer<?, V> build(final Class<? extends Encoder<V>> messageEncoder,
                                     final Environment environment,
                                     final String name) {
