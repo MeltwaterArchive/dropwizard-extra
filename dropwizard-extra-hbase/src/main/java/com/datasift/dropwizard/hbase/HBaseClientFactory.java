@@ -15,8 +15,7 @@ import javax.validation.constraints.NotNull;
  * A factory for creating and managing {@link HBaseClient} instances.
  * <p>
  * The resulting {@link HBaseClient} will have its lifecycle managed by an {@link Environment} and
- * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code .META.} and
- * {@code -ROOT-} tables.
+ * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code hbase:meta}.
  *
  * @see HBaseClient
  */
@@ -228,10 +227,8 @@ public class HBaseClientFactory {
         client.setFlushInterval(getFlushInterval());
         client.setIncrementBufferSize(getIncrementBufferSize());
 
-        // add healthchecks for META and ROOT tables
-        //environment.healthChecks().register(name + "-meta", new HBaseHealthCheck(client, ".META."));
+        // add healthchecks for hbase:meta table
         environment.healthChecks().register(name + "-meta", new HBaseHealthCheck(client, "hbase:meta"));
-        environment.healthChecks().register(name + "-root", new HBaseHealthCheck(client, "-ROOT-"));
 
         // manage client
         environment.lifecycle().manage(new ManagedHBaseClient(
