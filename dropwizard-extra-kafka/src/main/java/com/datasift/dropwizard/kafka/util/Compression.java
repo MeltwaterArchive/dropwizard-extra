@@ -9,10 +9,10 @@ import kafka.message.NoCompressionCodec;
 /**
  * A utility for parsing {@link CompressionCodec}s from a {@link
  * io.dropwizard.Configuration}.
- * <p/>
+ * <p>
  * To create {@link Compression} instances, use {@link Compression#parse(String)} to parse an
  * instance from a {@link String}.
- * <p/>
+ * <p>
  * This is provided to parse textual specifications of a {@link CompressionCodec}, for example in a
  * {@link io.dropwizard.Configuration}.
  */
@@ -22,9 +22,9 @@ public class Compression {
 
     /**
      * Creates a {@link Compression} instance for the given codec type.
-     * <p/>
+     * <p>
      * The valid codec values are defined by {@link CompressionCodec}.
-     * <p/>
+     * <p>
      * To create {@link Compression} instances, use the {@link Compression#parse(String)} factory
      * method to parse an instance from a {@link String}.
      *

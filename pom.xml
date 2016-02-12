@@ -15,7 +15,7 @@
 
   <groupId>com.datasift.dropwizard</groupId>
   <artifactId>dropwizard-extra</artifactId>
-  <version>0.7.1-2-SNAPSHOT</version>
+  <version>0.9.1-1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Dropwizard Extra</name>
@@ -28,7 +28,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <dropwizard.version>0.7.1</dropwizard.version>
+    <dropwizard.version>0.9.1</dropwizard.version>
   </properties>
 
   <organization>
@@ -113,7 +113,7 @@
     <module>dropwizard-extra-curator</module>
     <module>dropwizard-extra-hbase</module>
     <module>dropwizard-extra-kafka</module>
-    <module>dropwizard-extra-kafka7</module>
+    
     <module>dropwizard-extra-zookeeper</module>
     <module>dropwizard-extra-util</module>
   </modules>

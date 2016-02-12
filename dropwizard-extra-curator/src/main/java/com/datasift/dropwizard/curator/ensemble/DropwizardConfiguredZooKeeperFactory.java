@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * Provides integration for Dropwizard's ZooKeeper functionality with Curator.
- * <p/>
+ * <p>
  * This ensures that {@link ZooKeeper} instances created by Curator integrate properly with the
  * Dropwizard application life-cycle.
  */

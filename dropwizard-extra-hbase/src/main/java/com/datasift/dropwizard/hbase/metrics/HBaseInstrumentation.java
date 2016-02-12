@@ -30,7 +30,7 @@ public class HBaseInstrumentation {
 
     /**
      * Initialises instrumentation for the given {@link HBaseClient} using the given {@link
-     * MetricsRegistry}.
+     * com.codahale.metrics.MetricRegistry}.
      *
      * @param client   the client to create metrics for.
      * @param registry the registry to register the metrics with.

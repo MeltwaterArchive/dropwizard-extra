@@ -7,7 +7,7 @@ public class Exceptions {
 
     /**
      * Creates a new {@link Exception} instance from the given {@link Class}, using the given args.
-     * <p/>
+     * <p>
      * A new {@link Exception} instance object of the given {@link Class} is created, using
      * reflection, providing the given arguments to the constructor.
      *
@@ -28,7 +28,7 @@ public class Exceptions {
     /**
      * Creates a new {@link Exception} instance of the same {@link Class} as the given
      * <i>template</i>, using the given constructor args.
-     * <p/>
+     * <p>
      * A new {@link Exception} instance object of the given {@link Class} is created, using
      * reflection, providing the given arguments to the constructor.
      *
@@ -50,10 +50,10 @@ public class Exceptions {
     /**
      * Creates a new {@link Exception} instance from the given {@link Class}, using the given args,
      * ignoring visibility.
-     * <p/>
+     * <p>
      * A new {@link Exception} instance object of the given {@link Class} is created, using
      * reflection, providing the given arguments to the constructor.
-     * <p/>
+     * <p>
      * The visibility of the constructor defined by the arguments is ignored and a new instance
      * created irrespective of the defined visibility. This is potentially dangerous, as the API
      * likely makes no guarantee as to the behaviour when instantiating from a non-public
@@ -77,10 +77,10 @@ public class Exceptions {
     /**
      * Creates a new {@link Exception} instance of the same {@link Class} as the given
      * <i>template</i>, using the given constructor args, ignoring visibility.
-     * <p/>
+     * <p>
      * A new {@link Exception} instance object of the given {@link Class} is created, using
      * reflection, providing the given arguments to the constructor.
-     * <p/>
+     * <p>
      * The visibility of the constructor defined by the arguments is ignored and a new instance
      * created irrespective of the defined visibility. This is potentially dangerous, as the API
      * likely makes no guarantee as to the behaviour when instantiating from a non-public

@@ -29,11 +29,11 @@ public class ManagedHBaseClient implements Managed {
      * To force the connection, we look for the prescence of the .META. table.
      *
      * @throws com.stumbleupon.async.TimeoutException if there is a problem connecting to HBase.
-     * @throws org.hbase.async.TableNotFoundException if the .META. table can't be found.
-     * @throws Exception if there is a problem verifying the .META. table exists.
+     * @throws org.hbase.async.TableNotFoundException if the hbase:meta table can't be found.
+     * @throws Exception if there is a problem verifying the hbase:meta table exists.
      */
     public void start() throws Exception {
-        client.ensureTableExists(".META.").joinUninterruptibly(connectionTimeout.toMilliseconds());
+        client.ensureTableExists("hbase:meta").joinUninterruptibly(connectionTimeout.toMilliseconds());
     }
 
     /**

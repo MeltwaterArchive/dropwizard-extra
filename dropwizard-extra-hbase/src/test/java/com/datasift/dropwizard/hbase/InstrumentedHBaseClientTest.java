@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link InstrumentedHBaseClient}.
- * <p/>
+ * <p>
  * Each method is tested first, that it proxies its implementation to the underlying {@link
  * HBaseClient}, and then that the method is timed as expected.
  */

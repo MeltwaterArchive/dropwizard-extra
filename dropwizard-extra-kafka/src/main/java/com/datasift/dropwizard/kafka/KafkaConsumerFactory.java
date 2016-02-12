@@ -28,10 +28,10 @@ import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * A factory for creating and managing {@link KafkaConsumer} instances.
- * <p/>
+ * <p>
  * The {@link KafkaConsumer} implementation will be determined by the configuration used to create
  * it.
- * <p/>
+ * <p>
  * The resultant {@link KafkaConsumer} will have its lifecycle managed by the {@link Environment}
  * and will have {@link com.codahale.metrics.health.HealthCheck}s installed to monitor its status.
  */
@@ -42,7 +42,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     /**
      * A description of the initial offset to consume from a partition when no committed offset
      * exists.
-     * <p/>
+     * <p>
      * <dl>
      *     <dt>SMALLEST</dt><dd>Use the smallest (i.e. earliest) available offset. In effect,
      *                          consuming the entire log.</dd>
@@ -150,7 +150,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Returns a mapping of the number of partitions to consume from each topic.
-     * <p/>
+     * <p>
      * Topics not referenced will not be consumed from.
      *
      * @return a Map of topics to the number of partitions to consume from them.
@@ -162,7 +162,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Sets a mapping of the number of partitions to consume from each topic.
-     * <p/>
+     * <p>
      * Topics not referenced will not be consumed from.
      *
      * @param partitions a Map of topics to the number of partitions to consume from them.
@@ -175,7 +175,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     /**
      * Returns the time the {@link KafkaConsumer} should wait to receive messages before timing out
      * the stream.
-     * <p/>
+     * <p>
      * When a {@link KafkaConsumer} times out a stream, a {@link
      * kafka.consumer.ConsumerTimeoutException} will be thrown by that streams' {@link
      * kafka.consumer.ConsumerIterator}.
@@ -194,7 +194,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     /**
      * Sets the time the {@link KafkaConsumer} should wait to receive messages before timing out
      * the stream.
-     * <p/>
+     * <p>
      * When a {@link KafkaConsumer} times out a stream, a {@link
      * kafka.consumer.ConsumerTimeoutException} will be thrown by that streams' {@link
      * kafka.consumer.ConsumerIterator}.
@@ -230,7 +230,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Returns the maximum size of a batch of messages to fetch in a single request.
-     * <p/>
+     * <p>
      * This dictates the maximum size of a message that may be received by the {@link
      * KafkaConsumer}. Messages larger than this size will cause a {@link
      * kafka.common.InvalidMessageSizeException} to be thrown during iteration of the stream.
@@ -246,7 +246,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Sets the maximum size of a batch of messages to fetch in a single request.
-     * <p/>
+     * <p>
      * This dictates the maximum size of a message that may be received by the {@link
      * KafkaConsumer}. Messages larger than this size will cause a {@link
      * kafka.common.InvalidMessageSizeException} to be thrown during iteration of the stream.
@@ -262,7 +262,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Returns the cumulative delay before polling a broker again when no data is returned.
-     * <p/>
+     * <p>
      * When fetching data from a broker, if there is no new data, there will be a delay before
      * polling the broker again. This controls the duration of the delay by increasing it linearly,
      * on each poll attempt.
@@ -276,7 +276,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Sets the cumulative delay before polling a broker again when no data is returned.
-     * <p/>
+     * <p>
      * When fetching data from a broker, if there is no new data, there will be a delay before
      * polling the broker again. This controls the duration of the delay by increasing it linearly,
      * on each poll attempt.
@@ -290,12 +290,14 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Returns the maximum number of chunks to queue in internal buffers.
-     * <p/>
+     * <p>
      * The consumer internally buffers fetched messages in a set of queues, which are used to
      * iterate the stream. This controls the size of these queues.
-     * <p/>
+     * <p>
      * Once a queue has been filled, it will block subsequent attempts to fill it until (some of) it
      * has been iterated.
+     * 
+     * @return the maximum number of chunks to queue in internal buffers
      */
     @JsonProperty
     public int getQueuedChunks() {
@@ -304,12 +306,14 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
     /**
      * Sets the maximum number of chunks to queue in internal buffers.
-     * <p/>
+     * <p>
      * The consumer internally buffers fetched messages in a set of queues, which are used to
      * iterate the stream. This controls the size of these queues.
-     * <p/>
+     * <p>
      * Once a queue has been filled, it will block subsequent attempts to fill it until (some of) it
      * has been iterated.
+     * 
+     * @param maxChunks the maximium number of chunks to queue
      */
     @JsonProperty
     public void setQueuedChunks(final int maxChunks) {
@@ -342,7 +346,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     }
 
     /**
-     * Sets the frequency to automatically commit previously consumed offsets, if enabled.
+     * Gets the frequency to automatically commit previously consumed offsets, if enabled.
      *
      * @return the frequency to automatically commit the previously consumed offsets, when enabled.
      *
@@ -355,9 +359,9 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
 
 
     /**
-     * Returns the frequency to automatically commit previously consumed offsets, if enabled.
-     *
-     * @return the frequency to automatically commit the previously consumed offsets, when enabled.
+     * Sets the frequency to automatically commit previously consumed offsets, if enabled.
+     * 
+     * @param autoCommitInterval the frequency with which to auto commit.
      *
      * @see #getAutoCommit
      */
@@ -492,7 +496,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
     /**
      * Prepares a {@link KafkaConsumerBuilder} for a given {@link Decoder} and {@link
      * StreamProcessor}.
-     * <p/>
+     * <p>
      * The decoder instance is used to decode {@link Message}s in the stream before being passed to
      * the processor.
      *
@@ -546,10 +550,10 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         /**
          * Builds a {@link KafkaConsumer} instance from the given {@link ExecutorService} and name,
          * for the given {@link Environment}.
-         * <p/>
+         * <p>
          * The name is used to identify the returned {@link KafkaConsumer} instance, for example, as
          * the name of its {@link com.codahale.metrics.health.HealthCheck}s, thread pool, etc.
-         * <p/>
+         * <p>
          * This implementation creates a new {@link ExecutorService} with a fixed-size thread-pool,
          * configured for one thread per-partition the {@link KafkaConsumer} is being configured to
          * consume.
@@ -578,7 +582,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         /**
          * Builds a {@link KafkaConsumer} instance from the given {@link ExecutorService} and name,
          * for the given {@link Environment}.
-         * <p/>
+         * <p>
          * The name is used to identify the returned {@link KafkaConsumer} instance, for example, as
          * the name of its {@link com.codahale.metrics.health.HealthCheck}s, etc.
          *
@@ -607,7 +611,7 @@ public class KafkaConsumerFactory extends KafkaClientFactory {
         /**
          * Builds a {@link SynchronousConsumer} instance with this builders' configuration using the
          * given {@link ExecutorService}.
-         * <p/>
+         * <p>
          * If possible, it's always preferable to use one of the overloads that take an {@link
          * Environment} directly. This overload exists for situations where you don't have access to
          * an {@link Environment} (e.g. some Commands or unit tests).

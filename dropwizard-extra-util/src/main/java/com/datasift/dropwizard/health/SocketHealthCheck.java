@@ -7,7 +7,7 @@ import java.net.Socket;
 
 /**
  * A base {@link HealthCheck} for remote socket servers.
- * <p/>
+ * <p>
  * Use this as a basis for {@link HealthCheck}s for remote services, such as databases or
  * web-services.
  */
@@ -48,7 +48,7 @@ public abstract class SocketHealthCheck extends HealthCheck {
 
     /**
      * Generates a String representation of the remote socket being checked.
-     * <p/>
+     * <p>
      * This will be the socket address formatted as: hostname:port
      *
      * @return the String representation of the remote socket being checked.
@@ -91,7 +91,7 @@ public abstract class SocketHealthCheck extends HealthCheck {
 
     /**
      * Perform a check of a {@link Socket}.
-     * <p/>
+     * <p>
      * Implementations can assume that the {@link Socket} is already connected.
      *
      * @param socket the {@link Socket} to check the health of
@@ -99,8 +99,6 @@ public abstract class SocketHealthCheck extends HealthCheck {
      * @return if the component is healthy, a healthy {@link Result}; otherwise, an unhealthy {@link
      *         Result} with a description of the error or exception
      *
-     * @throws Exception if there is an unhandled error during the health check; this will result in
-     *                   a failed health check
      */
     protected abstract Result check(Socket socket);
 }

@@ -116,11 +116,11 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed, ServerLif
 
     /**
      * Starts this {@link SynchronousConsumer} immediately.
-     * <p/>
+     * <p>
      * The consumer will immediately begin consuming from the configured topics using the configured
      * {@link Decoder} to decode messages and {@link StreamProcessor} to process the decoded
      * messages.
-     * <p/>
+     * <p>
      * Each partition will be consumed using a separate thread.
      *
      * @throws Exception if an error occurs starting the consumer
@@ -197,10 +197,10 @@ public class SynchronousConsumer<T> implements KafkaConsumer, Managed, ServerLif
 
         /**
          * Process the stream using the configured {@link StreamProcessor}.
-         * <p/>
+         * <p>
          * If an {@link Exception} is thrown during processing, if it is deemed <i>recoverable</i>,
          * the stream will continue to be consumed.
-         * <p/>
+         * <p>
          * Unrecoverable {@link Exception}s will cause the consumer to shut down completely.
          */
         @Override

@@ -11,7 +11,7 @@ import java.util.concurrent.Semaphore;
 
 /**
  * A Scanner that constraints concurrent requests with a {@link Semaphore}.
- * <p/>
+ * <p>
  * To obtain an instance of a {@link RowScanner}, call {@link BoundedHBaseClient#scan(byte[])}.
  */
 public class BoundedRowScanner implements RowScanner {

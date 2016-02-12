@@ -13,10 +13,9 @@ import javax.validation.constraints.NotNull;
 
 /**
  * A factory for creating and managing {@link HBaseClient} instances.
- * <p/>
+ * <p>
  * The resulting {@link HBaseClient} will have its lifecycle managed by an {@link Environment} and
- * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code .META.} and
- * {@code -ROOT-} tables.
+ * will have {@link com.codahale.metrics.health.HealthCheck}s installed for the {@code hbase:meta}.
  *
  * @see HBaseClient
  */
@@ -90,7 +89,7 @@ public class HBaseClientFactory {
 
     /**
      * Returns the maximum size of the buffer for increment operations.
-     * <p/>
+     * <p>
      * Once this buffer is full, a flush is forced irrespective of the {@link #getFlushInterval()
      * flushInterval}.
      *
@@ -105,7 +104,7 @@ public class HBaseClientFactory {
 
     /**
      * Sets the maximum size of the buffer for increment operations.
-     * <p/>
+     * <p>
      * Once this buffer is full, a flush is forced irrespective of the {@link #getFlushInterval()
      * flushInterval}.
      *
@@ -120,10 +119,10 @@ public class HBaseClientFactory {
 
     /**
      * Returns maximum number of concurrent asynchronous requests for the client.
-     * <p/>
+     * <p>
      * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
      * the client running out of memory.
-     * <p/>
+     * <p>
      * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
      * requests.
      *
@@ -138,10 +137,10 @@ public class HBaseClientFactory {
 
     /**
      * Sets the maximum number of concurrent asynchronous requests for the client.
-     * <p/>
+     * <p>
      * Useful for throttling high-throughput applications when HBase is the bottle-neck to prevent
      * the client running out of memory.
-     * <p/>
+     * <p>
      * With this is zero ("0"), no limit will be placed on the number of concurrent asynchronous
      * requests.
      *
@@ -228,9 +227,8 @@ public class HBaseClientFactory {
         client.setFlushInterval(getFlushInterval());
         client.setIncrementBufferSize(getIncrementBufferSize());
 
-        // add healthchecks for META and ROOT tables
-        environment.healthChecks().register(name + "-meta", new HBaseHealthCheck(client, ".META."));
-        environment.healthChecks().register(name + "-root", new HBaseHealthCheck(client, "-ROOT-"));
+        // add healthchecks for hbase:meta table
+        environment.healthChecks().register(name + "-meta", new HBaseHealthCheck(client, "hbase:meta"));
 
         // manage client
         environment.lifecycle().manage(new ManagedHBaseClient(
@@ -241,11 +239,11 @@ public class HBaseClientFactory {
 
     /**
      * Builds a new {@link HBaseClient} according to the given {@link HBaseClientFactory}.
-     * <p/>
+     * <p>
      * If instrumentation {@link #instrumented is enabled} in the
      * configuration, this will build an {@link InstrumentedHBaseClient} wrapping the given {@link
      * HBaseClient}.
-     * <p/>
+     * <p>
      * If instrumentation is not enabled, the given {@link HBaseClient} will be returned verbatim.
      *
      * @param client an underlying {@link HBaseClient} implementation.
@@ -263,10 +261,10 @@ public class HBaseClientFactory {
 
     /**
      * Builds a new {@link HBaseClient} according to the given {@link HBaseClientFactory}.
-     * <p/>
+     * <p>
      * If the {@link #maxConcurrentRequests} is non-zero in the
      * configuration, this will build a {@link BoundedHBaseClient} that wraps the given client.
-     * <p/>
+     * <p>
      * If {@link #maxConcurrentRequests} is zero, the given {@link
      * HBaseClient} will be returned verbatim.
      *

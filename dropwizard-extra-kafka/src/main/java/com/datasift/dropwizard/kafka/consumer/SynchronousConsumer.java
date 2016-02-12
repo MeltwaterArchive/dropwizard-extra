@@ -71,11 +71,17 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
      * Creates a {@link SynchronousConsumer} to process a stream.
      *
      * @param connector the {@link ConsumerConnector} of the underlying consumer.
-     * @param partitions a mapping of the topic -> partitions to consume.
+     * @param partitions a mapping of the topic with the partitions to consume.
      * @param keyDecoder a {@link Decoder} for decoding the key of each message before being processed.
      * @param valueDecoder a {@link Decoder} for decoding each message before being processed.
      * @param processor a {@link StreamProcessor} for processing messages.
      * @param executor the {@link ExecutorService} to process the stream with.
+     * @param initialRecoveryDelay the initial recovery delay
+     * @param maxRecoveryDelay the max recovery delay
+     * @param retryResetDelay 
+     * @param maxRecoveryAttempts the number of time to attempt recovery
+     * @param shutdownOnFatal booelan stating whether or not to shut down on fatal error
+     * @param startDelay the amount of time to delay at start
      */
     public SynchronousConsumer(final ConsumerConnector connector,
                                final Map<String, Integer> partitions,
@@ -120,11 +126,11 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
 
     /**
      * Starts this {@link SynchronousConsumer} immediately.
-     * <p/>
+     * <p>
      * The consumer will immediately begin consuming from the configured topics using the configured
      * {@link Decoder} to decode messages and {@link StreamProcessor} to process the decoded
      * messages.
-     * <p/>
+     * <p>
      * Each partition will be consumed using a separate thread.
      *
      * @throws Exception if an error occurs starting the consumer
@@ -152,7 +158,7 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
     /**
      * Stops this {@link SynchronousConsumer} immediately.
      *
-     * @throws Exception
+     * @throws Exception if an error occurs on stop
      */
     @Override
     public void stop() throws Exception {
@@ -201,10 +207,10 @@ public class SynchronousConsumer<K, V> implements KafkaConsumer, Managed, Server
 
         /**
          * Process the stream using the configured {@link StreamProcessor}.
-         * <p/>
+         * <p>
          * If an {@link Exception} is thrown during processing, if it is deemed <i>recoverable</i>,
          * the stream will continue to be consumed.
-         * <p/>
+         * <p>
          * Unrecoverable {@link Exception}s will cause the consumer to shut down completely.
          */
         @Override

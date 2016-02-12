@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * A {@link RowScanner} that is instrumented with {@link Metric}s.
- * <p/>
+ * <p>
  * To obtain an instance of a {@link RowScanner}, call {@link InstrumentedHBaseClient#scan(byte[])}.
  */
 public class InstrumentedRowScanner implements RowScanner {

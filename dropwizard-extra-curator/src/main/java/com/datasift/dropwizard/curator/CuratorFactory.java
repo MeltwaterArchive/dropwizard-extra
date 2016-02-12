@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * A factory for creating and managing {@link CuratorFramework} instances.
- * <p/>
+ * <p>
  * The resulting {@link CuratorFramework} will have its lifecycle managed by the {@link Environment}
  * and will have {@link com.codahale.metrics.health.HealthCheck}s installed for the underlying ZooKeeper
  * ensemble.
@@ -118,7 +118,7 @@ public class CuratorFactory {
 
     /**
      * Returns the initial time to wait before retrying a failed connection.
-     * <p/>
+     * <p>
      * Subsequent retries will wait an exponential amount of time more than this.
      *
      * @return the initial time to wait before trying to connect again.
@@ -130,7 +130,7 @@ public class CuratorFactory {
 
     /**
      * Sets the initial time to wait before retrying a failed connection.
-     * <p/>
+     * <p>
      * Subsequent retries will wait an exponential amount of time more than this.
      *
      * @param backOffBaseTime the initial time to wait before trying to connect again.
@@ -142,7 +142,7 @@ public class CuratorFactory {
 
     /**
      * Returns a {@link RetryPolicy} for handling failed connection attempts.
-     * <p/>
+     * <p>
      * Always configures an {@link ExponentialBackoffRetry} based on the {@link #getMaxRetries()
      * maximum retries} and {@link #getBackOffBaseTime() initial back-off} configured.
      *

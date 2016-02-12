@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.datasift.dropwizard</groupId>
     <artifactId>dropwizard-extra</artifactId>
-    <version>0.7.1-2-SNAPSHOT</version>
+    <version>0.9.1-1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -18,10 +18,10 @@
   </description>
 
   <properties>
-    <kafka.version>0.8.1.1</kafka.version>
+    <kafka.version>0.8.2.2</kafka.version>
     <scala.version>2.10</scala.version>
   </properties>
-
+<!-- 
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -31,7 +31,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+ -->
   <dependencies>
     <dependency>
       <groupId>io.dropwizard</groupId>
